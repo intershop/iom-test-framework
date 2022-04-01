@@ -1,0 +1,164 @@
+openapi: 3.0.1
+info:
+  title: IOM Inventory Service REST API
+  description: Availability of products.
+  contact:
+    name: Intershop Communications AG
+    url: http://intershop.com
+  version: "2.0"
+servers:
+- url: '{protocol}://{domain}:{port}/servlets/services'
+  variables:
+    protocol:
+      default: http
+      enum:
+      - http
+      - https
+    domain:
+      default: localhost
+    port:
+      default: "8080"
+security:
+- basicAuth: []
+paths:
+  /atp/{shopId}/{id}:
+    get:
+      tags:
+      - Inventory
+      description: Get the currently available quantity of a product.
+      operationId: getAvailableQuantity
+      parameters:
+      - name: shopId
+        in: path
+        description: The id of the shop.
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 1000
+      - name: id
+        in: path
+        description: One or more product ids which are separated by comma.
+        required: true
+        style: simple
+        schema:
+          type: array
+          items:
+            type: string
+        example: 12345,67890,13579,24680
+      - name: resvId
+        in: query
+        description: The id of a reservation if desired.
+        schema:
+          type: integer
+          format: int64
+        example: 15280
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpResponseListAtp'
+        "400":
+          description: Bad Request
+        "401":
+          description: Authentication information is missing or invalid
+        "403":
+          description: Forbidden
+        "415":
+          description: Unsupported Media Type
+        "500":
+          description: An unexpected error occured
+components:
+  schemas:
+    Atp:
+      type: object
+      properties:
+        id:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Id of the product.
+          example: "12345677890"
+        location:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: Name of the supplier as used by the shop.
+          example: Supplier X
+        stock:
+          type: integer
+          description: The current stock level.
+          format: int32
+          example: 1500
+        reserved:
+          type: integer
+          description: The reserved stock - quantity that was reserved.
+          format: int32
+          example: 100
+        blocked:
+          type: integer
+          description: The blocked stock - quantity that was already sold.
+          format: int32
+          example: 473
+        atp:
+          type: integer
+          description: The available quantity (stock-level - blocked stock - reserved
+            stock).
+          format: int32
+          example: 927
+        modificationDate:
+          type: string
+          description: Last update of the availablity.
+          format: date-time
+        state:
+          type: string
+          description: Status of the general availability [sold out, temporarily not
+            available, available]
+          example: available
+      description: The ATP-object that contains information about the availablity
+        of a product.
+    CodedException:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+      description: Exceptions.
+    FieldError:
+      type: object
+      properties:
+        message:
+          type: string
+        sourceField:
+          type: string
+      description: Errors at parameters.
+    HttpResponseListAtp:
+      type: object
+      properties:
+        data:
+          type: array
+          description: The list of Atp-objects.
+          items:
+            $ref: '#/components/schemas/Atp'
+        statusCode:
+          type: integer
+          description: The status code of the response.
+          format: int32
+        errors:
+          type: array
+          description: Errors at parameters.
+          items:
+            $ref: '#/components/schemas/FieldError'
+        exceptions:
+          type: array
+          description: Exceptions.
+          items:
+            $ref: '#/components/schemas/CodedException'
+  securitySchemes:
+    basicAuth:
+      type: http
+      description: Basic Authentication
+      scheme: basic

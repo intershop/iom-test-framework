@@ -1,0 +1,601 @@
+openapi: 3.0.1
+info:
+  title: IOM GDPR REST API
+  description: The IOM GDPR REST API supports programmatic access to GDPR related
+    objects.
+  contact:
+    name: Intershop Communications AG
+    url: http://intershop.com
+  version: 2.9.4.0
+servers:
+- url: '{protocol}://{domain}:{port}/rest/gdpr'
+  variables:
+    protocol:
+      default: http
+      enum:
+      - http
+      - https
+    domain:
+      default: localhost
+    port:
+      default: "8080"
+security:
+- basicAuth: []
+- bearerAuth: []
+tags:
+- name: shop
+  description: API endpoints, that could be used by the shop.
+paths:
+  /shops/{shopName}/customers/{shopCustomerNumber}:
+    get:
+      tags:
+      - shop
+      summary: Get GDPR relevant customer data
+      description: Returns GDPR relevant customer data for a given shopCustomerNumber
+        and shopName.
+      operationId: getCustomer
+      parameters:
+      - name: shopCustomerNumber
+        in: path
+        description: The customer number of the shop
+        required: true
+        schema:
+          type: string
+      - name: shopName
+        in: path
+        description: The shop name
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/vnd.intershop.customer.v3+json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        401:
+          description: Authentication information is missing or invalid
+        403:
+          description: Forbidden
+        404:
+          description: Not Found
+components:
+  schemas:
+    Address:
+      type: object
+      properties:
+        firstName:
+          type: string
+          description: The first name of the address owner.
+          example: Bob
+        lastName:
+          type: string
+          description: The last name of the address owner.
+          example: Buyer
+        title:
+          type: string
+          description: The title of the address owner.
+          example: Dr.
+        companyName:
+          type: string
+        street:
+          type: string
+          description: The street of the address of the address owner.
+          example: Musterstraße
+        houseNumber:
+          type: string
+          description: The house number of the address of the address owner.
+          example: "5"
+        addressAddition1:
+          type: string
+          description: The first address addition of the address of the address owner.
+          example: 3. OG
+        addressAddition2:
+          type: string
+          description: The second address addition of the address of the address owner.
+          example: Terasse
+        addressAddition3:
+          type: string
+          description: The third address addition of the address of the address owner.
+        addressAddition4:
+          type: string
+          description: The fourth address addition of the address of the address owner.
+        addressType:
+          type: string
+          description: The type of the address.
+          example: Shipping address
+        postCode:
+          type: string
+          description: The postal code of the address of the address owner.
+          example: "10178"
+        city:
+          type: string
+          description: The city of the address of the address owner.
+          example: Berlin
+        district:
+          type: string
+          description: The distrct of the address of the address owner.
+        country:
+          type: string
+          description: The country of the address of the address owner.
+          example: Germany
+        email:
+          type: string
+          description: The email address of the address owner.
+          example: b.buyer@bbcompany.de
+        fax:
+          type: string
+          description: The fax number of the address owner.
+        mobilePhone:
+          type: string
+          description: The mobile phone number of the address owner.
+        phone1:
+          type: string
+          description: The first phone number of the address owner.
+        phone2:
+          type: string
+          description: The second phone number of the address owner.
+        isContainerFreightStation:
+          type: boolean
+        isDefault:
+          type: boolean
+        gender:
+          type: string
+          description: The gender of the address owner.
+          example: male
+        salutation:
+          type: string
+          description: The salutation of the address owner.
+          example: Mr.
+        poBox:
+          type: string
+        nightShipping:
+          type: boolean
+      description: Represents an address of a customer.
+    Customer:
+      type: object
+      properties:
+        creationDate:
+          type: string
+          format: date-time
+        customerType:
+          type: string
+          example: b2c
+        dayOfBirth:
+          type: string
+          format: date
+        firstName:
+          type: string
+          example: Bob
+        hasNewsletter:
+          type: boolean
+          example: false
+        isActive:
+          type: boolean
+          example: true
+        isNewCustomer:
+          type: boolean
+          example: true
+        lastName:
+          type: string
+          example: Buyer
+        gender:
+          type: string
+          example: male
+        shopCustomerNo:
+          type: string
+          description: 'Deprecated: will be replaced by shopCustomerNumber in a future
+            version.'
+          example: BB002
+          deprecated: true
+        shopCustomerNumber:
+          type: string
+          example: BB002
+        title:
+          type: string
+        email:
+          type: string
+          example: b.buyer@bbcompany.de
+        fax:
+          type: string
+        mobilePhone:
+          type: string
+        phone1:
+          type: string
+        phone2:
+          type: string
+        companyName:
+          type: string
+        bankAccounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerBankAccount'
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/Address'
+        orders:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerOrder'
+        invoiceAndCreditNotes:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerInvoiceAndCreditNote'
+        customerBalances:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerBalance'
+      description: Represents a customer.
+    CustomerBalance:
+      type: object
+      properties:
+        currency:
+          type: string
+          description: The currency the amounts are listed in.
+          example: EUR
+        openInvoiceAmount:
+          type: number
+          format: double
+          example: -154.7
+        openInvoiceAmountCalculationDate:
+          type: string
+          format: date-time
+        bookedCreditSum:
+          type: number
+          format: double
+          example: 0.0
+        bookedDebitSum:
+          type: number
+          format: double
+          example: 0.0
+        chargedCreditSum:
+          type: number
+          format: double
+          example: 0.0
+        chargedDebitSum:
+          type: number
+          format: double
+          example: 0.0
+        chargedOpenSum:
+          type: number
+          format: double
+          example: 0.0
+        invoicingCreditSum:
+          type: number
+          format: double
+          example: 0.0
+        invoicingDebitSum:
+          type: number
+          format: double
+          example: -154.7
+        negativeBookedOpenSum:
+          type: number
+          format: double
+          example: 154.7
+        positiveBookedOpenSum:
+          type: number
+          format: double
+          example: 0.0
+      description: Represents a customer balance.
+    CustomerBankAccount:
+      type: object
+      properties:
+        accountHolder:
+          type: string
+        accountNumber:
+          type: string
+        bankCode:
+          type: string
+        bankName:
+          type: string
+      description: Represents a bank account of a customer.
+    CustomerInvoiceAndCreditNote:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Represents the type ("invoice" or "creditnote")
+          example: creditnote
+        relatedShopOrderNos:
+          type: array
+          description: 'The list of shop order numbers of the related orders. Deprecated:
+            will be replaced by relatedShopOrderNumbers in a future version.'
+          example: '[20180303_123, 20180303_124]'
+          deprecated: true
+          items:
+            type: string
+            description: 'The list of shop order numbers of the related orders. Deprecated:
+              will be replaced by relatedShopOrderNumbers in a future version.'
+            example: '[20180303_123, 20180303_124]'
+            deprecated: true
+        relatedShopOrderNumbers:
+          type: array
+          description: The list of shop order numbers of the related orders.
+          example: '[20180303_123, 20180303_124]'
+          items:
+            type: string
+            description: The list of shop order numbers of the related orders.
+            example: '[20180303_123, 20180303_124]'
+        invoiceNo:
+          type: string
+          description: 'The number of the invoice or credit note. Deprecated: will
+            be replaced by invoiceNumber in a future version.'
+          example: 2018-000002
+          deprecated: true
+        invoiceNumber:
+          type: string
+          description: The number of the invoice or credit note.
+          example: 2018-000002
+        referenceInvoiceNo:
+          type: string
+          description: 'The original invoice related to this invoice in case of invoice
+            updates. Deprecated: will be replaced by referenceInvoiceNumber in a future
+            version.'
+          example: 2018-000001
+          deprecated: true
+        referenceInvoiceNumber:
+          type: string
+          description: The original invoice related to this invoice in case of invoice
+            updates.
+          example: 2018-000001
+        invoicingDate:
+          type: string
+          description: Date when the invioce creation was finished.
+          format: date-time
+        currency:
+          type: string
+          description: The currency the invoice prices are listed in.
+          example: EUR
+        paymentMethod:
+          type: string
+          description: The name of the payment method.
+          example: credit card
+        paymentDueDate:
+          type: string
+          description: Date when the invoice have to be registered as payed (payment
+            deadline) at site of the business owner.
+          format: date-time
+        invoicePositions:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerInvoicePosition'
+      description: Represents an invoice of a customer.
+    CustomerInvoicePosition:
+      type: object
+      properties:
+        shopOrderNo:
+          type: string
+          description: 'Deprecated: will be replaced by shopOrderNumber in a future
+            version.'
+          example: 20180303_123
+          deprecated: true
+        shopOrderNumber:
+          type: string
+          example: 20180303_123
+        shopArticleNo:
+          type: string
+          description: 'Deprecated: will be replaced by shopArticleNumber in a future
+            version.'
+          example: 100-0001
+          deprecated: true
+        shopArticleNumber:
+          type: string
+          example: 100-0001
+        quantity:
+          type: integer
+          format: int32
+          example: 10
+        salesItemNet:
+          type: number
+          format: double
+          example: 1.0
+        salesItemGross:
+          type: number
+          format: double
+          example: 1.19
+        chargeNet:
+          type: number
+          format: double
+          example: 0.0
+        chargeGross:
+          type: number
+          format: double
+          example: 0.0
+      description: Represents an invoice position of an invoice of a customer.
+    CustomerOrder:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The order identifier.
+          format: int32
+          example: 10000
+        shopOrderNo:
+          type: string
+          description: 'The order number as used by the shop. Deprecated: will be
+            replaced by shopOrderNumber in a future version.'
+          example: 20180303_123
+          deprecated: true
+        shopOrderNumber:
+          type: string
+          description: The order number as used by the shop.
+          example: 20180303_123
+        shopCustomerOrderNo:
+          type: string
+          description: 'The order number as given from the customer of the shop. Deprecated:
+            will be replaced by shopCustomerOrderNumber in a future version.'
+          example: 20180303_123
+          deprecated: true
+        shopCustomerOrderNumber:
+          type: string
+          description: The order number as given from the customer of the shop.
+          example: 20180303_123
+        paymentProviderOrderNo:
+          type: string
+          description: 'The order number as used by the payment service provider.
+            Deprecated: will be replaced by paymentProviderOrderNumber in a future
+            version.'
+          example: 20180303_123
+          deprecated: true
+        paymentProviderOrderNumber:
+          type: string
+          description: The order number as used by the payment service provider.
+          example: 20180303_123
+        shopOrderCreationDate:
+          type: string
+          description: The date when the order was created at the shop.
+          format: date-time
+        paymentMethod:
+          type: string
+          description: The name of the payment method.
+          example: credit card
+        shopSubTotalGross:
+          type: number
+          description: The gross amount of the order positions (discounted order amount
+            without charges) as given from the shop.
+          format: double
+          example: 11.9
+        shopSubTotalNet:
+          type: number
+          description: The net amount of the order positions (discounted order amount
+            without charges) as given from the shop.
+          format: double
+          example: 10.0
+        shopTotalGross:
+          type: number
+          description: The gross amount of the order as given from the shop.
+          format: double
+          example: 11.9
+        shopTotalNet:
+          type: number
+          description: The net amount of the order as given from the shop.
+          format: double
+          example: 10.0
+        carrier:
+          type: string
+          description: The name of the carrier.
+          example: DHL
+        shopSubTotalGrossDiscounted:
+          type: number
+          description: The discounted gross amount of the order positions (discounted
+            order amount without charges) as given from the shop.
+          format: double
+          example: 11.9
+        shopSubTotalNetDiscounted:
+          type: number
+          description: The discounted net amount of the order positions (discounted
+            order amount without charges) as given from the shop.
+          format: double
+          example: 10.0
+        recalculatedShopSubTotalGrossDiscounted:
+          type: number
+          description: The discounted gross amount of the order positions (discounted
+            order amount without charges) recalculated on cancellations.
+          format: double
+          example: 11.9
+        recalculatedShopSubTotalNetDiscounted:
+          type: number
+          description: The discounted net amount of the order positions (discounted
+            order amount without charges) recalculated on cancellations.
+          format: double
+          example: 10.0
+        currency:
+          type: string
+          description: The currency the amounts are listed in.
+          example: EUR
+        orderPositions:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerOrderPosition'
+      description: Represents an order of a customer.
+    CustomerOrderPosition:
+      type: object
+      properties:
+        shopArticleNo:
+          type: string
+          description: 'Deprecated: will be replaced by shopArticleNumber in a future
+            version.'
+          example: 100-0001
+          deprecated: true
+        shopArticleNumber:
+          type: string
+          example: 100-0001
+        shopArticleName:
+          type: string
+          example: test_product_1
+        orderPosNo:
+          type: integer
+          description: 'Deprecated: will be replaced by orderPosNumber in a future
+            version.'
+          format: int32
+          example: 1
+          deprecated: true
+        orderPosNumber:
+          type: integer
+          format: int32
+          example: 1
+        quantityCanceled:
+          type: integer
+          format: int32
+          example: 2
+        quantityOrdered:
+          type: integer
+          format: int32
+          example: 10
+        quantityReturned:
+          type: integer
+          format: int32
+          example: 2
+        returnDate:
+          type: string
+          format: date-time
+        shopItemGross:
+          type: number
+          format: double
+        shopItemNet:
+          type: number
+          format: double
+        shopItemTax:
+          type: number
+          format: double
+        shopPosGross:
+          type: number
+          format: double
+        shopPosNet:
+          type: number
+          format: double
+        shopPosTax:
+          type: number
+          format: double
+        shopPosNetDiscounted:
+          type: number
+          format: double
+        shopPosGrossDiscounted:
+          type: number
+          format: double
+        shopUnit:
+          type: string
+        shopItemNetDiscounted:
+          type: number
+          format: double
+        shopItemGrossDiscounted:
+          type: number
+          format: double
+        quantityRefunded:
+          type: integer
+          format: int32
+        shippingAddress:
+          $ref: '#/components/schemas/Address'
+      description: Represents an order position of an order of a customer.
+  securitySchemes:
+    basicAuth:
+      type: http
+      description: Basic Authentication
+      scheme: basic
+    bearerAuth:
+      type: http
+      description: JWT Bearer token
+      scheme: bearer
+      bearerFormat: JWT

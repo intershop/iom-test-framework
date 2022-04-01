@@ -1,0 +1,13 @@
+{    
+    "groupId":"com.intershop.oms.rest",
+    "artifactId":"TransmissionServiceClient",
+    "artifactVersion":"1.1",
+
+    "apiPackage":"com.intershop.oms.rest.transmission.v1_1.api",
+    "modelPackage":"com.intershop.oms.rest.transmission.v1_1.model",
+    "invokerPackage":"com.intershop.oms.rest.shared",
+
+    "dateLibrary": "java8",
+    "java8": true,
+    "hideGenerationTimestamp": true
+}

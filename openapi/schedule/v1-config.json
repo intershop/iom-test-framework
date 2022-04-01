@@ -1,0 +1,13 @@
+{    
+    "groupId":"com.intershop.oms.rest",
+    "artifactId":"ScheduleServiceClient",
+    "artifactVersion":"1.0",
+
+    "apiPackage":"com.intershop.oms.rest.schedule.v1.api",
+    "modelPackage":"com.intershop.oms.rest.schedule.v1.model",
+    "invokerPackage":"com.intershop.oms.rest.shared",
+
+    "dateLibrary": "legacy",
+    "java8": true,
+    "hideGenerationTimestamp": true
+}

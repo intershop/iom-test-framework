@@ -1,0 +1,117 @@
+openapi: 3.0.1
+info:
+  title: Health Service
+  description: Health Check service operations
+  contact:
+    name: Intershop Communications AG
+    url: http://intershop.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org
+  version: "1.0"
+paths:
+  /health/clusterstatus:
+    get:
+      tags:
+      - IOM - Application Monitoring
+      description: Returns the status of all app-servers of a cluster. ...
+      operationId: getClusterStatus
+      responses:
+        200:
+          description: The request has succeeded
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/HealthCheckStatus'
+        401:
+          description: Unauthorized
+        403:
+          description: Forbidden
+        500:
+          description: Internal server error
+  /health/status:
+    get:
+      tags:
+      - IOM - Application Monitoring
+      description: Checks if the app-server is alive. ...
+      operationId: getServerStatus
+      responses:
+        200:
+          description: '...'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthCheckStatus'
+        500:
+          description: Internal server error
+        503:
+          description: Service unavailable, possibly starting
+components:
+  schemas:
+    HealthCheckServiceStatus:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the checked service.
+          example: database
+        checked:
+          type: boolean
+          description: Whether the service was checked or not.
+          example: true
+        statusCode:
+          type: integer
+          description: The status code of the checked service.
+          format: int32
+          example: 200
+        description:
+          type: string
+          description: The description of the current status.
+          example: OK
+      description: Represents the current health status of one service of an app-server.
+      example: '...'
+    HealthCheckStatus:
+      type: object
+      properties:
+        services:
+          type: array
+          description: A list of all services and their status that were checked.
+          example: '...'
+          items:
+            $ref: '#/components/schemas/HealthCheckServiceStatus'
+        serverId:
+          type: string
+          description: Name of the app-server.
+          example: '...'
+        serverType:
+          type: string
+          description: Type of the app-server.
+          example: backend
+        statusCode:
+          type: integer
+          description: The status of the health check.
+          format: int32
+          example: 200
+        description:
+          type: string
+          description: The description of the current status.
+          example: OK
+        lastCheckEpoch:
+          type: integer
+          description: The timestamp as epoch the check was processed.
+          format: int64
+        lastSuccessfulCheckEpoch:
+          type: integer
+          description: The timestamp as epoch the last successful check was processed.
+          format: int64
+        lastCheck:
+          type: string
+          description: The timestamp the check was processed.
+          format: date-time
+        lastSuccessfulCheck:
+          type: string
+          description: The timestamp the last successful check was processed.
+          format: date-time
+      description: Represents the current health status of an app-server.

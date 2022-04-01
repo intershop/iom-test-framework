@@ -1,0 +1,757 @@
+openapi: 3.0.0
+info:
+  version: '1.0'
+  title: IOM Schedule REST API
+  description: The IOM Schedule REST API supports tasks to view and manage schedules of the IOM.
+  contact:
+    name: Intershop Communications AG
+    url: http://intershop.com
+servers:
+- url: '{protocol}://{domain}:{port}/rest/schedules'
+  description: The production API server.
+  variables:
+    protocol:
+      default: https
+      enum:
+      - http
+      - https
+    domain:
+      default: localhost
+    port:
+      default: "8080"
+tags:
+- name: schedules
+  description: Service to search the current state and last run of schedules, and to overwrite their basic configuration with runtime parameters.
+- name: schedulestates
+  description: Search for schedules using their current state and configuration (the currently used configuration) or modify the configuration.
+- name: scheduleconfigs
+  description: Search for schedules using their current state and configuration (both, the `default` and the `runtime` ones).
+paths:
+  /schedulestates:
+    get:
+      tags:
+      - scheduleStates
+      summary: Get the schedules current states by search criterias.
+      description: Returns all schedules for the selected search criterias.<br>
+         For attributes having a runtime equivalent those - when set - will be used for the search instead of the basic configuration.
+      operationId: getSchedulesStates
+      parameters:
+      - name: active
+        in: query
+        description: Whether the schedule is active or not.
+        required: false
+        style: form
+        schema:
+          type: boolean
+      - name: ids
+        in: query
+        description: The id of the schedule.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+      - name: jobNames
+        in: query
+        description: The name of the job associated to the schedule.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: keys
+        in: query
+        description: The key associated to the schedule.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: isLocked
+        in: query
+        description: Whether the schedule is currently locked or not.
+        required: false
+        style: form
+        schema:
+          type: boolean
+      - name: stopped
+        in: query
+        description: Schedules that will not run by themselves (inactive or having reached the `maxNoOfRetries`).
+        required: false
+        style: form
+        schema:
+          type: boolean
+      - name: orderBy
+        in: query
+        required: false
+        schema:
+           $ref: '#/components/schemas/SortableScheduleAttribute'
+           
+      - $ref: '#/components/parameters/SortDirectionParam'
+      - $ref: '#/components/parameters/LimitParam'
+      - $ref: '#/components/parameters/OffsetParam'
+      
+      responses:
+        200:
+          description: The response for a schedule collection request.
+          content:
+            application/vnd.intershop.schedule.v1+json:
+              schema:
+                $ref: '#/components/schemas/ScheduleStateCollectionContainer'
+        400:
+          description: Bad request - Generic or business logic validation error.
+          content:
+            application/vnd.intershop.schedule.v1+json:
+              schema:
+                $ref: '#/components/schemas/ErrorReport'
+        401:
+          description: Unauthorized - Authentication information is missing or invalid.
+          headers:
+            WWW-Authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+        403:
+          description: Forbidden - the user is not authorized to use this resource.
+        406:
+          description: Not Acceptable - A representation of the response in the media type that was requested in the ACCEPT header cannot be provided.
+        500:
+          description: Internal Server Error - An unexpected error occured.
+      security:
+      - basicAuth: []
+      - bearerAuth: []
+      
+  /schedulestates/{scheduleId}:
+    get:
+      tags:
+      - scheduleStates
+      summary: Get the schedule state by id.
+      description: Returns the states of a single schedule for the given id.
+      operationId: getScheduleStates
+      parameters:
+      - name: scheduleId
+        in: path
+        description: The id of the schedule.
+        required: true
+        style: simple
+        schema:
+          type: integer
+        example: 107
+      responses:
+        200:
+          description: Definition of the requested schedule.
+          content:
+            application/vnd.intershop.schedule.v1+json:
+              schema:
+                $ref: '#/components/schemas/ScheduleState'
+        400:
+          description: Bad request - Generic or business logic validation error.
+          content:
+            application/vnd.intershop.schedule.v1+json:
+              schema:
+                $ref: '#/components/schemas/ErrorReport'
+        401:
+          description: Unauthorized - Authentication information is missing or invalid.
+          headers:
+            WWW-Authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+        403:
+          description: Forbidden - the user is not authorized to use this resource.
+        406:
+          description: Not Acceptable - A representation of the response in the media type that was requested in the ACCEPT header cannot be provided.
+        500:
+          description: Internal Server Error - An unexpected error occured.
+      security:
+      - basicAuth: []
+      - bearerAuth: []
+      
+    patch:
+      tags:
+      - scheduleStates
+      summary: Set the runtime configuration of a schedule.
+      description: Allows to overwrite basic configuration parameters with runtime values.
+      operationId: scheduleUpdate
+      parameters:
+      - name: scheduleId
+        in: path
+        description: The id of the schedule.
+        required: true
+        style: simple
+        schema:
+          type: integer
+        example: 107
+      requestBody:
+        description: You only need to provide the attributes that must be modified.<br>Use the `resetList` to remove current runtime attributes.
+        content:
+          application/vnd.intershop.schedule.v1+json:
+              schema:
+                $ref: '#/components/schemas/ScheduleUpdate'
+      responses:
+        200:
+          description: Returns the updated schedule definition.
+          content:
+            application/vnd.intershop.schedule.v1+json:
+              schema:
+                $ref: '#/components/schemas/ScheduleState'
+        400:
+          description: Bad request - Generic or business logic validation error.
+          content:
+            application/vnd.intershop.schedule.v1+json:
+              schema:
+                $ref: '#/components/schemas/ErrorReport'
+        401:
+          description: Unauthorized - Authentication information is missing or invalid.
+          headers:
+            WWW-Authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+        403:
+          description: Forbidden - the user is not authorized to use this resource.
+        406:
+          description: Not Acceptable - A representation of the response in the media
+            type that was requested in the ACCEPT header cannot be provided.
+        415:
+          description: Unsupported Media Type - The media type of the sent body is
+            not supported.
+        500:
+          description: Internal Server Error - An unexpected error occured.
+      security:
+      - basicAuth: []
+      - bearerAuth: []
+      
+  /scheduleconfigs:
+    get:
+      tags:
+      - scheduleConfigs
+      summary: Get schedules by search criterias.
+      description: Returns all schedules for selected search criterias.<br>
+         This will include basic and runtime configuration. For attributes having a runtime equivalent, those - when set - will be used for the search instead of the basic configuration.
+      operationId: getSchedules
+      parameters:
+      - name: active
+        in: query
+        description: Whether the schedule is active or not.
+        required: false
+        style: form
+        schema:
+          type: boolean
+      - name: ids
+        in: query
+        description: The id of the schedule.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: integer
+      - name: jobNames
+        in: query
+        description: The name of the job associated to the schedule.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: keys
+        in: query
+        description: The key associated to the schedule.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: isLocked
+        in: query
+        description: Whether the schedule is currently locked or not.
+        required: false
+        style: form
+        schema:
+          type: boolean
+      - name: willRetry
+        in: query
+        description: Failed schedules with a retry timestamp.
+        required: false
+        style: form
+        schema:
+          type: boolean
+      - name: orderBy
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/SortableScheduleAttribute'
+          
+      - $ref: '#/components/parameters/SortDirectionParam'
+      - $ref: '#/components/parameters/LimitParam'
+      - $ref: '#/components/parameters/OffsetParam'
+
+      responses:
+        200:
+          description: The response for a schedule collection request.
+          content:
+            application/vnd.intershop.schedule.v1+json:
+              schema:
+                $ref: '#/components/schemas/ScheduleCollectionContainer'
+        400:
+          description: Bad request - Generic or business logic validation error.
+          content:
+            application/vnd.intershop.schedule.v1+json:
+              schema:
+                $ref: '#/components/schemas/ErrorReport'
+        401:
+          description: Unauthorized - Authentication information is missing or invalid.
+          headers:
+            WWW-Authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+        403:
+          description: Forbidden - the user is not authorized to use this resource.
+        406:
+          description: Not Acceptable - A representation of the response in the media
+            type that was requested in the ACCEPT header cannot be provided.
+        500:
+          description: Internal Server Error - An unexpected error occured.
+      security:
+      - basicAuth: []
+      - bearerAuth: []
+      
+  /scheduleconfigs/{scheduleId}:
+    get:
+      tags:
+      - scheduleConfigs
+      summary: Get a schedule by id.
+      description: Returns a schedule for the given id.<br>
+         This will include basic and runtime configuration. For attributes having a runtime equivalent, those - when set - will be used for the search instead of the basic configuration.
+      operationId: getSchedule
+      parameters:
+      - name: scheduleId
+        in: path
+        description: The id of the schedule.
+        required: true
+        style: simple
+        schema:
+          type: integer
+        example: 107
+      responses:
+        200:
+          description: Definition of the requested schedule.
+          content:
+            application/vnd.intershop.schedule.v1+json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+        400:
+          description: Bad request - Generic or business logic validation error.
+          content:
+            application/vnd.intershop.schedule.v1+json:
+              schema:
+                $ref: '#/components/schemas/ErrorReport'
+        401:
+          description: Unauthorized - Authentication information is missing or invalid.
+          headers:
+            WWW-Authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+        403:
+          description: Forbidden - the user is not authorized to use this resource.
+        406:
+          description: Not Acceptable - A representation of the response in the media
+            type that was requested in the ACCEPT header cannot be provided.
+        500:
+          description: Internal Server Error - An unexpected error occured.
+      security:
+      - basicAuth: []
+      - bearerAuth: []
+
+components:
+  schemas:
+    ScheduleStateCollectionContainer:
+       type: object
+       description: A collection of `ScheduleState`.
+       properties:
+         meta:
+           $ref: '#/components/schemas/CollectionMetaData'
+         data:
+           type: array
+           description: The core data of the schedule state collection.
+           items:
+            $ref: '#/components/schemas/ScheduleState'
+    ScheduleCollectionContainer:
+       type: object
+       description: A collection of `Schedule`.
+       properties:
+         meta:
+           $ref: '#/components/schemas/CollectionMetaData'
+         data:
+           type: array
+           description: The core data of the schedule collection.
+           items:
+            $ref: '#/components/schemas/Schedule'
+    ScheduleState:
+      type: object
+      description: Represents the current state of the schedule.<br>
+         For attributes having a runtime equivalent those - when set - will be used for the search instead of the basic configuration.
+      properties:
+        id:
+          type: integer
+          description: The id of the schedule. (read-only)
+          example: 107
+        active:
+          type: boolean
+          description: Current active status. Only active schedules can be run.
+          example: true
+        configId:
+          type: integer
+          description: Referrences an internal implementation. Must not be modified. This is a information for the internal job name associated to the schedule.' (read-only)
+          example: 1
+        key:
+          type: string
+          description: Textual schedule identificator, not enforced to be unique. (read-only)
+          example: CHECK_FOR_DATAPACK_FILES
+        cron:
+          type: string
+          description: Current cron expression.Cron expression to define the job run times. Must match the quartz cron syntax.
+          example: 0 45 23 L 1/1 ? *
+        reactivateOnStart:
+          type: boolean
+          description: Current value. When true, jobs that did reach their `maxNoOfRetries` will be resetted automatically on the next controller startup. This happens during a deployment or fail over.
+          example: true
+        jobName:
+          type: string
+          description: Name of the internal job associated to the schedule. (read-only)
+          example: checkForDatapackFiles
+        lastRun:
+          type: string
+          format: date-time
+          description: Last check or execution of the schedule (successfully or not). This attribute is further updated for schedules that won't be executed after the `maxNoOfRetries` has been reached. (read-only)
+          example: "2019-07-03T15:57:33.521+02:00"
+        lockedSince:
+          type: string
+          format: date-time
+          description: Corresponds to the start time of jobs currently running. (read-only)
+          example: "2019-07-03T15:57:33.521+02:00"
+        retryCount:
+          type: integer
+          description: Number of failures since the last successful run.
+          example: 2
+        maxNoOfRetries:
+          type: integer
+          description: Current value. How often a failed schedule will be retried. The schedule will stop execute after this limit is reached. To nevertheless force the schedule execution you can either raise this limit or set a next execution time per hand (choosing a timestamp in the past should trigger the schedule within the next minute).
+          example: 25
+        retryDelay:
+          type: string
+          description: Current value. Time interval between retries of failed schedules.
+          example: 7m #(means 7 minutes)
+        nextRun:
+          type: string
+          format: date-time
+          description: Next time when a failed schedule will be retried.<br>This value can be set by hand (`fixedNextRun`) or is defined after an attempt failure as long as the `maxNoOfRetries` is not reached.<br>Is ignored by inactive schedules. When not set, then the next attempt is determined from the cron expression (given the schedule is active and the `maxNoOfRetries` has not been reached). This attribute is internally resetted to null when the schedule has run successfully or after the `maxNoOfRetries` has been reached.
+          example: "2019-07-03T15:57:33.521+02:00"
+        description:
+          type: string
+          description: Schedule description. (read-only)
+          example: Check for Datapack files.
+    Schedule:
+      type: object
+      description: Represents the current state of the schedule including basic and runtime configuration.<br>
+         The basic configuration parameters have the suffix `Configured`.<br>
+         The runtime configuration parameters have the suffix `Runtime`. If not set, the basic configuration will be used.
+      properties:
+        id:
+          type: integer
+          description: The schedule identifier.
+          example: 107
+        activeConfigured:
+          type: boolean
+          description: Only active schedules can be run. Basic configuration, can be overwritten with `activeRuntime`.
+          example: true
+        activeRuntime:
+          type: boolean
+          description: Runtime configuration to overwrite the `activeConfigured`-flag.
+          example: true
+        configId:
+          type: integer
+          description: Referrences an internal implementation. Must not be modified. This is a information for the internal job name associated to the schedule.'
+          example: 1
+        key:
+          type: string
+          description: Textual schedule identificator, not enforced to be unique. Must not be modified.
+          example: CHECK_FOR_DATAPACK_FILES
+        cronConfigured:
+          type: string
+          description: Cron expression to define the job run times. Must match the quartz cron syntax. Basic configuration, can be overwritten with `cronRuntime`.
+          example: 0 45 23 L 1/1 ? *
+        cronRuntime:
+          type: string
+          description: Runtime configuration to overwrite the `cronConfigured` expression.
+          example: 0 45 23 L 1/1 ? *
+        reactivateOnStartConfigured:
+          type: boolean
+          description: When true, jobs that did reach their `maxNoOfRetries` will be resetted automatically on the next controller startup.<br>This happens during a deployment or fail over. Basic configuration, can be overwritten with `reactivateOnStartRuntime`.
+          example: true
+        reactivateOnStartRuntime:
+          type: boolean
+          description:  'Runtime configuration to overwrite the `reactivateOnStartConfigured`-flag.'
+          example: null
+        jobName:
+          type: string
+          description: Name of the internal job associated to the schedule.
+          example: checkForDatapackFiles
+        lastRun:
+          type: string
+          format: date-time
+          description: Last check or execution of the schedule (successfully or not). This attribute is further updated for schedules that won't be executed after the `maxNoOfRetries` has been reached.
+          example: "2019-07-03T15:57:33.521+02:00"
+        lockedSince:
+          type: string
+          format: date-time
+          description: Corresponds to the start time of jobs currently running.
+          example: "2019-07-03T15:57:33.521+02:00"
+        retryCount:
+          type: integer
+          description: Number of failures since the last successful run.
+          example: 2
+        maxNoOfRetriesConfigured:
+          type: integer
+          description: How often a failed schedule will be retried.<br>The schedule will stop execute after this limit is reached. To nevertheless force the schedule execution you can either raise this limit with `maxNoOfRetriesRuntime` or set a next execution time per hand (choosing a timestamp in the past should trigger the schedule within the next minute).
+          example: 25
+        maxNoOfRetriesRuntime:
+          type: integer
+          description: Runtime configuration to overwrite `maxNoOfRetriesConfigured`.
+          example: 30
+        retryDelayConfigured:
+          type: string
+          description: Time interval between retries of failed schedules. Basic configuration, can be overwritten with `retryDelayRuntime`.
+          example: 7m #(means 7 minutes)
+        retryDelayRuntime:
+          type: string
+          description: Runtime configuration to overwrite `retryDelayConfigured`.
+          example: 7m #(means 7 minutes)
+        nextRetryDate:
+          type: string
+          format: date-time
+          description: When a failed schedule will next be retried. Can be overwritten at runtime with `nextRun`.
+          example: "2019-07-03T15:57:33.521+02:00"
+        fixedNextRun:
+          type: string
+          format: date-time
+          description: Runtime configuration. When set, this define the next time when the schedule should run.<br>This attribute is resetted to null when the schedule is then being attempted (independently of it's success or error status).<br>The `nextRetryDate`, crons and `maxNoOfRetries` have no effect when fixedNextRun is set; only the active[Runtime] status is still respected.
+          example: "2019-07-03T15:57:33.521+02:00"
+        description:
+          type: string
+          description: The description of the schedule.
+          example: Check for datapack files.
+    ScheduleUpdate:
+      type: object
+      description: Attributes of a schedule a runtime configuration can be set for.<br>
+         The runtime configuration will be then used instead of the basic configuration.<br>
+         To reset an attribute back to the  basic configurations use the `resetList`.<br>
+         `Note` that `lockedSinceUse` can't be set.<br>
+         `Note` that `fixedNextRun` has no basic configuration.
+      properties:
+        active:
+          type: boolean
+          description: Only active schedules will be run.
+          example: true
+        cron:
+          type: string
+          description: Cron expression to define the job run times. Must match the quartz cron syntax.
+          example: 0 45 23 L 1/1 ? *
+        reactivateOnStart:
+          type: boolean
+          description: When true, jobs that did reach their `maxNoOfRetries` will be resetted automatically on the next controller startup. This happens during a deployment or fail over.
+          example: true
+        maxNoOfRetries:
+          type: integer
+          description: How often a failed schedule will be retried. The schedule will stop execute after this limit is reached. To nevertheless force the schedule execution you can either raise this limit with `maxNoOfRetriesRuntime` or set a next execution time per hand (choosing a timestamp in the past should trigger the schedule within the next minute). 
+          example: 25
+        retryDelay:
+          type: string
+          description: Time interval between retries of failed schedules.
+          example: 7m #(means 7 minutes)
+        fixedNextRun:
+          type: string
+          format: date-time
+          description: Fix time when the schedule will next be attempted. When set, the cron expression and `maxNoOfRetries` will be ignored. Setting this time in the past will call it as soon as possible (due schedules are checked for only once per minute).<br> This value will be removed unconditionally after the attempt.
+          example: "2019-07-03T15:57:33.521+02:00"
+        removeLock:
+          type: boolean
+          description: Internally, the lock exists when the start time of running jobs is set within the attribute lockedSince. You cannot modify this timestamp  but can set it to null in order to remove the lock. Beware that this may lead to parallel process executions.
+          example: false
+        resetList:
+          description: List of attribute where a possible runtime configuration must be removed. Those of these attributes also present with a value within the request will be ignored (the reset list wins.)
+          type: array
+          items:
+            type: string
+            enum:
+            - active
+            - cron
+            - reactivateOnStart
+            - maxNoOfRetries
+            - retryDelay
+            - fixedNextRun
+    SortableScheduleAttribute:
+      type: string
+      description: The attribute on which should be sorted.
+      example: lastRun
+      default: lastRun
+      enum:
+      - id
+      - active
+      - key
+      - jobName
+      - lastRun
+      - lockedSince
+      - retryCount
+      - maxNoOfRetries
+      - nextRetryDate
+    SortDirection:
+      type: string
+      description: The sort direction the attribute should be sorted with.<br><br>
+         `ASC` - Sort by the attribute ascending.<br>
+         `DESC` - Sort by the attribute descending.
+      example: DESC
+      default: ASC
+      enum:
+      - ASC
+      - DESC
+    Status:
+      type: integer
+      description: The HTTP status code.
+      format: int32
+      example: 403
+    Error:
+      required:
+      - code
+      - message
+      type: object
+      properties:
+        code:
+          type: string
+          description: Exception / Error code
+          example: VALIDATION_EXCEPTION
+        message:
+          type: string
+          description: Exception / Error message
+          example: Attribute XYZ is mandatory
+        value:
+          type: object
+          description: Value which caused the exception / error.
+    ErrorReport:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/Status'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+      description: Detailed information about what went wrong.
+    CollectionMetaData:
+      type: object
+      properties:
+        totalCount:
+          type: integer
+          description: The total number of objects in the collection (without offset and limit).
+          format: int64
+          example: 10000
+      description: The meta data of the collection.
+  responses:
+    ScheduleCollectionContainerResponse:
+      description: The response of a schedule collection request.
+      content:
+        application/vnd.intershop.schedule.v1+json:
+          schema:
+            $ref: '#/components/schemas/ScheduleCollectionContainer'
+    Created:
+      description: Created - The entity was created successfully.
+    Accepted:
+      description: Accepted - The request was successful and will be processed asynchronously.
+    MultiStatus:
+      description: Multi Status - The request contains several response statuses.
+    BadRequest:
+      description: Bad request - Generic or business logic validation error.
+      content:
+        application/vnd.intershop.schedule.v1+json:
+          schema:
+            $ref: '#/components/schemas/ErrorReport'
+    Unauthorized:
+      description: Unauthorized - Authentication information is missing or invalid.
+      headers:
+        WWW-Authenticate:
+          style: simple
+          explode: false
+          schema:
+            type: string
+    Forbidden:
+      description: Forbidden - the user is not authorized to use this resource.
+    NotFound:
+      description: Not found - the resource is not found.
+    NotAcceptable:
+      description: Not Acceptable - A representation of the response in the media
+        type that was requested in the ACCEPT header cannot be provided.
+    UnsupportedMediaType:
+      description: Unsupported Media Type - The media type of the sent body is not
+        supported.
+    InternalServerError:
+      description: Internal Server Error - An unexpected error occured.
+  parameters:
+    LimitParam:
+      name: limit
+      in: query 
+      description: The number of items to return.<br> If not set the limit is 1000.
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: integer
+        example: 50
+        default: 1000
+    OffsetParam:
+      name: offset
+      in: query
+      description: The number of items to skip before starting to collect the result set.
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: integer
+        example: 0
+        default: 0
+    SortDirectionParam:
+      name: sortDirection
+      in: query
+      required: false
+      style: form
+      explode: true
+      schema:
+        $ref: '#/components/schemas/SortDirection'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      description: JWT Bearer token
+      scheme: bearer
+      bearerFormat: JWT
+    basicAuth:
+      type: http
+      description: Basic Authentication
+      scheme: basic

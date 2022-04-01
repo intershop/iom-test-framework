@@ -1,0 +1,609 @@
+openapi: 3.0.1
+info:
+  title: IOM REST Communication API
+  description: The IOM REST Communication API supports dispatch, order response and
+    return message transmission to the IOM.
+  contact:
+    name: Intershop Communications AG
+    url: http://intershop.com
+  version: 2.9.4.0
+  x-vendor:
+    IOM version: 2.13.0.0-SNAPSHOT
+servers:
+- url: '{protocol}://{domain}:{port}/rest/communication'
+  variables:
+    protocol:
+      default: http
+      enum:
+      - http
+      - https
+    domain:
+      default: localhost
+    port:
+      default: "8080"
+security:
+- basicAuth: []
+- bearerAuth: []
+paths:
+  /dispatches:
+    post:
+      tags:
+      - Dispatch
+      summary: Create a order dispatch message
+      description: Persist a dispatch message and triggers the processing
+      operationId: createDispatch
+      requestBody:
+        content:
+          application/vnd.intershop.dispatch-message.v1+json:
+            schema:
+              $ref: '#/components/schemas/Dispatch'
+        required: true
+      responses:
+        201:
+          description: Created
+          headers:
+            Location:
+              description: The path to the newly created resource
+              style: simple
+              schema:
+                type: string
+                format: url
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorReport'
+        401:
+          description: Authentication information is missing or invalid
+        403:
+          description: Forbidden
+        415:
+          description: Unsupported Media Type
+        500:
+          description: An unexpected error occured
+  /responses:
+    post:
+      tags:
+      - Response
+      summary: Create a order response message
+      description: Persist a order response message and triggers the processing
+      operationId: createOrderResponse
+      requestBody:
+        content:
+          application/vnd.intershop.response-message.v1+json:
+            schema:
+              $ref: '#/components/schemas/OrderResponse'
+        required: true
+      responses:
+        201:
+          description: Created
+          headers:
+            Location:
+              description: The path to the newly created resource
+              style: simple
+              schema:
+                type: string
+                format: url
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorReport'
+        401:
+          description: Authentication information is missing or invalid
+        403:
+          description: Forbidden
+        415:
+          description: Unsupported Media Type
+        500:
+          description: An unexpected error occured
+  /returns:
+    post:
+      tags:
+      - Return
+      summary: Create a order return message
+      description: Persist a return message and triggers the processing
+      operationId: createReturn
+      requestBody:
+        content:
+          application/vnd.intershop.return-message.v1+json:
+            schema:
+              $ref: '#/components/schemas/Return'
+        required: true
+      responses:
+        201:
+          description: Created
+          headers:
+            Location:
+              description: The path to the newly created resource
+              style: simple
+              schema:
+                type: string
+                format: url
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorReport'
+        401:
+          description: Authentication information is missing or invalid
+        403:
+          description: Forbidden
+        415:
+          description: Unsupported Media Type
+        500:
+          description: An unexpected error occured
+components:
+  schemas:
+    Error:
+      required:
+      - code
+      - message
+      type: object
+      properties:
+        code:
+          type: string
+          description: Exception / Error code
+          example: VALIDATION_EXCEPTION
+        message:
+          type: string
+          description: Exception / Error message
+          example: Attribute XYZ is mandatory
+        value:
+          type: object
+          description: Value which caused the exception / error
+    ErrorReport:
+      type: object
+      properties:
+        status:
+          type: integer
+          description: The HTTP status code applicable to this problem, expressed
+            as a string value
+          format: int32
+          example: 400
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+      description: Detailed information about what went wrong
+    Carrier:
+      required:
+      - name
+      - packages
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the carrier as used by the supplier. Possible values
+            must be configured via Supplier2CarrierDO
+          example: DHL
+        packages:
+          minimum: 1
+          type: integer
+          description: 'Number of packages. Note: Packages with different tracking
+            numbers should be handled by separate dispatch messages.'
+          format: int32
+          example: 1
+        trackingNumber:
+          type: string
+          description: The tracking number of the delivered package
+          example: A1S044987623
+      description: Information about the carrier and the shipment
+    Dispatch:
+      required:
+      - carrier
+      - dispatchDate
+      - messageId
+      - positions
+      - shopOrderNumber
+      - supplierName
+      - supplierShopName
+      type: object
+      properties:
+        messageId:
+          type: string
+          description: Unique message ID
+          example: 906090-42
+        supplierName:
+          type: string
+          description: Name of the supplier
+          example: Demo-Supplier
+        supplierShopName:
+          type: string
+          description: Shop named by the supplier
+          example: Demo-Shop
+        shopOrderNumber:
+          maxLength: 50
+          minLength: 1
+          type: string
+          description: Order number as used by the shop
+          example: "78231.2018"
+        supplierOrderNumber:
+          maxLength: 250
+          minLength: 0
+          type: string
+          description: Order number as used by the supplier
+          example: DE398-8923#556
+        dispatchDate:
+          type: string
+          description: 'Date of the hand over of the package to the carrier. Note:
+            Must conform to the ISO 8601 format.'
+          format: date-time
+        deliveryNoteNumber:
+          maxLength: 70
+          minLength: 0
+          type: string
+          description: Delivery note number
+          example: DE-3290-030-9023
+        carrier:
+          $ref: '#/components/schemas/Carrier'
+        positions:
+          maxItems: 2147483647
+          minItems: 1
+          type: array
+          description: 'List of dispatch positions. Note: The attribute orderPositionNumber
+            must be unique per dispatch message.'
+          items:
+            $ref: '#/components/schemas/DispatchPosition'
+        propertyGroups:
+          type: array
+          description: Properties of the dispatch, grouped by a name
+          items:
+            $ref: '#/components/schemas/PropertyGroup'
+    DispatchItem:
+      required:
+      - serialNumber
+      type: object
+      properties:
+        serialNumber:
+          type: string
+          description: Serial number of the dispatched product
+          example: "667002"
+        propertyGroups:
+          type: array
+          description: Properties of the dispatch item, grouped by a name
+          items:
+            $ref: '#/components/schemas/PropertyGroup'
+      description: 'There are further information for each single article. Note: The
+        number of items will be count as dispatched quantity'
+    DispatchPosition:
+      required:
+      - dispatchedQuantity
+      - product
+      type: object
+      properties:
+        orderPositionNumber:
+          minimum: 1
+          type: integer
+          description: Relative number of the order position within the order. Numbering
+            starts with 1
+          format: int32
+          example: 1
+        dispatchedQuantity:
+          minimum: 1
+          type: integer
+          description: Number of shipped products
+          format: int32
+          example: 1
+        product:
+          $ref: '#/components/schemas/Product'
+        items:
+          type: array
+          description: 'There are further information for each single article. Note:
+            The number of items will be count as dispatched quantity'
+          items:
+            $ref: '#/components/schemas/DispatchItem'
+        propertyGroups:
+          type: array
+          description: Properties of the order response position, grouped by a name
+          items:
+            $ref: '#/components/schemas/PropertyGroup'
+      description: 'List of dispatch positions. Note: The attribute orderPositionNumber
+        must be unique per dispatch message.'
+    Product:
+      required:
+      - name
+      - number
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the product
+          example: Demo-Product
+        number:
+          maxLength: 2147483647
+          minLength: 1
+          type: string
+          description: 'Product number (id / SKU) as used by the supplier or shop.
+            Note: It''s used to determine the corresponding order position.'
+          example: "47119910"
+      description: The product to return
+    Property:
+      required:
+      - key
+      - value
+      type: object
+      properties:
+        key:
+          maxLength: 250
+          minLength: 1
+          type: string
+          description: Key of the property. The keys at a property group must be unique.
+          example: key
+        value:
+          maxLength: 1000
+          minLength: 1
+          type: string
+          description: Value of the property
+          example: value
+      description: The list of properties
+    PropertyGroup:
+      required:
+      - name
+      - properties
+      type: object
+      properties:
+        name:
+          maxLength: 250
+          minLength: 1
+          type: string
+          description: Name of the property group
+          example: DEMO-Group
+        properties:
+          maxItems: 2147483647
+          minItems: 1
+          type: array
+          description: The list of properties
+          items:
+            $ref: '#/components/schemas/Property'
+      description: Properties of the return, grouped by a name
+    ConfirmedDelivery:
+      required:
+      - plannedDeliveryDate
+      - quantity
+      type: object
+      properties:
+        quantity:
+          minimum: 0
+          type: integer
+          description: Confirmed delivery quantity
+          format: int32
+          example: 1
+        plannedDeliveryDate:
+          type: string
+          description: 'Planned delivery date. Note: Must conform to the ISO 8601
+            format and it must use the UTC.'
+          format: date
+      description: Confirmed delivery object
+    NetPurchasePrice:
+      required:
+      - amount
+      - currency
+      type: object
+      properties:
+        amount:
+          minimum: 0
+          type: number
+          description: Net item purchase price of supplier
+          format: double
+          example: 6.43
+        currency:
+          type: string
+          description: 'Currency of the net amount. MUST conform to the ISO 4217 e.g.:
+            EUR for Euro'
+          example: EUR
+      description: Net item purchase price object
+    OrderResponse:
+      required:
+      - messageId
+      - positions
+      - shopOrderNumber
+      - supplierName
+      - supplierShopName
+      - supplierStateCode
+      type: object
+      properties:
+        messageId:
+          type: string
+          description: Unique message ID
+          example: 906090-42
+        supplierName:
+          type: string
+          description: Name of the supplier
+          example: Demo-Supplier
+        supplierShopName:
+          type: string
+          description: Shop named by the supplier
+          example: Demo-Shop
+        shopOrderNumber:
+          maxLength: 50
+          minLength: 1
+          type: string
+          description: Order number as used by the shop
+          example: "78231.2018"
+        supplierOrderNumber:
+          maxLength: 250
+          minLength: 0
+          type: string
+          description: Order number as used by the supplier
+          example: DE398-8923#556
+        entryDate:
+          type: string
+          description: 'Timestamp when the supplier has created the response. Note:
+            Must conform to the ISO 8601 format.'
+          format: date-time
+        supplierStateCode:
+          maxLength: 50
+          minLength: 1
+          type: string
+          description: 'Status code of the response. Note: Must refer to an entry
+            of the "SupplierResponseStateCodeDefDO" configuration or one of the IOM
+            internal response state codes.'
+        positions:
+          maxItems: 2147483647
+          minItems: 1
+          type: array
+          description: 'List of order response positions. Note: The attribute orderPositionNumber
+            must be unique per response message.'
+          items:
+            $ref: '#/components/schemas/OrderResponsePosition'
+        propertyGroups:
+          type: array
+          description: Properties of the order response, grouped by a name
+          items:
+            $ref: '#/components/schemas/PropertyGroup'
+    OrderResponsePosition:
+      required:
+      - confirmedDelivery
+      - orderPositionNumber
+      - product
+      - quantityCanceled
+      type: object
+      properties:
+        orderPositionNumber:
+          minimum: 1
+          type: integer
+          description: Relative number of the order position within the order. Numbering
+            starts with 1
+          format: int32
+          example: 1
+        product:
+          $ref: '#/components/schemas/Product'
+        quantityCanceled:
+          minimum: 0
+          type: integer
+          description: Number of canceled products
+          format: int32
+          example: 0
+        confirmedDelivery:
+          $ref: '#/components/schemas/ConfirmedDelivery'
+        netPurchasePrice:
+          $ref: '#/components/schemas/NetPurchasePrice'
+        propertyGroups:
+          type: array
+          description: Properties of the order response position, grouped by a name
+          items:
+            $ref: '#/components/schemas/PropertyGroup'
+      description: 'List of order response positions. Note: The attribute orderPositionNumber
+        must be unique per response message.'
+    Return:
+      required:
+      - entryDate
+      - messageId
+      - positions
+      - reason
+      - shopOrderNumber
+      - supplierName
+      - supplierShopName
+      type: object
+      properties:
+        messageId:
+          type: string
+          description: Unique message ID
+          example: 906090-42
+        supplierName:
+          type: string
+          description: Name of the supplier
+          example: Demo-Supplier
+        supplierShopName:
+          type: string
+          description: Shop named by the supplier
+          example: Demo-Shop
+        shopOrderNumber:
+          maxLength: 50
+          minLength: 1
+          type: string
+          description: Order number as used by the shop
+          example: "78231.2018"
+        supplierOrderNumber:
+          maxLength: 250
+          minLength: 0
+          type: string
+          description: Order number as used by the supplier
+          example: DE398-8923#556
+        reason:
+          type: string
+          description: 'Reason of return. Note: Must refer to an entry of the "Supplier2ReturnReasonDefDO"
+            configuration or one of the IOM internal return reasons.'
+          example: RET010
+        entryDate:
+          type: string
+          description: 'Date of entrance of the return at the supplier. Note: Must
+            conform to the ISO 8601 format.'
+          format: date-time
+        positions:
+          maxItems: 2147483647
+          minItems: 1
+          type: array
+          description: 'List of return positions. Note: The attribute orderPositionNumber
+            must be unique per return message.'
+          items:
+            $ref: '#/components/schemas/ReturnPosition'
+        propertyGroups:
+          type: array
+          description: Properties of the return, grouped by a name
+          items:
+            $ref: '#/components/schemas/PropertyGroup'
+    ReturnItem:
+      required:
+      - serialNumber
+      type: object
+      properties:
+        serialNumber:
+          type: string
+          description: Serial number of the returned product
+          example: "109312"
+        propertyGroups:
+          type: array
+          description: Properties of the return item, grouped by a name
+          items:
+            $ref: '#/components/schemas/PropertyGroup'
+      description: There are further information for each single article. Note that
+        the number of articles will be the count of the listed articles
+    ReturnPosition:
+      required:
+      - product
+      - returnedQuantity
+      type: object
+      properties:
+        orderPositionNumber:
+          minimum: 1
+          type: integer
+          description: Relative number of the order position within the order. Numbering
+            starts with 1
+          format: int32
+          example: 1
+        returnedQuantity:
+          minimum: 1
+          type: integer
+          description: Number of returned products
+          format: int32
+          example: 1
+        product:
+          $ref: '#/components/schemas/Product'
+        items:
+          type: array
+          description: There are further information for each single article. Note
+            that the number of articles will be the count of the listed articles
+          items:
+            $ref: '#/components/schemas/ReturnItem'
+        propertyGroups:
+          type: array
+          description: Properties of the return position, grouped by a name
+          items:
+            $ref: '#/components/schemas/PropertyGroup'
+      description: 'List of return positions. Note: The attribute orderPositionNumber
+        must be unique per return message.'
+  securitySchemes:
+    basicAuth:
+      type: http
+      description: Basic Authentication
+      scheme: basic
+    bearerAuth:
+      type: http
+      description: JWT Bearer token
+      scheme: bearer
+      bearerFormat: JWT

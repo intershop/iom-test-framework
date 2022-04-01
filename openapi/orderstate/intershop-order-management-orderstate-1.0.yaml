@@ -1,0 +1,1361 @@
+openapi: 3.0.1
+info:
+  title: IOM Order State REST API
+  description: The IOM Order State REST API supports the obtaining of order details
+    and order status information.
+  contact:
+    name: Intershop Communications AG
+    url: http://intershop.com
+  version: "1.0"
+servers:
+  - url: "{protocol}://{domain}:{port}/rest/order-state"
+    variables:
+      protocol:
+        default: http
+        enum:
+          - http
+          - https
+      domain:
+        default: localhost
+      port:
+        default: "8080"
+security:
+  - basicAuth: []
+  - bearerAuth: []
+paths:
+  /states:
+    get:
+      tags:
+        - Order State Service
+      summary: Get orders states by search criteria
+      description: '`Deprecated for removal. Use the Order REST API instead.`<br>Obtain
+        the order states of the orders which are matching the given search criterias'
+      operationId: getOrderStatesBySortCriterias
+      parameters:
+        - name: shopId
+          in: query
+          description: 'The id of the IOM shop instance '
+          required: true
+          schema:
+            type: integer
+            format: int64
+          example: 200
+        - name: orderNumber
+          in: query
+          description: Order number as used by the shop
+          schema:
+            type: array
+            items:
+              type: string
+          example:
+            - 2019-17891
+            - 2019-21432
+        - name: customerNumber
+          in: query
+          description: Customer number as used by the shop
+          schema:
+            type: array
+            items:
+              type: string
+          example:
+            - CUST-930293
+            - "283102"
+        - name: productNumber
+          in: query
+          description: Product number as used by the shop
+          schema:
+            type: array
+            items:
+              type: string
+          example:
+            - 100120
+            - 200230
+        - name: orderState
+          in: query
+          description: "Order state as used by the shop if configured, otherweise the\
+          \ IOM internal names of order states"
+          schema:
+            type: array
+            items:
+              type: string
+          example: "[STATE_COMMISSIONED, STATE_DISPATCHED]"
+        - name: "orderCreationDate[gte]"
+          in: query
+          description: The earliest 'shop order creation date' of an order
+          schema:
+            type: string
+            format: date
+          example: 2019-01-31
+        - name: "orderCreationDate[lte]"
+          in: query
+          description: The latest 'shop order creation date' of an order
+          schema:
+            type: string
+            format: date
+          example: 2019-10-31
+        - name: orderBy
+          in: query
+          schema:
+            type: string
+            description: |-
+              The attribute on which should be sorted.
+               'ORDER_ID' - Sort by the id of the order.
+               'ORDER_NUMBER' - Sort by the shop order number.
+               'CUSTOMER_NUMBER' - Sort by the shop customer number.
+               'CREATION_DATE' - Sort by the shop order creation date.
+            example: ORDER_NUMBER
+            enum:
+              - ORDER_ID
+              - ORDER_NUMBER
+              - CUSTOMER_NUMBER
+              - CREATION_DATE
+        - name: sortDirection
+          in: query
+          schema:
+            type: string
+            description: |-
+              The sort direction the attribute should be sorted with.
+               'ASC' - Sort by the attribute ascending.
+               'DESC' - Sort by the attribute descending.
+            example: ASC
+            default: ASC
+            enum:
+              - ASC
+              - DESC
+        - name: offset
+          in: query
+          description: The starting row (index) of the first element to return
+          schema:
+            type: integer
+            format: int32
+            default: 0
+          example: 50
+        - name: limit
+          in: query
+          description: The number of items to return
+          schema:
+            type: integer
+            format: int32
+            default: 50
+          example: 25
+      responses:
+        "200":
+          description: OK
+          content:
+            application/vnd.intershop.order-state.v1+json:
+              schema:
+                $ref: '#/components/schemas/OrderStateReport'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorReport'
+        "401":
+          description: Authentication information is missing or invalid
+        "403":
+          description: Forbidden
+        "406":
+          description: Not Acceptable
+        "500":
+          description: An unexpected error occured
+      deprecated: true
+components:
+  schemas:
+    OrderStateAddress:
+      required:
+        - id
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Id of the address. This will be referenced in OrderStateOrderPostion
+            'shipToAddressId' and OrderStateOrder 'invoiceAddressId'
+          format: int64
+          example: 10496
+        type:
+          type: string
+      description: Order related address
+      oneOf:
+        - $ref: '#/components/schemas/OrderStatePostalAddress'
+        - $ref: '#/components/schemas/OrderStateImmaterialAddress'
+    OrderStateAddressLocation:
+      required:
+        - city
+        - country
+        - postCode
+      type: object
+      properties:
+        city:
+          type: string
+          description: City
+          example: Jena
+        postCode:
+          type: string
+          description: Postal code
+          example: "07740"
+        district:
+          type: string
+          description: District
+        country:
+          type: string
+          description: ISO 3166-1 alpha-3 country code
+          example: DEU
+        additions:
+          type: array
+          description: Additions to address
+          items:
+            type: string
+            description: Additions to address
+      description: Location of the address
+    OrderStateAddressReceiver:
+      type: object
+      description: A receiver can be a natural person or a company
+      oneOf:
+        - $ref: '#/components/schemas/OrderStateAddressReceiverPerson'
+        - $ref: '#/components/schemas/OrderStateAddressReceiverCompany'
+    OrderStateAddressReceiverCompany:
+      required:
+        - companyName
+      type: object
+      properties:
+        companyName:
+          type: string
+          description: Name of the company
+          example: Intershop Communications AG
+        contactPerson:
+          $ref: '#/components/schemas/OrderStatePerson'
+    OrderStateAddressReceiverPerson:
+      required:
+        - person
+      type: object
+      properties:
+        person:
+          $ref: '#/components/schemas/OrderStatePerson'
+      description: A private person
+    OrderStateCompanyCustomer:
+      required:
+        - companyName
+      type: object
+      properties:
+        contact:
+          $ref: '#/components/schemas/OrderStateContact'
+        orderNumber:
+          type: string
+          description: Order number as used by the shop customer
+          example: BST:09037
+        companyName:
+          type: string
+          description: Name of the company
+          example: Intershop Communications AG
+        department:
+          type: string
+          description: Order by department
+          example: Marketing
+        lineOfBusiness:
+          type: string
+          description: Area of business
+          example: Automotive
+        costCenterNumber:
+          type: string
+          description: Cost center number
+          example: "527411"
+        commercialRegisterNumber:
+          type: string
+          description: Commercial register number
+          example: HRB 209419
+        commercialRegisterLocation:
+          type: string
+          description: Location of Commercial register
+          example: Amtsgericht Jena
+        companyType:
+          type: string
+          description: Corporate form
+          example: AG
+        vatNumber:
+          type: string
+          description: Tax identification number
+          example: DE 812464534
+        contactPerson:
+          $ref: '#/components/schemas/OrderStateCustomerContactPerson'
+        type:
+          type: string
+          enum:
+            - PERSON
+            - COMPANY
+      description: A company with a contact person is customer of the order
+    OrderStateContact:
+      required:
+        - email
+      type: object
+      properties:
+        email:
+          type: string
+          description: Email address
+        telephone:
+          type: string
+          description: Phone number
+        mobile:
+          type: string
+          description: Mobile phone number
+        fax:
+          type: string
+          description: Fax number
+      description: Contact information
+    OrderStateCustomer:
+      type: object
+      properties:
+        contact:
+          $ref: '#/components/schemas/OrderStateContact'
+        orderNumber:
+          type: string
+          description: Order number as used by the shop customer
+          example: BST:09037
+        type:
+          type: string
+          enum:
+            - PERSON
+            - COMPANY
+      description: Information about the customer of the order. A customer can be
+        a person or a company with a contact person.
+      oneOf:
+        - $ref: '#/components/schemas/OrderStatePersonCustomer'
+        - $ref: '#/components/schemas/OrderStateCompanyCustomer'
+    OrderStateCustomerContactPerson:
+      required:
+        - lastName
+      type: object
+      properties:
+        salutation:
+          type: string
+          description: Salutation
+          example: Mr
+        title:
+          type: string
+          description: Title
+          example: Dr.
+        firstName:
+          type: string
+          description: First name
+          example: Fred
+        lastName:
+          type: string
+          description: Last name
+          example: Müller
+      description: Contact person
+    OrderStateDocument:
+      required:
+        - downloadLink
+        - type
+      type: object
+      properties:
+        type:
+          type: string
+          description: The type / kind of the document
+          example: invoiceNote
+        downloadLink:
+          type: string
+          description: The URI to get the document
+          format: uri
+          example: http://localhost:8080/servlets/DocumentServlet/v1.0/invoiceNote/InvoiceNote.pdf?k=10218224f70ffdbdfd5d18603ce53424788fe859425056b7e9e058bd94c2410e2e05c43f847fa2dc9cb1fabbc5ae1a899e1f5ec9c93422aa529ecfda79171ed92626c&i=10218&s=200"
+        creationDate:
+          type: string
+          description: "Document creation date. Note: Conform to the ISO 8601 format."
+          format: date-time
+          example: 2018-12-24T16:22:32.123+02:00
+        mimeType:
+          type: string
+          description: The MIME-type of the document
+          example: application/pdf
+      description: A download link of an order related document
+    OrderStateImmaterialAddress:
+      required:
+        - id
+        - kind
+        - value
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Id of the address. This will be referenced in OrderStateOrderPostion
+            'shipToAddressId' and OrderStateOrder 'invoiceAddressId'
+          format: int64
+          example: 10496
+        type:
+          type: string
+          description: "Type of address - shop-specific name if configured, otherwise\
+            \ the IOM internal name of the address type 'IMMATERIAL'"
+          example: IMMATERIAL
+        value:
+          type: string
+        kind:
+          type: string
+          description: Kind of the immaterial address - delivery via email or mobile
+            / cell phone
+          example: EMAIL
+          default: EMAIL
+          enum:
+            - EMAIL
+            - MOBILE
+            - OTHER
+      description: Information about the digital / non-physical shippings
+    OrderStateOrder:
+      required:
+        - customer
+        - positions
+        - shop
+        - state
+      type: object
+      properties:
+        state:
+          type: string
+          description: "State of the order - shop-specific name if configured, otherwise\
+            \ the IOM internal name of the state"
+          example: STATE_DISPATCHED
+        invoiceAddressId:
+          type: integer
+          description: Id of the invoice / billing address. This references the id
+            of an OrderStateAddress at addresses
+          format: int64
+        shop:
+          $ref: '#/components/schemas/OrderStateShop'
+        customer:
+          $ref: '#/components/schemas/OrderStateCustomer'
+        sales:
+          $ref: '#/components/schemas/OrderStateSales'
+        positions:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderStateOrderPostion'
+        notes:
+          type: array
+          description: Notes regarding the order
+          items:
+            $ref: '#/components/schemas/OrderStateOrderNote'
+        payment:
+          $ref: '#/components/schemas/OrderStatePayment'
+        documents:
+          type: array
+          description: The order related documents as download links
+          items:
+            $ref: '#/components/schemas/OrderStateDocument'
+        properties:
+          type: array
+          description: Additional attributes / properties of the order
+          items:
+            $ref: '#/components/schemas/OrderStatePropertyGroup'
+        addresses:
+          type: array
+          description: Order related addresses
+          items:
+            $ref: '#/components/schemas/OrderStateAddress'
+      description: Information about the order
+    OrderStateOrderNote:
+      required:
+        - message
+      type: object
+      properties:
+        message:
+          type: string
+          description: Content of the note
+          example: Unsatisfied customer
+        type:
+          type: string
+          description: "Type of note - shop-specific name if configured, otherwise\
+            \ the IOM internal name of the order node"
+          example: ESCALATION
+        creationDate:
+          type: string
+          description: Creation date of the note
+          format: date-time
+          example: 2019-10-28T09:22:44.838+02:00
+      description: Order note
+    OrderStateOrderPositionConfirmed:
+      required:
+        - confirmationDate
+        - type
+      type: object
+      properties:
+        type:
+          type: string
+          description: "Type of confirmation of supplier - shop-specific name if configured,\
+            \ otherwise the IOM internal name of the response state"
+        confirmationDate:
+          type: string
+          description: Date of confirmation of supplier
+          format: date-time
+        quantities:
+          type: array
+          description: Confirmed quantities
+          items:
+            $ref: '#/components/schemas/OrderStateOrderPositionConfirmedQuantity'
+        cancelled:
+          type: array
+          description: Product(s) not available - already cancelled or recalled
+          items:
+            $ref: '#/components/schemas/OrderStateOrderPositionConfirmedCancelled'
+      description: Confirmed / available products of an order position
+    OrderStateOrderPositionConfirmedCancelled:
+      required:
+        - quantity
+      type: object
+      properties:
+        quantity:
+          type: integer
+          description: Cancelled quantity
+          format: int32
+          example: 1
+        cancelDate:
+          type: string
+          description: Date of cancellation / recall
+          format: date-time
+        reason:
+          $ref: '#/components/schemas/OrderStateOrderPositionConfirmedCancelledReason'
+      description: Confirmed cancelled products / products not available
+    OrderStateOrderPositionConfirmedCancelledReason:
+      required:
+        - id
+      type: object
+      properties:
+        id:
+          type: string
+          description: Code of reason of cancellation / recall
+          example: RCL021
+        value:
+          type: string
+          description: Reason of cancellation / recall (free text)
+      description: Cancellation reason
+    OrderStateOrderPositionConfirmedQuantity:
+      required:
+        - value
+      type: object
+      properties:
+        value:
+          type: integer
+          description: Quantity related to the planned delivery date
+          format: int32
+          example: 1
+        plannedDeliveryDate:
+          type: string
+          description: Planned delivery date
+          format: date
+      description: Confirmed quantity related to 'plannedDeliveryDate' of available
+        products
+    OrderStateOrderPositionDispatched:
+      required:
+        - dispatchDate
+        - quantity
+      type: object
+      properties:
+        quantity:
+          type: integer
+          description: Dispatched quantity
+          format: int32
+          example: 1
+        deliveryNoteNumber:
+          type: string
+          description: Delivery note number
+          example: 980392-481
+        dispatchDate:
+          type: string
+          description: Timestamp of the hand over of the package to the carrier
+          format: date-time
+        carrier:
+          $ref: '#/components/schemas/OrderStateOrderPositionDispatchedCarrier'
+        units:
+          type: array
+          description: There are further information for each single product
+          items:
+            $ref: '#/components/schemas/OrderStateOrderPositionDispatchedUnit'
+      description: Already shipped / delivered products of an order position
+    OrderStateOrderPositionDispatchedCarrier:
+      required:
+        - name
+        - packages
+      type: object
+      properties:
+        name:
+          type: string
+          description: Shop-specific name of the carrier
+          example: DHL
+        packages:
+          type: integer
+          description: Number of packages
+          format: int32
+          example: 1
+        shipmentTracking:
+          $ref: '#/components/schemas/OrderStateOrderPositionDispatchedCarrierTracking'
+      description: Carrier of the shipment
+    OrderStateOrderPositionDispatchedCarrierTracking:
+      required:
+        - number
+      type: object
+      properties:
+        number:
+          type: string
+          description: Tracking number of the package
+          example: 929-912-03013
+        url:
+          type: string
+          description: Tracking URL
+          format: uri
+      description: Tracking information of the shipment
+    OrderStateOrderPositionDispatchedUnit:
+      required:
+        - serialNumber
+      type: object
+      properties:
+        serialNumber:
+          type: string
+          description: Serial number of the product
+          example: "89712007"
+      description: Further information (serial number) for each single product
+    OrderStateOrderPositionOrdered:
+      required:
+        - delivery
+        - deliveryDays
+        - quantity
+      type: object
+      properties:
+        quantity:
+          type: integer
+          description: Ordered quantity
+          example: 1
+        deliveryDays:
+          type: integer
+          description: Expected availability of ordered product in days
+          example: 0
+        sales:
+          $ref: '#/components/schemas/OrderStateOrderPositionPrice'
+        delivery:
+          $ref: '#/components/schemas/OrderStateOrderPositionOrderedDelivery'
+        deliveryOptions:
+          type: array
+          description: "Extra delivery conditions - shop-specific name if configured,\
+            \ otherwise the IOM internal name"
+          example: Delivery on same day
+          items:
+            type: string
+            description: "Extra delivery conditions - shop-specific name if configured,\
+              \ otherwise the IOM internal name"
+            example: Delivery on same day
+      description: Ordered details of an order position
+    OrderStateOrderPositionOrderedDelivery:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - STANDARD
+            - FIXED_DELIVERY_DATE
+            - EARLIEST_DELIVERY_DATE
+            - EXPRESS
+      description: Kind of delivery
+      oneOf:
+        - $ref: '#/components/schemas/OrderStateOrderPositionOrderedStandardDelivery'
+        - $ref: '#/components/schemas/OrderStateOrderPositionOrderedFixedDeliveryDateDelivery'
+        - $ref: '#/components/schemas/OrderStateOrderPositionOrderedEarliestDeliveryDateDelivery'
+        - $ref: '#/components/schemas/OrderStateOrderPositionOrderedExpressDelivery'
+    OrderStateOrderPositionOrderedEarliestDeliveryDateDelivery:
+      required:
+        - earliestDeliveryDate
+      type: object
+      properties:
+        earliestDeliveryDate:
+          type: string
+          description: Earliest date of delivery
+          format: date
+          example: 2019-12-23
+        type:
+          type: string
+          enum:
+            - STANDARD
+            - FIXED_DELIVERY_DATE
+            - EARLIEST_DELIVERY_DATE
+            - EXPRESS
+      description: Earliest date of delivery
+    OrderStateOrderPositionOrderedExpressDelivery:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - STANDARD
+            - FIXED_DELIVERY_DATE
+            - EARLIEST_DELIVERY_DATE
+            - EXPRESS
+      description: Express delivery
+    OrderStateOrderPositionOrderedFixedDeliveryDateDelivery:
+      required:
+        - fixedDeliveryDate
+      type: object
+      properties:
+        fixedDeliveryDate:
+          type: string
+          description: Date of delivery
+          format: date
+          example: 2020-01-10
+        type:
+          type: string
+          enum:
+            - STANDARD
+            - FIXED_DELIVERY_DATE
+            - EARLIEST_DELIVERY_DATE
+            - EXPRESS
+      description: Delivery on a fixed date
+    OrderStateOrderPositionOrderedStandardDelivery:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - STANDARD
+            - FIXED_DELIVERY_DATE
+            - EARLIEST_DELIVERY_DATE
+            - EXPRESS
+      description: Delivery always according to standard of the carrier
+    OrderStateOrderPositionPrice:
+      required:
+        - sum
+        - unit
+      type: object
+      properties:
+        sum:
+          $ref: '#/components/schemas/OrderStateOrderPositionPricePosPrice'
+        unit:
+          $ref: '#/components/schemas/OrderStateOrderPositionPricePosPrice'
+      description: Order position price
+    OrderStateOrderPositionPricePosPrice:
+      type: object
+      properties:
+        netAmount:
+          type: number
+          description: Net price
+          example: 10.2
+        grossAmount:
+          type: number
+          description: Gross price including VAT (value added tax)
+          example: 12.99
+        tax:
+          $ref: '#/components/schemas/OrderStateTax'
+      description: Price detailed
+    OrderStateOrderPositionReturned:
+      required:
+        - state
+      type: object
+      properties:
+        state:
+          type: string
+          description: "State of the return - shop-specific name if configured, otherwise\
+            \ the IOM internal name of the return state"
+          example: CLOSED
+        supplierEntryDate:
+          type: string
+          description: Timestamp of the entry of the return at the supplier
+          format: date-time
+      description: Information about returned products
+      oneOf:
+        - $ref: '#/components/schemas/OrderStateOrderPositionReturnedQuantities'
+        - $ref: '#/components/schemas/OrderStateOrderPositionReturnedUnits'
+    OrderStateOrderPositionReturnedQuantities:
+      required:
+        - quantity
+        - state
+      type: object
+      properties:
+        state:
+          type: string
+          description: "State of the return - shop-specific name if configured, otherwise\
+            \ the IOM internal name of the return state"
+          example: CLOSED
+        supplierEntryDate:
+          type: string
+          description: Timestamp of the entry of the return at the supplier
+          format: date-time
+        quantity:
+          type: integer
+          description: Number of returned products of the related order position
+          format: int32
+          example: 2
+        returnReason:
+          $ref: '#/components/schemas/OrderStateOrderPositionReturnedReason'
+        payment:
+          $ref: '#/components/schemas/OrderStateOrderPositionReturnedReturnPayment'
+      description: Combined / quantity based return informationen of an order position
+    OrderStateOrderPositionReturnedReason:
+      required:
+        - type
+        - value
+      type: object
+      properties:
+        value:
+          type: string
+          description: "The return reason - shop-specific name if configured, otherwise\
+            \ the IOM internal name of the return reason"
+          example: RET990
+        type:
+          type: string
+          description: "The return type of the reason - shop-specific name if configured,\
+            \ otherwise the IOM internal name of the return type"
+          example: RET
+      description: Return reason
+    OrderStateOrderPositionReturnedReturnPayment:
+      required:
+        - reduction
+        - refundNet
+      type: object
+      properties:
+        reduction:
+          $ref: '#/components/schemas/OrderStateOrderPositionReturnedReturnPaymentReduction'
+        refundNet:
+          type: number
+          description: Net amount of refund
+          example: 12.87
+      description: Return payment
+    OrderStateOrderPositionReturnedReturnPaymentReduction:
+      required:
+        - reduceReason
+        - reduceText
+      type: object
+      properties:
+        reduceText:
+          type: string
+          description: Reduction reason (from supplier) as text
+        reduceReason:
+          type: string
+          description: Name of reduction class as used by the shop
+          example: AK-0
+      description: Reason / class for price reduction
+    OrderStateOrderPositionReturnedUnits:
+      required:
+        - state
+        - units
+      type: object
+      properties:
+        state:
+          type: string
+          description: "State of the return - shop-specific name if configured, otherwise\
+            \ the IOM internal name of the return state"
+          example: CLOSED
+        supplierEntryDate:
+          type: string
+          description: Timestamp of the entry of the return at the supplier
+          format: date-time
+        units:
+          type: array
+          description: Information about return of individual products
+          items:
+            $ref: '#/components/schemas/OrderStateOrderPositionReturnedUnitsUnit'
+      description: Unit /separately based return informationen of an order position
+    OrderStateOrderPositionReturnedUnitsUnit:
+      required:
+        - serialNumber
+      type: object
+      properties:
+        serialNumber:
+          type: string
+          description: Serial number of single item / product
+          example: 9834JJ-43
+        returnReason:
+          $ref: '#/components/schemas/OrderStateOrderPositionReturnedReason'
+        payment:
+          $ref: '#/components/schemas/OrderStateOrderPositionReturnedReturnPayment'
+      description: Return information for a single product
+    OrderStateOrderPostion:
+      required:
+        - number
+        - product
+        - state
+      type: object
+      properties:
+        number:
+          type: string
+          description: Order position number as used by the shop
+          example: "1"
+        state:
+          type: string
+          description: "State of order position - shop-specific name if configured,\
+            \ otherwise the IOM internal name of the state"
+          example: STATE_DO_APPROVE
+        shipToAddressId:
+          type: integer
+          description: Id of the shipping address. This references the id of an OrderStateAddress
+            at addresses
+          format: int64
+          example: 10497
+        product:
+          $ref: '#/components/schemas/OrderStateOrderPostionProduct'
+        supplier:
+          $ref: '#/components/schemas/OrderStateOrderPostionSupplier'
+        ordered:
+          $ref: '#/components/schemas/OrderStateOrderPositionOrdered'
+        confirmed:
+          $ref: '#/components/schemas/OrderStateOrderPositionConfirmed'
+        dispatched:
+          type: array
+          description: Information about delivered products
+          items:
+            $ref: '#/components/schemas/OrderStateOrderPositionDispatched'
+        returned:
+          type: array
+          description: Information about returned products
+          items:
+            $ref: '#/components/schemas/OrderStateOrderPositionReturned'
+        properties:
+          type: array
+          description: Additional attributes / properties of the order position
+          items:
+            $ref: '#/components/schemas/OrderStatePropertyGroup'
+      description: Order position / line item
+    OrderStateOrderPostionProduct:
+      required:
+        - name
+        - productNumber
+      type: object
+      properties:
+        name:
+          type: string
+          description: Short name of the product
+          example: Demo Product
+        productNumber:
+          type: string
+          description: "Shop specific product number, if not available the the IOM\
+            \ internal product number"
+          example: 100-0001
+        ean:
+          type: string
+          description: International Article Number (also known as European Article
+            Number or EAN)
+          example: "9783161484100"
+        isbn:
+          type: string
+          description: International Standard Book Number
+          example: 978-3-16-148410-0
+        supplierProductNumber:
+          type: string
+          description: Product number as used by the supplier
+          example: 902312a
+      description: Product information of an order position / line item
+    OrderStateOrderPostionSupplier:
+      required:
+        - name
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the supplier as used by the shop
+          example: Demo Supplier US
+        commissionDate:
+          type: string
+          description: Timestamp indicating when the order position was commissioned
+            to the supplier
+          format: date-time
+          example: 2019-05-28T14:36:17.158+02:00
+      description: Supplier specific information of the order position
+    OrderStatePayment:
+      type: object
+      properties:
+        paymentStatus:
+          $ref: '#/components/schemas/OrderStatePaymentStatus'
+        paymentHistory:
+          type: array
+          description: Payment history
+          items:
+            $ref: '#/components/schemas/OrderStatePaymentHistoryItem'
+      description: Payment status and history information of an order
+    OrderStatePaymentHistoryItem:
+      required:
+        - action
+        - amount
+        - creationDate
+        - currency
+        - modificationDate
+        - paymentMethod
+        - type
+      type: object
+      properties:
+        currency:
+          type: string
+          description: Currency - ISO 4217 code
+          example: EUR
+        comment:
+          type: string
+          description: Payment comment
+        type:
+          type: string
+          description: "Payment notification type: inbound, outbound, action"
+          example: inbound
+        action:
+          type: string
+          description: "Payment action: authorization, reverse, capture, refund"
+          example: capture
+        paymentMethod:
+          type: string
+          description: "Payment method - shop-specific name if configured, otherwise\
+            \ the IOM internal name of the payment"
+          example: CREDITCARD
+        invoiceNumber:
+          type: string
+          description: "Invoice number, if the item relates to an invoice"
+        creationDate:
+          type: string
+          description: Payment notification creation date
+          format: date-time
+          example: 2019-12-28T19:46:49.838+02:00
+        modificationDate:
+          type: string
+          description: Payment notification modification date
+          format: date-time
+          example: 2019-12-28T19:46:49.838+02:00
+        amount:
+          type: number
+          description: Amount
+          example: 109.78
+      description: Payment history item of an order
+    OrderStatePaymentStatus:
+      required:
+        - bookedCreditAmount
+        - bookedDebitAmount
+        - bookedOpenAmount
+        - chargedCreditAmount
+        - chargedDebitAmount
+        - chargedOpenAmount
+        - creationDate
+        - currency
+        - invoicingCreditAmount
+        - invoicingDebitAmount
+        - lastCalculationDate
+      type: object
+      properties:
+        invoicingDebitAmount:
+          type: number
+          description: Amount of all invoices for this order
+        invoicingCreditAmount:
+          type: number
+          description: Amount of all credit notes for this order
+        chargedDebitAmount:
+          type: number
+          description: Amount of all captured amounts for this order
+        chargedCreditAmount:
+          type: number
+          description: Amount of all refunded amounts for this order
+        chargedOpenAmount:
+          type: number
+          description: "Positive amount: amount of open refunds - Negative amount:\
+            \ amount of open captures"
+        bookedDebitAmount:
+          type: number
+          description: Amount of all inbound payments for this order
+        bookedCreditAmount:
+          type: number
+          description: Amount of all outbound payments for this order
+        bookedOpenAmount:
+          type: number
+          description: "Positive amount: amount of open outbound payments - Negative\
+            \ amount: amount of open inbound payments"
+        creationDate:
+          type: string
+          description: Creation date of the payment status
+          format: date-time
+          example: 2019-12-28T19:46:49.838+02:00
+        lastCaptureDate:
+          type: string
+          description: Date of the last payment capture
+          format: date-time
+          example: 2019-12-10T22:16:23.838+02:00
+        lastRefundDate:
+          type: string
+          description: Date of the last refund
+          format: date-time
+          example: 2019-12-28T19:46:49.838+02:00
+        lastCalculationDate:
+          type: string
+          description: Date of last calculation of the payment status
+          format: date-time
+          example: 2019-11-28T19:46:49.838+02:00
+        currency:
+          type: string
+          description: Currency of balance amounts - ISO 4217 code
+          example: EUR
+      description: Payment status of an order
+    OrderStatePerson:
+      required:
+        - lastName
+      type: object
+      properties:
+        salutation:
+          type: string
+          description: Salutation
+          example: Mr
+        title:
+          type: string
+          description: Title
+          example: Dr.
+        firstName:
+          type: string
+          description: First name
+          example: Fred
+        lastName:
+          type: string
+          description: Last name
+          example: Müller
+      description: Information about a person
+    OrderStatePersonCustomer:
+      required:
+        - lastName
+      type: object
+      properties:
+        contact:
+          $ref: '#/components/schemas/OrderStateContact'
+        orderNumber:
+          type: string
+          description: Order number as used by the shop customer
+          example: BST:09037
+        salutation:
+          type: string
+          description: Salutation
+          example: Mr
+        title:
+          type: string
+          description: Title
+          example: Prof.
+        firstName:
+          type: string
+          description: First name
+          example: Max
+        lastName:
+          type: string
+          description: Last name
+          example: Meyer
+        type:
+          type: string
+          enum:
+            - PERSON
+            - COMPANY
+      description: A person is customer of the order
+    OrderStatePostalAddress:
+      required:
+        - id
+        - location
+        - receiver
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Id of the address. This will be referenced in OrderStateOrderPostion
+            'shipToAddressId' and OrderStateOrder 'invoiceAddressId'
+          format: int64
+          example: 10496
+        type:
+          type: string
+          description: "Type of address - shop-specific name if configured, otherwise\
+            \ the IOM internal name of the address type. Note: A BILLING address can\
+            \ also be used as SHIPPING address."
+          example: BILLING
+        contact:
+          $ref: '#/components/schemas/OrderStateContact'
+        location:
+          $ref: '#/components/schemas/OrderStateAddressLocation'
+        receiver:
+          $ref: '#/components/schemas/OrderStateAddressReceiver'
+      description: Postal address
+    OrderStateProperty:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Key of the property
+        value:
+          type: string
+          description: Value of the property
+      description: Property as key-value pair
+    OrderStatePropertyGroup:
+      required:
+        - id
+      type: object
+      properties:
+        id:
+          type: string
+          description: Identifier of the property group
+          example: Customer-Information
+        properties:
+          type: array
+          description: A list of properties / key-value pairs
+          items:
+            $ref: '#/components/schemas/OrderStateProperty'
+      description: Additional attributes / properties
+    OrderStateReport:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderStateOrder'
+        meta:
+          type: object
+          additionalProperties:
+            type: string
+            description: Meta-information e.g. 'totalCount'
+          description: Meta-information e.g. 'totalCount'
+        links:
+          type: object
+          additionalProperties:
+            type: string
+            description: Link section
+            format: uri
+          description: Link section
+      description: Order state report - the response object
+    OrderStateSales:
+      type: object
+      properties:
+        paymanetMethod:
+          type: string
+          description: "Payment method of the order - shop-specific name if configured,\
+            \ otherwise the IOM internal name of the payment"
+          example: CREDITCARD
+        currency:
+          type: string
+          description: Currency of the order - ISO 4217 code
+          example: EUR
+        sum:
+          $ref: '#/components/schemas/OrderStateSumPrice'
+        total:
+          $ref: '#/components/schemas/OrderStateSumPrice'
+        charges:
+          type: array
+          description: Charges / fees including delivery etc.
+          items:
+            $ref: '#/components/schemas/OrderStateSalesCharge'
+      description: Sales prices of an order
+    OrderStateSalesCharge:
+      required:
+        - type
+      type: object
+      properties:
+        type:
+          type: string
+          description: "Type of charge / fee - shop-specific name if configured, otherwise\
+            \ the IOM internal name of the charge type"
+          example: DELIVERYCHARGE
+        tax:
+          $ref: '#/components/schemas/OrderStateTax'
+        netAmount:
+          type: number
+          description: Net amount
+          example: 5.0
+        grossAmount:
+          type: number
+          description: Gross amount
+          example: 6.7
+      description: Charge of an order
+    OrderStateShop:
+      required:
+        - name
+        - orderCreationDate
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of shop / channel
+          example: Demo-Shop
+        orderCreationDate:
+          type: string
+          description: "Order creation date at the shop system. Note: Conform to the\
+            \ ISO 8601 format."
+          format: date-time
+          example: 2019-09-14T16:22:32.123+02:00
+        orderNumber:
+          type: string
+          description: Order number as used by the shop
+          example: 2019-089013
+        customerNumber:
+          type: string
+          description: Customer number as used by the shop
+          example: CUST-0815
+        companyNumber:
+          type: string
+          description: Company number as used by the shop. The company will be the
+            receiver of the order.
+          example: CP7411
+        invoiceNumbers:
+          type: array
+          description: Invoice numbers belonging to the order
+          example: 2716000126
+          items:
+            type: string
+            description: Invoice numbers belonging to the order
+            example: "2716000126"
+      description: Shop related information of an order
+    OrderStateSumPrice:
+      type: object
+      properties:
+        netAmount:
+          type: number
+          description: Net amount
+          example: 42.1
+        grossAmount:
+          type: number
+          description: Gross amount
+          example: 47.6
+        tax:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderStateTax'
+      description: Sum of prices
+    OrderStateTax:
+      required:
+        - amount
+        - type
+      type: object
+      properties:
+        type:
+          type: string
+          description: "Type of tax - shop-specific name if configured, otherwise\
+            \ the IOM internal name of the tax type"
+          example: FullTax
+        amount:
+          type: number
+          description: Tax amount
+          example: 1.7
+      description: VAT (value added tax) by type of VAT
+    Error:
+      required:
+        - code
+        - message
+      type: object
+      properties:
+        code:
+          type: string
+          description: Exception / Error code
+          example: VALIDATION_EXCEPTION
+        message:
+          type: string
+          description: Exception / Error message
+          example: Attribute XYZ is mandatory
+        value:
+          type: object
+          description: Value which caused the exception / error
+    ErrorReport:
+      type: object
+      properties:
+        status:
+          type: integer
+          description: "The HTTP status code applicable to this problem, expressed\
+            \ as a string value"
+          format: int32
+          example: 400
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+      description: Detailed information about what went wrong
+  securitySchemes:
+    basicAuth:
+      type: http
+      description: Basic Authentication
+      scheme: basic
+    bearerAuth:
+      type: http
+      description: JWT Bearer token
+      scheme: bearer
+      bearerFormat: JWT

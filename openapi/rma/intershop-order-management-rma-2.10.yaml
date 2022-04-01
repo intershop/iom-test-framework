@@ -1,0 +1,1207 @@
+openapi: 3.0.1
+info:
+  title: IOM RMA REST API
+  description: The IOM RMA REST API supports programmatic access to objects related
+    to the Return Merchandise Authorization process.
+  contact:
+    name: Intershop Communications AG
+    url: http://intershop.com
+  version: "2.10"
+servers:
+- url: '{protocol}://{domain}:{port}/rest/rma'
+  variables:
+    protocol:
+      default: http
+      enum:
+      - http
+      - https
+    domain:
+      default: localhost
+    port:
+      default: "8080"
+security:
+- basicAuth: []
+- bearerAuth: []
+tags:
+- name: shop
+  description: API endpoints, that could be used by the shop.
+paths:
+  /shops/{shopName}/return-reasons:
+    get:
+      tags:
+      - shop
+      summary: List the configured return reasons for a given shop
+      description: Returns a list of return reasons configured for a given shop.
+      operationId: getShop2ReturnReasons
+      parameters:
+      - name: shopName
+        in: path
+        description: The shop name
+        required: true
+        schema:
+          type: string
+      - name: type
+        in: query
+        description: Filter the return reasons by name of 1..n return types
+        schema:
+          type: array
+          items:
+            type: string
+        example: RET
+      responses:
+        200:
+          description: OK
+          content:
+            application/vnd.intershop.return-request.v1+json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ShopReturnReason'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorReport'
+        401:
+          description: Authentication information is missing or invalid
+        403:
+          description: Forbidden
+        404:
+          description: Not Found
+  /shops/{shopName}/orders/{shopOrderNumber}/return-requests/{returnRequestId}/approvals:
+    post:
+      tags:
+      - shop
+      summary: Create an approval
+      description: Creates a new approval
+      operationId: createApproval
+      parameters:
+      - name: returnRequestId
+        in: path
+        description: The return request id of the related order
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: shopOrderNumber
+        in: path
+        description: The order number of the shop
+        required: true
+        schema:
+          type: string
+      - name: shopName
+        in: path
+        description: The shop name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/vnd.intershop.approval.v1+json:
+            schema:
+              $ref: '#/components/schemas/WriteApproval'
+        required: true
+      responses:
+        201:
+          description: Created
+          headers:
+            Location:
+              description: The path to the newly created resource
+              style: simple
+              schema:
+                type: string
+                format: url
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorReport'
+        401:
+          description: Authentication information is missing or invalid
+        403:
+          description: Forbidden
+        415:
+          description: Unsupported Media Type
+        500:
+          description: An unexpected error occured
+  /shops/{shopName}/orders/{shopOrderNumber}/return-requests/{returnRequestId}/contact-persons:
+    get:
+      tags:
+      - shop
+      summary: List the return request contact persons
+      description: Returns a list of return request contact persons for a given returnRequestId,
+        shopName and shopOrderNumber.
+      operationId: getContactPersons
+      parameters:
+      - name: returnRequestId
+        in: path
+        description: The return request id of the related order
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: shopOrderNumber
+        in: path
+        description: The order number of the shop
+        required: true
+        schema:
+          type: string
+      - name: shopName
+        in: path
+        description: The shop name
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/vnd.intershop.contact-person.v1+json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ContactPerson'
+        401:
+          description: Authentication information is missing or invalid
+        403:
+          description: Forbidden
+        404:
+          description: Not Found
+        406:
+          description: Not Acceptable
+  /shops/{shopName}/orders/{shopOrderNumber}/return-requests/{returnRequestId}:
+    get:
+      tags:
+      - shop
+      summary: Get a return request
+      description: Returns a return request for a given shopName, shopOrderNumber
+        and returnRequestId.
+      operationId: getReturnRequest
+      parameters:
+      - name: returnRequestId
+        in: path
+        description: The return request id of the related order
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: shopOrderNumber
+        in: path
+        description: The order number of the shop
+        required: true
+        schema:
+          type: string
+      - name: shopName
+        in: path
+        description: The shop name
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/vnd.intershop.return-request.v1+json:
+              schema:
+                $ref: '#/components/schemas/ReadReturnRequest'
+        401:
+          description: Authentication information is missing or invalid
+        403:
+          description: Forbidden
+        404:
+          description: Not Found
+        406:
+          description: Not Acceptable
+  /shops/{shopName}/orders/{shopOrderNumber}/return-requests/returnables:
+    get:
+      tags:
+      - shop
+      summary: List the returnable order positions to prepare the creation of a return
+        request
+      description: Returns a list of returnable order positions. Get the necessary
+        data to enable a client a prepare the creation of a return request.
+      operationId: getReturnableData
+      parameters:
+      - name: shopOrderNumber
+        in: path
+        description: The order number of the shop
+        required: true
+        schema:
+          type: string
+      - name: shopName
+        in: path
+        description: The shop name
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/vnd.intershop.return-request.v1+json:
+              schema:
+                $ref: '#/components/schemas/ReturnableData'
+        401:
+          description: Authentication information is missing or invalid
+        403:
+          description: Forbidden
+        404:
+          description: Not Found
+        406:
+          description: Not Acceptable
+  /shops/{shopName}/orders/{shopOrderNumber}/return-requests:
+    get:
+      tags:
+      - shop
+      summary: List the return requests
+      description: Returns a list of return requests for a given shopName and shopOrderNumber.
+      operationId: getReturnRequests
+      parameters:
+      - name: shopOrderNumber
+        in: path
+        description: The order number of the shop
+        required: true
+        schema:
+          type: string
+      - name: shopName
+        in: path
+        description: The shop name
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/vnd.intershop.return-request.v1+json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReadReturnRequest'
+        401:
+          description: Authentication information is missing or invalid
+        403:
+          description: Forbidden
+        404:
+          description: Not Found
+        406:
+          description: Not Acceptable
+    post:
+      tags:
+      - shop
+      summary: Create a return request
+      description: Creates a new return request
+      operationId: createReturnRequest
+      parameters:
+      - name: shopOrderNumber
+        in: path
+        description: The order number of the shop
+        required: true
+        schema:
+          type: string
+      - name: shopName
+        in: path
+        description: The shop name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/vnd.intershop.return-request.v1+json:
+            schema:
+              $ref: '#/components/schemas/WriteReturnRequest'
+        required: true
+      responses:
+        201:
+          description: Created
+          headers:
+            Location:
+              description: The path to the newly created resource
+              style: simple
+              schema:
+                type: string
+                format: url
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorReport'
+        401:
+          description: Authentication information is missing or invalid
+        403:
+          description: Forbidden
+        415:
+          description: Unsupported Media Type
+        500:
+          description: An unexpected error occured
+  /shops/{shopName}/orders/{shopOrderNumber}/return-requests/{returnRequestId}/pickup-addresses:
+    get:
+      tags:
+      - shop
+      summary: List the return request pickup addresses
+      description: Returns a list of return request pickup addresses for a given returnRequestId,
+        shopName and shopOrderNumber.
+      operationId: getReturnRequestPickupAddresses
+      parameters:
+      - name: returnRequestId
+        in: path
+        description: The return request id of the related order
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: shopOrderNumber
+        in: path
+        description: The order number of the shop
+        required: true
+        schema:
+          type: string
+      - name: shopName
+        in: path
+        description: The shop name
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/vnd.intershop.pickup-address.v1+json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReadPickupAddress'
+        401:
+          description: Authentication information is missing or invalid
+        403:
+          description: Forbidden
+        404:
+          description: Not Found
+        406:
+          description: Not Acceptable
+  /shops/{shopName}/orders/{shopOrderNumber}/return-requests/{returnRequestId}/custom-attributes:
+    get:
+      tags:
+      - shop
+      summary: List the return request custom attributes
+      description: Returns a list of return request custom attributes for a given
+        returnRequestId, shopName and shopOrderNumber.
+      operationId: getCustomAttributes
+      parameters:
+      - name: returnRequestId
+        in: path
+        description: The return request id of the related order
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: shopOrderNumber
+        in: path
+        description: The order number of the shop
+        required: true
+        schema:
+          type: string
+      - name: shopName
+        in: path
+        description: The shop name
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/vnd.intershop.custom-attribute.v1+json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReadCustomAttribute'
+        401:
+          description: Authentication information is missing or invalid
+        403:
+          description: Forbidden
+        404:
+          description: Not Found
+        406:
+          description: Not Acceptable
+  /shops/{shopName}/orders/{shopOrderNumber}/return-requests/{returnRequestId}/positions/{returnRequestPositionId}/items:
+    get:
+      tags:
+      - shop
+      summary: List the return request position items
+      description: Returns a list of return request position items for a given returnRequestId,
+        shopName and shopOrderNumber.
+      operationId: getReturnRequestItems
+      parameters:
+      - name: returnRequestPositionId
+        in: path
+        description: The return request position id of the related return request
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: returnRequestId
+        in: path
+        description: The return request id of the related order
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: shopOrderNumber
+        in: path
+        description: The order number of the shop
+        required: true
+        schema:
+          type: string
+      - name: shopName
+        in: path
+        description: The shop name
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/vnd.intershop.return-request-item.v1+json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReadReturnRequestItem'
+        401:
+          description: Authentication information is missing or invalid
+        403:
+          description: Forbidden
+        404:
+          description: Not Found
+        406:
+          description: Not Acceptable
+  /shops/{shopName}/orders/{shopOrderNumber}/return-requests/{returnRequestId}/positions/{returnRequestPositionId}:
+    get:
+      tags:
+      - shop
+      summary: Get a return request position
+      description: Returns a return request position for a given returnRequestId,
+        shopName, shopOrderNumber and a returnRequestPositionId.
+      operationId: getReturnRequestPosition
+      parameters:
+      - name: returnRequestPositionId
+        in: path
+        description: The return request position id of the related return request
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: returnRequestId
+        in: path
+        description: The return request id of the related order
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: shopOrderNumber
+        in: path
+        description: The order number of the shop
+        required: true
+        schema:
+          type: string
+      - name: shopName
+        in: path
+        description: The shop name
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/vnd.intershop.return-request-position.v1+json:
+              schema:
+                $ref: '#/components/schemas/ReadReturnRequestPosition'
+        401:
+          description: Authentication information is missing or invalid
+        403:
+          description: Forbidden
+        404:
+          description: Not Found
+        406:
+          description: Not Acceptable
+  /shops/{shopName}/orders/{shopOrderNumber}/return-requests/{returnRequestId}/positions:
+    get:
+      tags:
+      - shop
+      summary: List the return request positions
+      description: Returns a list of return request positions for a given returnRequestId,
+        shopName and shopOrderNumber.
+      operationId: getReturnRequestPositions
+      parameters:
+      - name: returnRequestId
+        in: path
+        description: The return request id of the related order
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: shopOrderNumber
+        in: path
+        description: The order number of the shop
+        required: true
+        schema:
+          type: string
+      - name: shopName
+        in: path
+        description: The shop name
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/vnd.intershop.return-request-position.v1+json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReadReturnRequestPosition'
+        401:
+          description: Authentication information is missing or invalid
+        403:
+          description: Forbidden
+        404:
+          description: Not Found
+        406:
+          description: Not Acceptable
+components:
+  schemas:
+    ShopReturnReason:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of return reason / name of the enum constant (see ReturnReasonDefDO)
+          example: RET010
+        description:
+          type: string
+          description: Description of return reason
+          example: return of goods / general
+        type:
+          type: string
+          description: Name of return type / name of the enum constant (see ReturnTypeDefDO)
+          example: RET
+      description: Possible return reason, configured for a IOM shop instance
+    Error:
+      required:
+      - code
+      - message
+      type: object
+      properties:
+        code:
+          type: string
+          description: Exception / Error code
+          example: VALIDATION_EXCEPTION
+        message:
+          type: string
+          description: Exception / Error message
+          example: Attribute XYZ is mandatory
+        value:
+          type: object
+          description: Value which caused the exception / error
+    ErrorReport:
+      type: object
+      properties:
+        status:
+          type: integer
+          description: The HTTP status code applicable to this problem, expressed
+            as a string value
+          format: int32
+          example: 400
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+      description: Detailed information about what went wrong
+    WriteApproval:
+      required:
+      - status
+      type: object
+      properties:
+        status:
+          type: string
+          description: The status of the approval.
+          example: APPROVED
+          enum:
+          - APPROVED
+          - NOT_APPROVED
+        comment:
+          type: string
+          description: The comment for the approval.
+          example: The return request reasons are not convincing.
+      description: Represents an approval of a return request of an order of a shop.
+    ContactPerson:
+      type: object
+      properties:
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        id:
+          type: integer
+          description: The contact person identifier.
+          format: int64
+          example: 10000
+        company:
+          type: string
+          description: The name of the company of the contact person.
+          example: Intershop Communication AG
+        firstName:
+          type: string
+          description: The first name of the contact person.
+          example: John
+        lastName:
+          type: string
+          description: The last name of the contact person.
+          example: Doe
+        phoneNumber:
+          type: string
+          description: The phone number of the contact person.
+          example: 0176 12345677
+        emailAddress:
+          type: string
+          description: The email address of the contact person.
+          example: john.doe@intershop.com
+        language:
+          type: string
+          description: The preferred correspondence language to answer the contact
+            person.
+          example: english
+      description: Represents a contact person of the return request from an order
+        of a shop.
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        rel:
+          type: string
+    ReadReturnRequest:
+      required:
+      - type
+      type: object
+      properties:
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        type:
+          type: string
+          description: The type that specifies the return request.
+          example: RETURN
+          enum:
+          - RETURN
+          - PICKUP
+        rmaNumber:
+          maxLength: 50
+          minLength: 1
+          type: string
+          description: The actual number of the return request.
+          example: "10901095"
+        comment:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The comment of the return request.
+          example: The battery is draining quickly
+        id:
+          type: integer
+          description: The return request identifier.
+          format: int64
+          example: 10000
+        creationDate:
+          type: string
+          description: The date when the return request was created.
+          format: date-time
+        shopOrderNumber:
+          type: string
+          description: The order number as used by the shop.
+          example: 20180303_123
+        shopName:
+          type: string
+          description: The name of the shop.
+          example: Test Shop US DE
+        supplierOrderNumber:
+          type: string
+          description: The order number as used by the supplier.
+          example: 20180303_321
+        supplierName:
+          type: string
+          description: The name of the supplier.
+          example: Test Supplier US DE
+        status:
+          type: string
+          description: The technical status of the return request.
+          example: CLOSED
+          enum:
+          - ACCEPTED
+          - CLOSED
+          - DO_APPROVE
+          - DO_CLOSE
+          - INITIAL
+          - REJECTED
+        businessStatus:
+          type: string
+          description: The business status of the return request.
+          example: ACCEPTED
+          enum:
+          - ACCEPTED
+          - IN_APPROVAL
+          - READY_TO_APPROVE
+          - REJECTED
+          - UNKNOWN
+      description: Represents a return request from a shop.
+    ReturnableData:
+      required:
+      - positions
+      type: object
+      properties:
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        positions:
+          type: array
+          description: Possible order positions / line items to return
+          items:
+            $ref: '#/components/schemas/ReturnableDataPosition'
+      description: Order related information to create a return request
+    ReturnableDataItem:
+      required:
+      - productSerialNumber
+      type: object
+      properties:
+        productSerialNumber:
+          type: string
+          description: Serial number of the item to return
+          example: "667002"
+      description: Further information for a single product
+    ReturnableDataPosition:
+      required:
+      - positionNumber
+      - product
+      - quantity
+      type: object
+      properties:
+        positionNumber:
+          type: integer
+          description: Order position number as used by the shop
+          format: int32
+          example: 3
+        quantity:
+          type: integer
+          description: Maximum return quantity
+          format: int32
+          example: 1
+        items:
+          type: array
+          description: Further information for each single product
+          items:
+            $ref: '#/components/schemas/ReturnableDataItem'
+        product:
+          $ref: '#/components/schemas/ReturnableDataProduct'
+      description: Order position / line item to return
+    ReturnableDataProduct:
+      required:
+      - name
+      - number
+      type: object
+      properties:
+        number:
+          type: string
+          description: Shop specific product number, if not available the the IOM
+            internal product number
+          example: 100-0001
+        name:
+          type: string
+          description: Short name of the product
+          example: Demo Product
+      description: Product of a still returnable order position
+    WriteCustomAttribute:
+      required:
+      - key
+      - value
+      type: object
+      properties:
+        key:
+          maxLength: 250
+          minLength: 1
+          type: string
+          description: The key of a custom attribute.
+          example: Example Key
+        value:
+          maxLength: 1000
+          minLength: 1
+          type: string
+          description: The value of a custom attribute.
+          example: Example Value
+      description: Represents a custom attribute (key/value pair) of a return request
+        from an order of a shop.
+    WritePickupAddress:
+      required:
+      - city
+      - countryCode
+      - lastName
+      - postCode
+      - streetName
+      type: object
+      properties:
+        company:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: The name of the company of the pickup adress.
+          example: Intershop Communication AG
+        firstName:
+          maxLength: 50
+          minLength: 1
+          type: string
+          description: The first name related to the pickup address.
+          example: John
+        lastName:
+          maxLength: 50
+          minLength: 1
+          type: string
+          description: The last name related to the pickup address.
+          example: Doe
+        streetName:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: The name of the street related to the pickup address.
+          example: Alexstraße
+        houseNumber:
+          maxLength: 20
+          minLength: 1
+          type: string
+          description: The house number related to the pickup address.
+          example: "28"
+        postCode:
+          maxLength: 25
+          minLength: 1
+          type: string
+          description: The post code related to the pickup address.
+          example: "12053"
+        city:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: The city name related to the pickup address.
+          example: Berlin
+        countryCode:
+          type: string
+          description: The ISO 3166-1 alpha-3 code for the country name related to
+            the pickup address.
+          example: DEU
+        district:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: The district related to the pickup address.
+          example: Berlin
+        additionFirstLine:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: The first addition line related to the pickup address.
+          example: Finanz
+        additionSecondLine:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: The second addition line related to the pickup address.
+          example: 3.Floor
+      description: Represents a pickup address related to the return request from
+        an order of a shop.
+    WriteReturnRequest:
+      required:
+      - positions
+      - type
+      type: object
+      properties:
+        type:
+          type: string
+          description: The type that specifies the return request.
+          example: RETURN
+          enum:
+          - RETURN
+          - PICKUP
+        rmaNumber:
+          maxLength: 50
+          minLength: 1
+          type: string
+          description: The actual number of the return request.
+          example: "10901095"
+        comment:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The comment of the return request.
+          example: The battery is draining quickly
+        positions:
+          maxItems: 2147483647
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/WriteReturnRequestPosition'
+        pickupAddress:
+          $ref: '#/components/schemas/WritePickupAddress'
+        customAttributes:
+          type: array
+          items:
+            $ref: '#/components/schemas/WriteCustomAttribute'
+      description: Represents a return request from a shop.
+    WriteReturnRequestItem:
+      required:
+      - productSerialNumber
+      type: object
+      properties:
+        productSerialNumber:
+          maxLength: 70
+          minLength: 1
+          type: string
+          description: The serial number of the product.
+          example: W88401231AX
+      description: Represents a return request item of a return request from an order
+        of a shop.
+    WriteReturnRequestPosition:
+      required:
+      - positionNumber
+      - productNumber
+      - quantity
+      - reason
+      type: object
+      properties:
+        positionNumber:
+          type: integer
+          description: The posistion number as used by the shop.
+          format: int32
+          example: 1
+        productNumber:
+          maxLength: 50
+          minLength: 1
+          type: string
+          description: The product number as used by the shop.
+          example: 20180303_123
+        reason:
+          type: string
+          description: The reason for the return.
+          example: RET100
+        quantity:
+          minimum: 1
+          type: integer
+          description: The quantity of the related product by the shop.
+          format: int32
+          example: 1
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/WriteReturnRequestItem'
+      description: Represents a return request position of a return request from an
+        order of a shop.
+    ReadPickupAddress:
+      required:
+      - city
+      - countryCode
+      - lastName
+      - postCode
+      - streetName
+      type: object
+      properties:
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        company:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: The name of the company of the pickup adress.
+          example: Intershop Communication AG
+        firstName:
+          maxLength: 50
+          minLength: 1
+          type: string
+          description: The first name related to the pickup address.
+          example: John
+        lastName:
+          maxLength: 50
+          minLength: 1
+          type: string
+          description: The last name related to the pickup address.
+          example: Doe
+        streetName:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: The name of the street related to the pickup address.
+          example: Alexstraße
+        houseNumber:
+          maxLength: 20
+          minLength: 1
+          type: string
+          description: The house number related to the pickup address.
+          example: "28"
+        postCode:
+          maxLength: 25
+          minLength: 1
+          type: string
+          description: The post code related to the pickup address.
+          example: "12053"
+        city:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: The city name related to the pickup address.
+          example: Berlin
+        countryCode:
+          type: string
+          description: The ISO 3166-1 alpha-3 code for the country name related to
+            the pickup address.
+          example: DEU
+        district:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: The district related to the pickup address.
+          example: Berlin
+        additionFirstLine:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: The first addition line related to the pickup address.
+          example: Finanz
+        additionSecondLine:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: The second addition line related to the pickup address.
+          example: 3.Floor
+        id:
+          type: integer
+          description: The pickup address identifier.
+          format: int64
+          example: 10000
+      description: Represents a pickup address related to the return request from
+        an order of a shop.
+    ReadCustomAttribute:
+      required:
+      - key
+      - value
+      type: object
+      properties:
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        key:
+          maxLength: 250
+          minLength: 1
+          type: string
+          description: The key of a custom attribute.
+          example: Example Key
+        value:
+          maxLength: 1000
+          minLength: 1
+          type: string
+          description: The value of a custom attribute.
+          example: Example Value
+        id:
+          type: integer
+          description: The custom attribute identifier.
+          format: int64
+          example: 10000
+      description: Represents a custom attribute (key/value pair) of a return request
+        from an order of a shop.
+    ReadReturnRequestItem:
+      required:
+      - productSerialNumber
+      type: object
+      properties:
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        productSerialNumber:
+          maxLength: 70
+          minLength: 1
+          type: string
+          description: The serial number of the product.
+          example: W88401231AX
+        id:
+          type: integer
+          description: The return request item identifier.
+          format: int64
+          example: 10000
+      description: Represents a return request item of a return request from an order
+        of a shop.
+    ReadReturnRequestPosition:
+      required:
+      - positionNumber
+      - productNumber
+      - quantity
+      - reason
+      type: object
+      properties:
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        positionNumber:
+          type: integer
+          description: The posistion number as used by the shop.
+          format: int32
+          example: 1
+        productNumber:
+          maxLength: 50
+          minLength: 1
+          type: string
+          description: The product number as used by the shop.
+          example: 20180303_123
+        reason:
+          type: string
+          description: The reason for the return.
+          example: RET100
+        quantity:
+          minimum: 1
+          type: integer
+          description: The quantity of the related product by the shop.
+          format: int32
+          example: 1
+        id:
+          type: integer
+          description: The return request position identifier.
+          format: int64
+          example: 10000
+        productName:
+          type: string
+          description: The product name as used by the shop.
+          example: test_product_1
+        supplierProductNumber:
+          type: string
+          description: The article number as used by the supplier.
+          example: 20180303_123
+      description: Represents a return request position of a return request from an
+        order of a shop.
+  securitySchemes:
+    basicAuth:
+      type: http
+      description: Basic Authentication
+      scheme: basic
+    bearerAuth:
+      type: http
+      description: JWT Bearer token
+      scheme: bearer
+      bearerFormat: JWT

@@ -1,0 +1,32 @@
+testframework:
+  database:
+    default:
+      version: "V1"
+      endpoint:
+        host: "localhost:55432"
+      username: "oms_user"
+      password: "oms_pw"
+      parameters:
+        hostList: "localhost:55432"
+        dbName: "oms_db"
+        key: "testvalue"
+        anotherKey: "blah"
+  order-service:
+    default:
+      version: "V1_2"
+      username: "admin"
+      password: "!InterShop00!"
+      endpoint:
+        host: "localhost"
+        port: 58080
+        protocol: "http"
+      parameters:
+        testsubst: "${sys.prop.test:fallback}"
+    alternative:
+      version: "V2_2"
+      parameters:
+        endpoint: "http://localhost:58080/webservices/OrderService/v1.2"
+        username: "admin"
+        password: "!InterShop00!"
+    alternative-without-params:
+      version: "V2_2"

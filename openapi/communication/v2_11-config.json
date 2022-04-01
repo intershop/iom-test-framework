@@ -1,0 +1,13 @@
+{    
+    "groupId":"com.intershop.oms.rest",
+    "artifactId":"CommunicationServiceClient",
+    "artifactVersion":"2.11",
+
+    "apiPackage":"com.intershop.oms.rest.communication.v2_11.api",
+    "modelPackage":"com.intershop.oms.rest.communication.v2_11.model",
+    "invokerPackage":"com.intershop.oms.rest.shared",
+
+    "dateLibrary": "java8",
+    "java8": true,
+    "hideGenerationTimestamp": true
+}
