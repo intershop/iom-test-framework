@@ -93,3 +93,4 @@ jobs:
       PGP_PASSPHRASE: "literal:$(pgpPassphrase)"
       PGP_SECRETKEY: "keyfile:$(pgpPrivateKey.secureFilePath)"
        
+  - task: PublishTestResults@2
