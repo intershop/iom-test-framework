@@ -64,11 +64,11 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
                     ds.setUsername(aDbUser);
                     ds.setPassword(aDbPass);
                     ds.setMaximumPoolSize(20);
-                    // FIXME not sure whether that actually works - not tested yet!
+
                     if (aForceSsl)
                     {
                         ds.addDataSourceProperty("ssl", "true");
-                        ds.addDataSourceProperty("sslmode", "required");
+                        ds.addDataSourceProperty("sslmode", "require");
                     }
                     dsInitialized = true;
                 }
