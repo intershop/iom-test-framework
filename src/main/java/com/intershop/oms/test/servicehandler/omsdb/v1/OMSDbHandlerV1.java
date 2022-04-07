@@ -1643,7 +1643,7 @@ DELETE  FROM "StockReservationDO" r2
         int i = 0;
         for (String err : positionsErrors)
         {
-            output.append("Return position ").append(positions.get(i)).append(": ").append(err);
+            output.append("Return position ").append(positions.get(i++)).append(": ").append(err);
         }
         log.info(output.toString());
         return positionsErrors;
