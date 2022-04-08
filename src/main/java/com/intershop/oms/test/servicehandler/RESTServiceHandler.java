@@ -11,6 +11,7 @@ import com.intershop.oms.rest.shared.auth.HttpBasicAuth;
 import com.intershop.oms.rest.shared.auth.HttpBearerAuth;
 import com.intershop.oms.test.configuration.ConfigBuilder;
 import com.intershop.oms.test.configuration.ServiceConfiguration;
+import com.intershop.oms.test.configuration.ServiceEndpoint;
 import com.intershop.oms.test.util.AuthTokenUtil;
 
 public abstract class RESTServiceHandler implements OMSServiceHandler
@@ -33,17 +34,34 @@ public abstract class RESTServiceHandler implements OMSServiceHandler
      */
     protected RESTServiceHandler(ServiceConfiguration serviceConfig, String basePath, Logger logger)
     {
-        if (serviceConfig.bearerAuthToken().isPresent())
+        Optional<ServiceConfiguration> defaultEndpoint = ConfigBuilder.getDefault().defaultEndpoint();
+
+        ServiceConfiguration credentialsConfig = serviceConfig.bearerAuthToken().isPresent()
+                        || serviceConfig.username().isPresent() ? serviceConfig
+                                        : defaultEndpoint.orElseThrow(() -> new RuntimeException(
+                                                        "no credentials are set, default-endpoint not configured"));
+        if (credentialsConfig.bearerAuthToken().isPresent())
         {
-            this.apiClient = getBearerAuthApiClient(serviceConfig.bearerAuthToken().get());
+            this.apiClient = getBearerAuthApiClient(credentialsConfig.bearerAuthToken().get());
         }
         else
         {
-            this.apiClient = getBasicAuthApiClient(serviceConfig.username().get(), serviceConfig.password().get());
+            this.apiClient = getBasicAuthApiClient(credentialsConfig.username().get(), credentialsConfig.password().get());
         }
-        defaultProtocol = serviceConfig.serviceEndpoint().get().protocol().orElse("http");
-        defaultHost = serviceConfig.serviceEndpoint().get().host();
-        defaultPort = serviceConfig.serviceEndpoint().get().port().orElse(80);
+
+        ServiceEndpoint endpoint = serviceConfig.serviceEndpoint().orElseGet(
+                        () -> defaultEndpoint.isPresent() && defaultEndpoint.get().serviceEndpoint().isPresent()
+                                        ? defaultEndpoint.get().serviceEndpoint().get()
+                                        : null);
+
+        if(endpoint == null)
+        {
+            throw new RuntimeException("neither service config nor default-endpoint are configured");
+        }
+
+        defaultProtocol = endpoint.protocol().orElse("http");
+        defaultHost = endpoint.host();
+        defaultPort = endpoint.port().orElse(80);
         defaultBasePath = basePath;
 
         if (ConfigBuilder.getDefault().clientLogging())

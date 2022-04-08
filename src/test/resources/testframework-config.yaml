@@ -12,13 +12,14 @@ testframework:
         key: "x"
         anotherKey: "x"
         keyOnlyInTFConfigYaml: "testframework-config.yaml"
+        DUMMY_MODE: "true"
   order-service:
     default:
-      version: "V1_2"
+      version: "V2_1"
       username: "admin"
       password: "!InterShop00!"
       endpoint:
-        host: "localhost"
+        host: "CONFIGURED_HOST"
         port: 58080
         protocol: "http"
       parameters:

@@ -54,4 +54,17 @@ class ConfigBuilderTest
         System.clearProperty("sys.prop.test");
     }
 
+    @Test
+    @ResourceLock(value = "system-properties", mode = ResourceAccessMode.READ)
+    void testDefaultEndpoint()
+    {
+        Configuration cfg = ConfigBuilder.getDefault();
+        ServiceConfiguration dbService = cfg.getDbServiceById("default");
+        // this should come from testframework-config.user.yaml
+        assertEquals("override-host", dbService.serviceEndpoint().get().host());
+        // testframework-config.yaml
+        assertEquals("x", dbService.username().get());
+
+    }
+
 }

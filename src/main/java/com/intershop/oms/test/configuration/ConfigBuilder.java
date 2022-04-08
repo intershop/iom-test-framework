@@ -24,6 +24,7 @@ public class ConfigBuilder
     private static final Configuration defaultConfig = initDefault();
 
     private static final int ORDINAL_DEFAULT_FILE = 150;
+    private static final int ORDINAL_USERCONFIG_FILE = 155;
     private static final int ORDINAL_OVERRIDE_FILE = 160;
 
     public static Configuration fromClassPath(String path)
@@ -51,7 +52,9 @@ public class ConfigBuilder
         try
         {
             cb = cb.withMapping(Configuration.class).addDefaultSources().addDefaultInterceptors()
-                            .withSources(new YamlConfigSourceProvider(ORDINAL_DEFAULT_FILE)).addDiscoveredConverters()
+                            .withSources(new YamlConfigSourceProvider(ORDINAL_DEFAULT_FILE, "testframework-config"))
+                            .withSources(new YamlConfigSourceProvider(ORDINAL_USERCONFIG_FILE, "testframework-config.user"))
+                            .addDiscoveredConverters()
                             .addDiscoveredSources().addDiscoveredValidator().addDiscoveredValidator();
             if (url != null)
             {

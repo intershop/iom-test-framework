@@ -38,6 +38,7 @@ import java.util.TreeMap;
 class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSDbHandler
 {
     public static final String CONFIG_KEY_DB_NAME = "dbName";
+    public static final String CONFIG_KEY_DUMMY_MODE = "DUMMY_MODE";
     // use this with a write lock to be the only one test running
     private static final int LOCK_ID_THREAD_RUNNING = 1;
     private static final int LOCK_ID_LOAD_CONFIGURATION = 2;
@@ -85,8 +86,47 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
 
     public OMSDbHandlerV1(ServiceConfiguration configuration)
     {
-        this(configuration.serviceEndpoint().get().host(), configuration.getParameterValue(CONFIG_KEY_DB_NAME),
-                        configuration.username().get(), configuration.password().get(), false);
+        if(configuration.getParameterValue(CONFIG_KEY_DUMMY_MODE) != null) {
+            return;
+        }
+//        this(configuration.serviceEndpoint().get().host(), configuration.getParameterValue(CONFIG_KEY_DB_NAME),
+//                        configuration.username().get(), configuration.password().get(), false);
+
+        String aHostList = configuration.serviceEndpoint().get().host();
+        String aDbName = configuration.getParameterValue(CONFIG_KEY_DB_NAME);
+        String aDbUser = configuration.username().get();
+        String aDbPass =configuration.password().get();
+        boolean aForceSsl = false;
+
+        try
+        {
+            synchronized(lock)
+            {
+                if (!dsInitialized)
+                {
+                    String url = "jdbc:postgresql://" + aHostList + "/" + aDbName;
+                    ds.setJdbcUrl(url);
+                    ds.setUsername(aDbUser);
+                    ds.setPassword(aDbPass);
+                    ds.setMaximumPoolSize(20);
+
+                    if (aForceSsl)
+                    {
+                        ds.addDataSourceProperty("ssl", "true");
+                        ds.addDataSourceProperty("sslmode", "require");
+                    }
+                    dsInitialized = true;
+                }
+            }
+            connection = ds.getConnection();
+        }
+        catch(SQLException e)
+        {
+            log.error(String.format("Connection failed for \"jdbc:postgresql://%s/%s - %s - %s - SSL: %s", aHostList,
+                            aDbName, aDbUser, aDbPass, aForceSsl), e);
+            throw new RuntimeException(e);
+        }
+
     }
 
     @Override
