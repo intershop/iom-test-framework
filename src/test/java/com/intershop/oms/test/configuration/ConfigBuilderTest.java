@@ -22,7 +22,7 @@ class ConfigBuilderTest
 
         assertEquals("testvalue", cfg.databaseConfigs().get("default").getParameterValue("key"));
         assertEquals("blah", cfg.databaseConfigs().get("default").getParameterValue("anotherKey"));
-        assertEquals("testframework-config.yaml", cfg.databaseConfigs().get("default").getParameterValue("keyOnlyInTFConfigYaml"));
+        assertNull(cfg.databaseConfigs().get("default").getParameterValue("keyOnlyInTFConfigYaml"));
         assertTrue(cfg.clientLogging());
     }
 

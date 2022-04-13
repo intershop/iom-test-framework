@@ -25,7 +25,6 @@ public class ConfigBuilder
 
     private static final int ORDINAL_DEFAULT_FILE = 150;
     private static final int ORDINAL_USERCONFIG_FILE = 155;
-    private static final int ORDINAL_OVERRIDE_FILE = 160;
 
     public static Configuration fromClassPath(String path)
     {
@@ -51,14 +50,16 @@ public class ConfigBuilder
         SmallRyeConfig cfg;
         try
         {
-            cb = cb.withMapping(Configuration.class).addDefaultSources().addDefaultInterceptors()
-                            .withSources(new YamlConfigSourceProvider(ORDINAL_DEFAULT_FILE, "testframework-config"))
+            cb = cb.withMapping(Configuration.class).addDefaultInterceptors().addDefaultSources()
                             .withSources(new YamlConfigSourceProvider(ORDINAL_USERCONFIG_FILE, "testframework-config.user"))
-                            .addDiscoveredConverters()
-                            .addDiscoveredSources().addDiscoveredValidator().addDiscoveredValidator();
+                            .addDiscoveredConverters().addDiscoveredValidator();
             if (url != null)
             {
-                cb = cb.withSources(new YamlConfigSource(url, ORDINAL_OVERRIDE_FILE));
+                cb = cb.withSources(new YamlConfigSource(url, ORDINAL_DEFAULT_FILE));
+            }
+            else
+            {
+                cb = cb.withSources(new YamlConfigSourceProvider(ORDINAL_DEFAULT_FILE, "testframework-config"));
             }
             if (log.isDebugEnabled())
             {
