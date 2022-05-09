@@ -165,15 +165,12 @@ public class OMSOrder extends OMSBusinessObject implements OMSPropertyGroupOwner
         OffsetDateTime nowOffset = OffsetDateTime.now();
         Date date = new Date();
         String formattedNow = getFormattedShopOrderCreationDate(date);
-        String localCounter = new DecimalFormat("0000").format(getNextOrderNumber());
 
-        String shopOrderNumber = buildShopOrderNo(testCaseId, date);
-
-        setShopOrderNumber(shopOrderNumber);
-
+        setShopOrderNumber(buildShopOrderNo(testCaseId, date));
         if (getCustomerData() != null)
         {
-            getCustomerData().setShopCustomerNumber("Customer_" + testCaseId + "_" + formattedNow + "_" + localCounter);
+            // any different number will do here. No need to handle race conditions...
+            getCustomerData().setShopCustomerNumber("Customer_" + testCaseId + "_" + formattedNow + "_" + new DecimalFormat("0000").format(counter.get()));
         }
         setShopOrderCreationDate(nowOffset);
         setShopOrderUpdateDate(nowOffset);
