@@ -1,16 +1,5 @@
 package com.intershop.oms.test.businessobject.order;
 
-import com.intershop.oms.test.businessobject.OMSBusinessObject;
-import com.intershop.oms.test.businessobject.OMSPropertyGroupOwner;
-import com.intershop.oms.test.businessobject.OMSShop;
-import com.intershop.oms.test.businessobject.address.OMSAddressInvoice;
-import com.intershop.oms.test.businessobject.prices.OMSSales;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.OffsetDateTime;
@@ -21,6 +10,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.intershop.oms.test.businessobject.OMSBusinessObject;
+import com.intershop.oms.test.businessobject.OMSPropertyGroupOwner;
+import com.intershop.oms.test.businessobject.OMSShop;
+import com.intershop.oms.test.businessobject.address.OMSAddressInvoice;
+import com.intershop.oms.test.businessobject.prices.OMSSales;
+
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Represents the current state of the schedule including basic and runtime configuration.&lt;br&gt; The basic configuration parameters have the suffix &#x60;Configured&#x60;.&lt;br&gt; The runtime configuration parameters have the suffix &#x60;Runtime&#x60;. If not set, the basic configuration will be used.
  */
@@ -29,6 +30,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class OMSOrder extends OMSBusinessObject implements OMSPropertyGroupOwner
 {
     private static final AtomicInteger counter = new AtomicInteger();
+    // my copy of the counter
+    protected int threadSafeCounter = counter.incrementAndGet();
+
     protected String shopOrderNumber;
     protected Long id;
     protected OffsetDateTime shopOrderCreationDate;
@@ -48,11 +52,6 @@ public class OMSOrder extends OMSBusinessObject implements OMSPropertyGroupOwner
     protected Map<String, Map<String, String>> propertyGroups = new HashMap<>();
     protected List<OMSShippingBucket> shippingBuckets = new ArrayList<>();
     protected OMSShop shop;
-
-    public static int getNextOrderNumber()
-    {
-        return counter.incrementAndGet();
-    }
 
     public OMSOrder shopOrderNumber(String shopOrderNumber)
     {
@@ -170,7 +169,7 @@ public class OMSOrder extends OMSBusinessObject implements OMSPropertyGroupOwner
         if (getCustomerData() != null)
         {
             // any different number will do here. No need to handle race conditions...
-            getCustomerData().setShopCustomerNumber("Customer_" + testCaseId + "_" + formattedNow + "_" + new DecimalFormat("0000").format(counter.get()));
+            getCustomerData().setShopCustomerNumber("Customer_" + testCaseId + "_" + formattedNow + "_" + new DecimalFormat("0000").format(threadSafeCounter));
         }
         setShopOrderCreationDate(nowOffset);
         setShopOrderUpdateDate(nowOffset);
@@ -192,7 +191,7 @@ public class OMSOrder extends OMSBusinessObject implements OMSPropertyGroupOwner
         }
         orderNo.append(getFormattedShopOrderCreationDate(aShopOrderCreationDate));
         orderNo.append("_");
-        orderNo.append(new DecimalFormat("0000").format(getNextOrderNumber()));
+        orderNo.append(new DecimalFormat("0000").format(threadSafeCounter));
 
         /* must not be longer than 50 characters to fit API */
         return orderNo.length() > 50 ? orderNo.substring(0, 50) : orderNo.toString();
@@ -212,5 +211,14 @@ public class OMSOrder extends OMSBusinessObject implements OMSPropertyGroupOwner
     public String getShopName()
     {
         return shop.getName();
+    }
+
+    /**
+     * @deprecated use threadSafeCounter directly to thread-locally have the next order number
+     */
+    @Deprecated(forRemoval=true, since="4.1.0")
+    public int getNextOrderNumber()
+    {
+        return threadSafeCounter;
     }
 }
