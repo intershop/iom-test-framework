@@ -3887,19 +3887,18 @@ DELETE  FROM "StockReservationDO" r2
     @Deprecated
     private boolean releaseDBLock(int lockId, DBLockType rw)
     {
-        switch(rw)
-        {
-            case W:
-                LockHolder.releaseWriteLock(lockId);
-                return true;
-            case R:
-                LockHolder.releaseReadLock(lockId);
-                return true;
-            default:
-                throw new RuntimeException("Unknown lock type '" + rw + "' found! Supported are 'W' and 'R'.");
-        }
+//        switch(rw)
+//        {
+//            case W:
+//                LockHolder.releaseWriteLock(lockId);
+//                return true;
+//            case R:
+//                LockHolder.releaseReadLock(lockId);
+//                return true;
+//            default:
+//                throw new RuntimeException("Unknown lock type '" + rw + "' found! Supported are 'W' and 'R'.");
+//        }
 
-        /*
         String statement = null;
         if (rw.equals(DBLockType.R))
         {
@@ -3924,7 +3923,7 @@ DELETE  FROM "StockReservationDO" r2
             log.error("Could release lock using '{}':{}\n{}", statement, sqlEx.getMessage(), sqlEx);
             return false;
         }
-        return true;*/
+        return true;
     }
 
     /**
@@ -3934,16 +3933,6 @@ DELETE  FROM "StockReservationDO" r2
     @Deprecated
     private boolean getDBLock(int lockId, int timeout, DBLockType rw)
     {
-        switch(rw)
-        {
-            case W:
-                return LockHolder.acquireWriteLock(lockId, timeout);
-            case R:
-                return LockHolder.acquireReadLock(lockId, timeout);
-            default:
-                throw new RuntimeException("Unknown lock type '" + rw + "' found! Supported are 'W' and 'R'.");
-        }
-        /*
         String statement = null;
         if (rw.equals(DBLockType.R))
         {
@@ -3982,7 +3971,7 @@ DELETE  FROM "StockReservationDO" r2
                 log.error("Could not reset statement_timeout after lock attempt: {}", ex.getMessage());
             }
         }
-        return true;*/
+        return true;
     }
 
     /**
