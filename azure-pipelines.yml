@@ -6,13 +6,6 @@ variables:
 
 trigger:
   batch: true
-  branches:
-    #exclude:
-    #  - '*'
-    include:
-      - main
-      - develop
-      - feature/testframework-4.0
 
 schedules:
 - cron: "0 0 * * *"
