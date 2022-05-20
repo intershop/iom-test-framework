@@ -59,7 +59,7 @@ jobs:
 
   - script: |
       # Only some certain branches are allowed for publication!
-      if ! echo "$BUILD_SOURCEBRANCHNAME" | grep -q '^develop$\|^testframework-4\.0$\|^locktest$\|^release-\|^main$'; then
+      if ! echo "$BUILD_SOURCEBRANCHNAME" | grep -q '^develop$\|^release-\|^main$'; then
         echo "##vso[task.setvariable variable=SKIP_PUBLICATION;]true"
         echo "##vso[task.logissue type=warning] publication skipped"
       fi
