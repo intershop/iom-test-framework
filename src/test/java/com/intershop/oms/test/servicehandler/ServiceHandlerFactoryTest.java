@@ -13,15 +13,13 @@ import org.junit.jupiter.api.parallel.ResourceLock;
 class ServiceHandlerFactoryTest
 {
     @Test
-    @ResourceLock(value = "system-properties", mode = ResourceAccessMode.READ_WRITE)
+    @ResourceLock(value = "system-properties", mode = ResourceAccessMode.READ)
     void registerServiceHandlerDuplicate()
     {
-        System.setProperty("is.oms.testframework.configfile", "src/test/resources/testconfig.yaml");
         // register a service provider that has been registered statically
         Assertions.assertThrows(IllegalArgumentException.class,
                         () -> ServiceHandlerFactory.registerServiceHandler(OMSOrderServiceHandler.class,
                                         new OMSOrderServiceHandlerProviderV2_2()));
-        System.clearProperty("is.oms.testframework.configfile");
     }
 
     @Test

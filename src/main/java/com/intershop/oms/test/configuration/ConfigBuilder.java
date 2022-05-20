@@ -84,6 +84,8 @@ public class ConfigBuilder
 
     private static Configuration initDefault()
     {
+        // note: this override is missing a unit test - the existing one has been changed
+        // because it was flaky
         String configPath = System.getProperty("is.oms.testframework.configfile");
         return isNotBlank(configPath) ? fromPath(Paths.get(configPath)) : load(null);
     }
