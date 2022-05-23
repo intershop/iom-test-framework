@@ -32,7 +32,7 @@ public class OMSProduct extends OMSBusinessObject
     }
 
     /**
-     * supported for >= 2.11
+     * supported for &gt;= 2.11
      * @param shopProductNumber
      * @return
      */
@@ -43,7 +43,7 @@ public class OMSProduct extends OMSBusinessObject
       }
 
     /**
-     * supported for >= 2.11
+     * supported for &gt;= 2.11
      * @param supplierProductNumber
      * @return
      */

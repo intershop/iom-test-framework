@@ -2,7 +2,6 @@ package com.intershop.oms.test.businessobject.prices;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Objects;
 
 import com.google.gson.TypeAdapter;

@@ -65,7 +65,6 @@ class OMSOrderServiceHandlerV2_1 extends RESTServiceHandler
      */
     public Long sendOrder(OMSOrder omsOrder) throws ApiException
     {
-        ApiResponse<Order> response = null;
         Long shopId = omsOrder.getShopId();
 
         Order order = OrderMapper.INSTANCE.toApiOrder(omsOrder);

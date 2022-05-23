@@ -56,7 +56,6 @@ public class OMSScheduleServiceHandlerV1 extends RESTServiceHandler
                     List<String> keys, Boolean isLocked, Boolean willRetry, OMSSortableScheduleAttribute omsOrderBy,
                     OMSSortDirection omsSortDir, Integer limit, Integer offset) throws ApiException
     {
-        ApiResponse<ScheduleCollectionContainer> response;
         SortableScheduleAttribute orderBy = null;
         SortDirection sortDir = null;
 

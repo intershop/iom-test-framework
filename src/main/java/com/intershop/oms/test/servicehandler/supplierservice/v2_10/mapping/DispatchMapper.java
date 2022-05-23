@@ -1,14 +1,14 @@
 package com.intershop.oms.test.servicehandler.supplierservice.v2_10.mapping;
 
-import com.intershop.oms.rest.communication.v2_10.model.Dispatch;
-import com.intershop.oms.test.businessobject.communication.OMSDispatch;
-import com.intershop.oms.test.servicehandler.ServiceHandlerFactory;
 import org.mapstruct.AfterMapping;
-import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
+
+import com.intershop.oms.rest.communication.v2_10.model.Dispatch;
+import com.intershop.oms.test.businessobject.communication.OMSDispatch;
+import com.intershop.oms.test.servicehandler.ServiceHandlerFactory;
 
 @Mapper(uses = { DispatchPositionMapper.class, PropertyGroupMapper.class })
 public interface DispatchMapper

@@ -1,10 +1,10 @@
 package com.intershop.oms.test.businessobject.order;
 
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
-import lombok.*;
-import lombok.experimental.Accessors;
 
-import java.util.Objects;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter

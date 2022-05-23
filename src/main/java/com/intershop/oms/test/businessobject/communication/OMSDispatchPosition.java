@@ -40,7 +40,7 @@ public class OMSDispatchPosition extends OMSBusinessObject implements OMSPropert
      * CAUTION: This is NO DEEP COPY! Lists and the product are only referenced!
      * Only to be used to change dispatched quantity...
      *
-     * @param DispatchPosition dispatchPosition
+     * @param dispatchPosition the source dispatch position
      */
     public OMSDispatchPosition(OMSDispatchPosition dispatchPosition)
     {

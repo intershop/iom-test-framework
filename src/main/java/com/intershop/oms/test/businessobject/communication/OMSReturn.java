@@ -1,5 +1,11 @@
 package com.intershop.oms.test.businessobject.communication;
 
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 import com.intershop.oms.test.businessobject.OMSPropertyGroupOwner;
 import com.intershop.oms.test.businessobject.OMSShop;
@@ -11,16 +17,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-
-import java.text.SimpleDateFormat;
-import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 @Getter
 @Setter

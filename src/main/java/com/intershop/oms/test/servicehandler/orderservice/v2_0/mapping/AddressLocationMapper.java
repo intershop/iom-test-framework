@@ -18,11 +18,6 @@ public interface AddressLocationMapper
 {
     AddressLocationMapper INSTANCE = Mappers.getMapper(AddressLocationMapper.class);
 
-//    public <T extends OMSAddressLocation, S extends AddressLocation> T fromApiAddressLocation(AddressLocation addressLocation);
-//
-//    @InheritInverseConfiguration
-//    public <T extends AddressLocation, S extends OMSAddressLocation> T toApiAddressLocation(S omsAddressLocation);
-
     default <T extends OMSAddressLocation, S extends AddressLocation> T fromApiAddressLocation(AddressLocation addressLocation)
     {
         if (addressLocation == null)

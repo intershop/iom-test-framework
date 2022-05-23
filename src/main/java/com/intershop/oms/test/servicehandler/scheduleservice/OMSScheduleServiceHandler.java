@@ -24,7 +24,6 @@ public interface OMSScheduleServiceHandler extends OMSServiceHandler
     public static Logger log = Logger.getLogger("OMSScheduleServiceHandlerInterface");
 
     /**
-     * @param customCall optional to use custom options for the request call
      * @return
      * @throws ApiException
      */
@@ -49,7 +48,6 @@ public interface OMSScheduleServiceHandler extends OMSServiceHandler
                     OMSSortDirection sortDirection, Integer limit, Integer offset) throws ApiException;
 
     /**
-     * @param customCall optional to use custom options for the request call
      * @return
      * @throws ApiException
      */
@@ -78,7 +76,6 @@ public interface OMSScheduleServiceHandler extends OMSServiceHandler
      * a direct usage of the generated API - no possible customCall, but should also be used for tests
      *
      * @param scheduleId the required ID of a schedule
-     * @param customCall optional to use custom options for the request call
      * @return
      * @throws ApiException
      */
@@ -87,7 +84,6 @@ public interface OMSScheduleServiceHandler extends OMSServiceHandler
     /**
      * @param scheduleId
      * @param omsScheduleUpdate
-     * @param customCall
      * @return
      * @throws ApiException
      */

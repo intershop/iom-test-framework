@@ -435,9 +435,9 @@ public interface OMSDbHandler
     Map<Integer, String> runDBStmtStringById(String query, Long id, String resultColumnNameKey, String resultColumnNameValue);
 
     /**
-     * returns the Map { ID => permissionName } as currently defined in the DB
+     * returns the Map { ID =&gt; permissionName } as currently defined in the DB
      *
-     * @return the Map { ID => permissionName } as currently defined in the DB
+     * @return the Map { ID =&gt; permissionName } as currently defined in the DB
      */
     Map<Integer, String> getPermissionMap();
 
@@ -524,7 +524,7 @@ public interface OMSDbHandler
      * @param useSupplierData
      *            if true - use supplierArticleName and supplierArticleNumber,
      *            if false - use shopArticleName and shopArticleNumber
-     * @return a map <Supplier-->dispatchPositions> for the given order
+     * @return a map &lt;Supplier--&gt;dispatchPositions&gt; for the given order
      */
     Map<OMSSupplier, Collection<OMSDispatchPosition>> getDispatchPositionsForOrder(OMSOrder order,
                     boolean useSupplierData);
@@ -536,7 +536,7 @@ public interface OMSDbHandler
      * @param useSupplierData
      *            if true - use supplierArticleName and supplierArticleNumber,
      *            if false - use shopArticleName and shopArticleNumber
-     * @return a map <Supplier-->orderResponsePositions> for the given order
+     * @return a map &lt;Supplier--&gt;orderResponsePositions&gt; for the given order
      */
     Map<OMSSupplier, Collection<OMSOrderResponsePosition>> getOrderResponsePositionsForOrder(OMSOrder order,
                     boolean useSupplierData);
@@ -549,7 +549,7 @@ public interface OMSDbHandler
     /**
      * prepares the return request positions for the given order
      *
-     * @return a map <Shop-->returnRequestPositions> for the given order
+     * @return a map &lt;Shop--&gt;returnRequestPositions&gt; for the given order
      */
     Collection<OMSWriteReturnRequestPosition> getReturnRequestPositionsForOrder(OMSOrder order);
 
@@ -560,7 +560,7 @@ public interface OMSDbHandler
      * @param useSupplierData
      *            if true - use supplierArticleName and supplierArticleNumber,
      *            if false - use shopArticleName and shopArticleNumber
-     * @return a map <Supplier-->returnPositions> for the given order
+     * @return a map &lt;Supplier--&gt;returnPositions&gt; for the given order
      */
     Map<OMSSupplier, Collection<OMSReturnPosition>> getReturnPositionsForOrder(OMSOrder order, boolean useSupplierData);
 
@@ -1101,7 +1101,7 @@ public interface OMSDbHandler
     /**
      * returns the number of Shop2ReturnReasonDefDOs for the given shop
      *
-     * @return a map id->name for the return reasons for the shop (if none assigned directly to the shop, the parent shop will be asked)
+     * @return a map id-&gt;name for the return reasons for the shop (if none assigned directly to the shop, the parent shop will be asked)
      */
     Map<Integer, String> getShopReturnReasons(long shopId);
 
