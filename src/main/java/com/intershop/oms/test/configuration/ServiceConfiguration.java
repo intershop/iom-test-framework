@@ -1,9 +1,9 @@
 package com.intershop.oms.test.configuration;
 
-import io.smallrye.config.WithName;
-
 import java.util.Map;
 import java.util.Optional;
+
+import io.smallrye.config.WithName;
 
 public interface ServiceConfiguration {
 

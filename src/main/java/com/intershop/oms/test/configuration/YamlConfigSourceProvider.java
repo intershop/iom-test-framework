@@ -6,21 +6,24 @@ import java.util.List;
 import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.eclipse.microprofile.config.spi.ConfigSourceProvider;
 
-public class YamlConfigSourceProvider extends io.smallrye.config.source.yaml.YamlConfigSourceProvider implements ConfigSourceProvider
+public class YamlConfigSourceProvider extends io.smallrye.config.source.yaml.YamlConfigSourceProvider
+                implements ConfigSourceProvider
 {
     private int ordinal;
+    private String baseFileName;
 
-    public YamlConfigSourceProvider(int ordinal)
+    public YamlConfigSourceProvider(int ordinal, String baseFileName)
     {
         this.ordinal = ordinal;
+        this.baseFileName = baseFileName;
     }
 
     @Override
     public Iterable<ConfigSource> getConfigSources(ClassLoader forClassLoader)
     {
         List<ConfigSource> src = new ArrayList<>();
-        src.addAll(loadConfigSources("testframework-config.yaml", ordinal));
-        src.addAll(loadConfigSources("testframework-config.yml", ordinal));
+        src.addAll(loadConfigSources(baseFileName + ".yaml", ordinal));
+        src.addAll(loadConfigSources(baseFileName + ".yml", ordinal));
         return src;
     }
 }

@@ -16,6 +16,7 @@ public interface OrderMapper
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "testCaseId", ignore = true)
     @Mapping(target = "shop", ignore = true)
+    @Mapping(target = "threadSafeCounter", ignore = true)
     @Mapping(source = "additionalAttributes", target = "propertyGroups")
     OMSOrder fromApiOrder(Order order);
 

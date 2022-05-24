@@ -24,7 +24,7 @@ public class ConfigBuilder
     private static final Configuration defaultConfig = initDefault();
 
     private static final int ORDINAL_DEFAULT_FILE = 150;
-    private static final int ORDINAL_OVERRIDE_FILE = 160;
+    private static final int ORDINAL_USERCONFIG_FILE = 155;
 
     public static Configuration fromClassPath(String path)
     {
@@ -50,12 +50,16 @@ public class ConfigBuilder
         SmallRyeConfig cfg;
         try
         {
-            cb = cb.withMapping(Configuration.class).addDefaultSources().addDefaultInterceptors()
-                            .withSources(new YamlConfigSourceProvider(ORDINAL_DEFAULT_FILE)).addDiscoveredConverters()
-                            .addDiscoveredSources().addDiscoveredValidator().addDiscoveredValidator();
+            cb = cb.withMapping(Configuration.class).addDefaultInterceptors().addDefaultSources()
+                            .withSources(new YamlConfigSourceProvider(ORDINAL_USERCONFIG_FILE, "testframework-config.user"))
+                            .addDiscoveredConverters().addDiscoveredValidator();
             if (url != null)
             {
-                cb = cb.withSources(new YamlConfigSource(url, ORDINAL_OVERRIDE_FILE));
+                cb = cb.withSources(new YamlConfigSource(url, ORDINAL_DEFAULT_FILE));
+            }
+            else
+            {
+                cb = cb.withSources(new YamlConfigSourceProvider(ORDINAL_DEFAULT_FILE, "testframework-config"));
             }
             if (log.isDebugEnabled())
             {
@@ -80,6 +84,8 @@ public class ConfigBuilder
 
     private static Configuration initDefault()
     {
+        // note: this override is missing a unit test - the existing one has been changed
+        // because it was flaky
         String configPath = System.getProperty("is.oms.testframework.configfile");
         return isNotBlank(configPath) ? fromPath(Paths.get(configPath)) : load(null);
     }

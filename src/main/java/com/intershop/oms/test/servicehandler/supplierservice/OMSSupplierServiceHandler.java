@@ -29,7 +29,7 @@ public interface OMSSupplierServiceHandler extends OMSServiceHandler
 
     /**
      * @param order                          the order to order response
-     * @param supplierOrderResponsePositions a map supplierName -> orderResponsePositions
+     * @param supplierOrderResponsePositions a map supplierName -&gt; orderResponsePositions
      * @return a collection of order response locations
      */
     @Deprecated
@@ -48,7 +48,7 @@ public interface OMSSupplierServiceHandler extends OMSServiceHandler
 
     /**
      * @param order                     the order to dispatch
-     * @param supplierDispatchPositions a map supplierName -> dispatchPositions
+     * @param supplierDispatchPositions a map supplierName -&gt; dispatchPositions
      * @return a collection of dispatch locations
      */
     @Deprecated
@@ -68,7 +68,7 @@ public interface OMSSupplierServiceHandler extends OMSServiceHandler
      * @param order                   the order to return
      * @param messageId               the messageId of the return
      * @param reason                  the reason of the return
-     * @param supplierReturnPositions a map supplierName -> returnPositions
+     * @param supplierReturnPositions a map supplierName -&gt; returnPositions
      * @return a collection of return locations
      */
     @Deprecated

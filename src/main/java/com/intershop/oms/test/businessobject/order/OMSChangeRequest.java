@@ -1,7 +1,6 @@
 package com.intershop.oms.test.businessobject.order;
 
 import java.time.OffsetDateTime;
-import java.util.Objects;
 
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 
@@ -44,19 +43,19 @@ public class OMSChangeRequest extends OMSBusinessObject
         {
             this.value = value;
         }
-    
+
         public String getValue()
         {
             return value;
         }
-    
+
         @Override
         public String toString()
         {
           return String.valueOf(value);
         }
 
-        public static StatusEnum fromValue(String value) 
+        public static StatusEnum fromValue(String value)
         {
             for (StatusEnum b : StatusEnum.values())
             {

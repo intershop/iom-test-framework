@@ -1,0 +1,15 @@
+testframework:
+  default-endpoint:
+    version: "dummy"
+    endpoint:
+      host: "DEFAULT_HOST"
+      port: 8080
+      protocol: "http"
+    username: "admin"
+    password: "!InterShop00!"
+  database:
+    default:
+      version: "V1"
+      endpoint:
+        host: "override-host"
+    

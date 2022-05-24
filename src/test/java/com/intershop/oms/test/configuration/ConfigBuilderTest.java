@@ -22,7 +22,7 @@ class ConfigBuilderTest
 
         assertEquals("testvalue", cfg.databaseConfigs().get("default").getParameterValue("key"));
         assertEquals("blah", cfg.databaseConfigs().get("default").getParameterValue("anotherKey"));
-        assertEquals("testframework-config.yaml", cfg.databaseConfigs().get("default").getParameterValue("keyOnlyInTFConfigYaml"));
+        assertNull(cfg.databaseConfigs().get("default").getParameterValue("keyOnlyInTFConfigYaml"));
         assertTrue(cfg.clientLogging());
     }
 
@@ -52,6 +52,19 @@ class ConfigBuilderTest
         assertEquals("blah", cfg.databaseConfigs().get("default").getParameterValue("anotherKey"));
         assertEquals(testSysProp, cfg.getOrderServiceById("default").getParameterValue("testsubst"));
         System.clearProperty("sys.prop.test");
+    }
+
+    @Test
+    @ResourceLock(value = "system-properties", mode = ResourceAccessMode.READ)
+    void testDefaultEndpoint()
+    {
+        Configuration cfg = ConfigBuilder.getDefault();
+        ServiceConfiguration dbService = cfg.getDbServiceById("default");
+        // this should come from testframework-config.user.yaml
+        assertEquals("override-host", dbService.serviceEndpoint().get().host());
+        // testframework-config.yaml
+        assertEquals("x", dbService.username().get());
+
     }
 
 }

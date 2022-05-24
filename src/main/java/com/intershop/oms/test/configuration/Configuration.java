@@ -10,6 +10,9 @@ import java.util.Optional;
 @ConfigMapping(prefix = "testframework")
 public interface Configuration {
 
+    @WithName("default-endpoint")
+    Optional<ServiceConfiguration> defaultEndpoint();
+
     @WithName("database")
     Map<String, ServiceConfiguration> databaseConfigs();
 

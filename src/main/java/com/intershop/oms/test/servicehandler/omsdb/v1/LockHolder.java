@@ -1,8 +1,5 @@
 package com.intershop.oms.test.servicehandler.omsdb.v1;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -22,7 +19,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 class LockHolder
 {
     private static final ConcurrentHashMap<Integer, ReentrantReadWriteLock> locks = new ConcurrentHashMap<>();
-    private static final Logger log = LoggerFactory.getLogger(LockHolder.class);
 
     // prevent instantiating the class
     private LockHolder()

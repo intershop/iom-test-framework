@@ -1,15 +1,11 @@
 package com.intershop.oms.test.businessobject.communication;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
-
 import com.intershop.oms.test.businessobject.OMSPropertyGroupOwner;
+
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

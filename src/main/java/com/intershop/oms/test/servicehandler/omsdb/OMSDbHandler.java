@@ -53,7 +53,7 @@ public interface OMSDbHandler
      order by id
      */
     // FIXME extract those
-    String tcr_fullomtclient               = "ARRAY[1,3,4,5,6,7,8,9,10,11,12,13,15,16,17,18,20,21,22,23,24,25,26,27,28,29,30,31,32,33,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,56,57,58,61,62,63,64,65,66,68,69,70,71,72,73,74,75,76,77,78,79,82,83,84,87,96,97,98,99,100,101,102,103,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,129,130,133,135,136,138,139,147,148]";
+    String tcr_fullomtclient               = "ARRAY[1,3,4,5,6,7,8,9,10,11,12,13,15,16,17,18,20,21,22,23,24,25,26,27,28,29,30,31,32,33,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,56,57,58,61,62,63,64,65,66,68,69,70,71,72,73,74,75,76,77,78,79,82,83,84,87,96,97,98,99,100,101,102,103,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,129,130,132,133,135,136,137,138,139,140,141,142,143,144,145,146,147,148]";
     String tcr_fullbackofficeclient        = "ARRAY[1,3,4,5,6,7,8,10,11,12,13,17,20,25,26,27,28,29,30,31,33,37,39,43,45,46,47,48,50,56,61,62,63,64,65,66,70,71,72,73,74,75,76,77,78,79]";
     String tcr_fullvdclient                = "ARRAY[1,4,5,6,7,10,11,12,13,17,26,27,28,29,30,38,39,43,57,61,62,63,69,70,71,72]";
     String tcr_fullpaymentclient           = "ARRAY[101,102,103,104,105,125,126]";
@@ -435,9 +435,9 @@ public interface OMSDbHandler
     Map<Integer, String> runDBStmtStringById(String query, Long id, String resultColumnNameKey, String resultColumnNameValue);
 
     /**
-     * returns the Map { ID => permissionName } as currently defined in the DB
+     * returns the Map { ID =&gt; permissionName } as currently defined in the DB
      *
-     * @return the Map { ID => permissionName } as currently defined in the DB
+     * @return the Map { ID =&gt; permissionName } as currently defined in the DB
      */
     Map<Integer, String> getPermissionMap();
 
@@ -524,7 +524,7 @@ public interface OMSDbHandler
      * @param useSupplierData
      *            if true - use supplierArticleName and supplierArticleNumber,
      *            if false - use shopArticleName and shopArticleNumber
-     * @return a map <Supplier-->dispatchPositions> for the given order
+     * @return a map &lt;Supplier--&gt;dispatchPositions&gt; for the given order
      */
     Map<OMSSupplier, Collection<OMSDispatchPosition>> getDispatchPositionsForOrder(OMSOrder order,
                     boolean useSupplierData);
@@ -536,7 +536,7 @@ public interface OMSDbHandler
      * @param useSupplierData
      *            if true - use supplierArticleName and supplierArticleNumber,
      *            if false - use shopArticleName and shopArticleNumber
-     * @return a map <Supplier-->orderResponsePositions> for the given order
+     * @return a map &lt;Supplier--&gt;orderResponsePositions&gt; for the given order
      */
     Map<OMSSupplier, Collection<OMSOrderResponsePosition>> getOrderResponsePositionsForOrder(OMSOrder order,
                     boolean useSupplierData);
@@ -549,7 +549,7 @@ public interface OMSDbHandler
     /**
      * prepares the return request positions for the given order
      *
-     * @return a map <Shop-->returnRequestPositions> for the given order
+     * @return a map &lt;Shop--&gt;returnRequestPositions&gt; for the given order
      */
     Collection<OMSWriteReturnRequestPosition> getReturnRequestPositionsForOrder(OMSOrder order);
 
@@ -560,7 +560,7 @@ public interface OMSDbHandler
      * @param useSupplierData
      *            if true - use supplierArticleName and supplierArticleNumber,
      *            if false - use shopArticleName and shopArticleNumber
-     * @return a map <Supplier-->returnPositions> for the given order
+     * @return a map &lt;Supplier--&gt;returnPositions&gt; for the given order
      */
     Map<OMSSupplier, Collection<OMSReturnPosition>> getReturnPositionsForOrder(OMSOrder order, boolean useSupplierData);
 
@@ -1101,7 +1101,7 @@ public interface OMSDbHandler
     /**
      * returns the number of Shop2ReturnReasonDefDOs for the given shop
      *
-     * @return a map id->name for the return reasons for the shop (if none assigned directly to the shop, the parent shop will be asked)
+     * @return a map id-&gt;name for the return reasons for the shop (if none assigned directly to the shop, the parent shop will be asked)
      */
     Map<Integer, String> getShopReturnReasons(long shopId);
 

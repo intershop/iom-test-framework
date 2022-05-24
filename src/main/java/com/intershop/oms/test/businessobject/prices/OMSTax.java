@@ -1,7 +1,6 @@
 package com.intershop.oms.test.businessobject.prices;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 
