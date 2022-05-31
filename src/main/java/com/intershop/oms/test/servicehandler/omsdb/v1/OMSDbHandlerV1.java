@@ -3104,7 +3104,7 @@ DELETE  FROM "StockReservationDO" r2
 
     private long getFirstInvoiceIDForOrder(long orderId)
     {
-        String query = "SELECT \"invoicingRef\" from \"Invoicing2OrderDO\" where \"orderRef\" = ?";
+        String query = "SELECT \"invoicingRef\" from \"Invoicing2OrderDO\" where \"orderRef\" = ? ORDER BY \"invoicingRef\" ASC LIMIT 1";
         int countRetry = 0;
         Long result;
         do
