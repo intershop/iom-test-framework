@@ -934,13 +934,13 @@ public interface OMSDbHandler
      * store the current state of the invoice aggregation jobs
      * @return boolean[] dailyJobEnabled, boolean weeklyJobEnabled, boolean monthlyJobEnabled, boolean cleanupJobEnabled
      */
-    boolean[] preserveInvoiceProcessState();
+    boolean[] getInvoiceProcessState();
 
     /**
      * restore the preserved state of the invoice aggregation jobs
      * @param preservedState boolean[] dailyJobEnabled, boolean weeklyJobEnabled, boolean monthlyJobEnabled, boolean cleanupJobEnabled
      */
-    void restoreInvoiceProcessState(boolean[] preservedState);
+    void setInvoiceProcessState(boolean[] preservedState);
 
     /**
      * sets the active state for the invoice processes

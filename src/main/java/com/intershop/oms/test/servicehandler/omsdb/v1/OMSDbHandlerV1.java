@@ -3315,7 +3315,7 @@ DELETE  FROM "StockReservationDO" r2
     }
 
     @Override
-    public boolean[] preserveInvoiceProcessState()
+    public boolean[] getInvoiceProcessState()
     {
         // Check whether job is configured
         String query = "SELECT * FROM \"ScheduleDO\" WHERE \"key\" = '" + OMSPlatformSchedules.Invoicing.AGGREGATE_DISPATCH_INVOICES_DAILY + "' LIMIT 1";
@@ -3337,7 +3337,7 @@ DELETE  FROM "StockReservationDO" r2
     }
 
     @Override
-    public void restoreInvoiceProcessState(boolean[] preservedState)
+    public void setInvoiceProcessState(boolean[] preservedState)
     {
         log.info("restoring invoice aggregation state: [" + preservedState[0]+", "+preservedState[1]+", "+preservedState[2]+", "+preservedState[3]+"]");
         setInvoiceProcessesActive(preservedState[0], preservedState[1], preservedState[2], preservedState[3]);
