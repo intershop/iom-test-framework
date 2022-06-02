@@ -929,12 +929,24 @@ public interface OMSDbHandler
      */
     boolean waitForOrderConfirmationMailState(long orderId, int expectedState);
 
+
+    /**
+     * store the current state of the invoice aggregation jobs
+     * @return boolean[] dailyJobEnabled, boolean weeklyJobEnabled, boolean monthlyJobEnabled, boolean cleanupJobEnabled
+     */
+    boolean[] getInvoiceProcessState();
+
+    /**
+     * restore the preserved state of the invoice aggregation jobs
+     * @param preservedState boolean[] dailyJobEnabled, boolean weeklyJobEnabled, boolean monthlyJobEnabled, boolean cleanupJobEnabled
+     */
+    void setInvoiceProcessState(boolean[] preservedState);
+
     /**
      * sets the active state for the invoice processes
      *
      */
-    void setInvoiceProcessesActive(boolean dailyJobEnabled, boolean weeklyJobEnabled, boolean monthlyJobEnabled,
-                    boolean cleanupJobEnabled);
+    void setInvoiceProcessesActive(boolean dailyJobEnabled, boolean weeklyJobEnabled, boolean monthlyJobEnabled, boolean cleanupJobEnabled);
 
     /**
      * tries to trigger the aggregation of invoices

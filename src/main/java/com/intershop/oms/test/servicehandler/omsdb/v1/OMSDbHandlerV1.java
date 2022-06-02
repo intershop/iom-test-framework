@@ -431,14 +431,12 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
     {
         boolean resultOK;
         try (Connection connection = ds.getConnection();
-                        PreparedStatement sqlStatement = connection.prepareStatement(query);
-                        ResultSet resultSet = sqlStatement.executeQuery())
+             PreparedStatement sqlStatement = connection.prepareStatement(query);
+             ResultSet resultSet = sqlStatement.executeQuery())
         {
-
             if (!resultSet.next())
             {
-                throw new RuntimeException(
-                                "Found no result getting boolean result '" + resultColumnName + "' from '" + query);
+                throw new RuntimeException("Found no result getting boolean result '" + resultColumnName + "' from '" + query);
             }
 
             resultOK = (expectedResult == resultSet.getBoolean(resultColumnName));
@@ -448,16 +446,14 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
             {
                 resultOK = (expectedResult == resultSet.getBoolean(resultColumnName));
             }
-
         }
         catch(SQLException sqlEx)
         {
-            log.error("SQLException getting boolean result '" + resultColumnName + "' from '" + query + "':"
-                            + sqlEx.getMessage());
+            log.error("SQLException getting boolean result '" + resultColumnName + "' from '" + query + "':" + sqlEx.getMessage());
             throw new RuntimeException(sqlEx);
         }
 
-        log.info("Got boolean result(s) '" + resultColumnName + "' from '" + query);
+        log.info("Got boolean result(s) '" + resultColumnName + "' from '" + query + "': " + resultOK);
 
         return resultOK;
     }
@@ -3319,8 +3315,36 @@ DELETE  FROM "StockReservationDO" r2
     }
 
     @Override
-    public void setInvoiceProcessesActive(boolean dailyJobEnabled, boolean weeklyJobEnabled, boolean monthlyJobEnabled,
-                    boolean cleanupJobEnabled)
+    public boolean[] getInvoiceProcessState()
+    {
+        // Check whether job is configured
+        String query = "SELECT * FROM \"ScheduleDO\" WHERE \"key\" = '" + OMSPlatformSchedules.Invoicing.AGGREGATE_DISPATCH_INVOICES_DAILY + "' LIMIT 1";
+        boolean dailyJobEnabledBeforeTest = runDBStmtBoolean(query, "active", true);
+
+        query = "SELECT * FROM \"ScheduleDO\" WHERE \"key\" = '" + OMSPlatformSchedules.Invoicing.AGGREGATE_DISPATCH_INVOICES_WEEKLY + "' LIMIT 1";
+        boolean weeklyJobEnabledBeforeTest = runDBStmtBoolean(query, "active", true);
+
+        query = "SELECT * FROM \"ScheduleDO\" WHERE \"key\" = '" + OMSPlatformSchedules.Invoicing.AGGREGATE_DISPATCH_INVOICES_MONTHLY + "' LIMIT 1";
+        boolean monthlyJobEnabledBeforeTest = runDBStmtBoolean(query, "active", true);
+
+        query = "SELECT * FROM \"ScheduleDO\" WHERE \"key\" = '" + OMSPlatformSchedules.Invoicing.AGGREGATE_DISPATCH_INVOICES_CLEANUP_DISABLED + "' LIMIT 1";
+        boolean cleanupJobEnabledBeforeTest = runDBStmtBoolean(query, "active", true);
+
+        boolean[] preservedState = new boolean[] {dailyJobEnabledBeforeTest, weeklyJobEnabledBeforeTest, monthlyJobEnabledBeforeTest, cleanupJobEnabledBeforeTest};
+        log.info("preserving invoice aggregation state: [" + preservedState[0]+", "+preservedState[1]+", "+preservedState[2]+", "+preservedState[3]+"]");
+
+        return preservedState;
+    }
+
+    @Override
+    public void setInvoiceProcessState(boolean[] preservedState)
+    {
+        log.info("restoring invoice aggregation state: [" + preservedState[0]+", "+preservedState[1]+", "+preservedState[2]+", "+preservedState[3]+"]");
+        setInvoiceProcessesActive(preservedState[0], preservedState[1], preservedState[2], preservedState[3]);
+    }
+
+    @Override
+    public void setInvoiceProcessesActive(boolean dailyJobEnabled, boolean weeklyJobEnabled, boolean monthlyJobEnabled, boolean cleanupJobEnabled)
     {
         setJobActive(OMSPlatformSchedules.Invoicing.AGGREGATE_DISPATCH_INVOICES_DAILY, dailyJobEnabled);
         setJobActive(OMSPlatformSchedules.Invoicing.AGGREGATE_DISPATCH_INVOICES_WEEKLY, weeklyJobEnabled);
@@ -3332,8 +3356,7 @@ DELETE  FROM "StockReservationDO" r2
 
     public void setJobActive(String jobKey, boolean active)
     {
-        String statementEnableJob = "UPDATE \"ScheduleDO\" SET \"active\" = " + active + " WHERE \"key\" = '" + jobKey
-                        + "' RETURNING true";
+        String statementEnableJob = "UPDATE \"ScheduleDO\" SET \"active\" = " + active + " WHERE \"key\" = '" + jobKey + "' RETURNING true";
         runDBStmt(statementEnableJob, true);
     }
 
