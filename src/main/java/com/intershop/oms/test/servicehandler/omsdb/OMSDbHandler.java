@@ -686,6 +686,13 @@ public interface OMSDbHandler
     Long getReturnPositionQuantityReturned(Long returnPosRef);
 
     /**
+     * returns a list with the Ids of all invoices for the order
+     * @param orderId
+     * @return a list with the Ids of all invoices for the order
+     */
+    List<Long> getInvoiceIdsForOrder(long orderId);
+
+    /**
      * Check if both orders are referencing the same (aggregated) invoice
      *
      * @return the invoicing Id
@@ -880,6 +887,23 @@ public interface OMSDbHandler
         }
         return result;
     }
+
+    /**
+     * Wait until the stateRef of the payment notification is the endState = 8000
+     *
+     * assumes, that there is only one payment per invoice
+     */
+    default boolean waitForPaymentState(long invoiceId)
+    {
+        return waitForPaymentState(invoiceId, 8000);
+    }
+
+    /**
+     * Wait until the stateRef of the payment notification is at least expectedEndState
+     *
+     * assumes, that there is only one payment per invoice
+     */
+    boolean waitForPaymentState(long invoiceId, int expectedState);
 
     /**
      * Wait until the stateRef of the invoice document is the endState = 5000

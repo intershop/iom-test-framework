@@ -2668,7 +2668,7 @@ DELETE  FROM "StockReservationDO" r2
         String query = "SELECT id FROM oms.\"ReturnPosPropertyDO\" WHERE \"returnPosRef\" in (?)";
         ResultSet resultSet = null;
         try (Connection connection = ds.getConnection();
-                        PreparedStatement sqlStatement = connection.prepareStatement(query))
+             PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.setLong(1, returnPosRef);
             resultSet = sqlStatement.executeQuery();
@@ -2690,7 +2690,7 @@ DELETE  FROM "StockReservationDO" r2
                 {
                     resultSet.close();
                 }
-                catch(SQLException e)
+                catch (SQLException e)
                 {
                 }
             }
@@ -2700,6 +2700,47 @@ DELETE  FROM "StockReservationDO" r2
                         + returnPosRef + "'!");
 
         return allReturnPositionPropertyIds;
+    }
+
+    @Override
+    public List<Long> getInvoiceIdsForOrder(long orderId)
+    {
+        List<Long> allInvoicingIds = new ArrayList<>();
+
+        String query = "SELECT \"invoicingRef\" from \"Invoicing2OrderDO\" where \"orderRef\" = ? ORDER BY \"invoicingRef\" ASC";
+        ResultSet resultSet = null;
+        try (Connection connection = ds.getConnection();
+             PreparedStatement sqlStatement = connection.prepareStatement(query))
+        {
+            sqlStatement.setLong(1, orderId);
+            resultSet = sqlStatement.executeQuery();
+            while(resultSet.next())
+            {
+                allInvoicingIds.add(resultSet.getLong("invoicingRef"));
+            }
+        }
+        catch(SQLException sqlEx)
+        {
+            log.error("SQLException getting allInvoicingIds: " + sqlEx.getMessage());
+            throw new RuntimeException(sqlEx);
+        }
+        finally
+        {
+            if (null != resultSet)
+            {
+                try
+                {
+                    resultSet.close();
+                }
+                catch (SQLException e)
+                {
+                }
+            }
+        }
+
+        log.info("Got allInvoicingIds: " + allInvoicingIds + " for orderId '" + orderId + "'!");
+
+        return allInvoicingIds;
     }
 
     @Override
@@ -3058,10 +3099,17 @@ DELETE  FROM "StockReservationDO" r2
     }
 
     @Override
+    public boolean waitForPaymentState(long invoiceId, int expectedState)
+    {
+        String invoiceNo = runDBStmtStringById("SELECT \"invoiceNo\" FROM \"InvoicingDO\" WHERE \"id\" = (?)", invoiceId, "invoiceNo");
+        long paymentNofificationId = runDBStmtLongById("SELECT \"id\" FROM \"PaymentNotificationDO\" WHERE \"invoiceNo\" = '"+invoiceNo+"'", (Long)null, "id");
+        return doDBWaitForStateCheck("payment notification", "SELECT \"stateRef\" FROM \"PaymentNotificationDO\" WHERE \"id\" = (?)", paymentNofificationId, expectedState);
+    }
+
+    @Override
     public boolean waitForInvoiceDocumentState(long orderId, int expectedState)
     {
-        //        String sqlStatement = "SELECT \"stateRef\" FROM \"DocumentDO\" WHERE \"id\" = ( SELECT \"documentRef\" FROM \"Document2OrderDO\" WHERE \"orderRef\" = (?) ) AND \"documentTypeDefRef\" = 18";
-        long invoiceId = getFirstInvoiceIDForOrder(orderId);
+        long invoiceId = getInvoiceIdsForOrder(orderId).get(0);
         log.info("Got invoicing id " + invoiceId + " for order " + orderId + ".");
         long documentId = getFirstDocumentIDForInvoice(invoiceId);
         log.info("Got document id " + invoiceId + " for invoice " + invoiceId + ".");
@@ -3094,35 +3142,6 @@ DELETE  FROM "StockReservationDO" r2
         if (result == null)
         {
             throw new RuntimeException("no result found for " + query + " with id '" + invoiceId + "'!");
-        }
-        return result;
-    }
-
-    private long getFirstInvoiceIDForOrder(long orderId)
-    {
-        String query = "SELECT \"invoicingRef\" from \"Invoicing2OrderDO\" where \"orderRef\" = ? ORDER BY \"invoicingRef\" ASC LIMIT 1";
-        int countRetry = 0;
-        Long result;
-        do
-        {
-            if (countRetry > 0)
-            {
-                try
-                {
-                    Thread.sleep(retryDelay);
-                }
-                catch(InterruptedException e)
-                {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-            result = runDBStmtLongById(query, orderId, "invoicingRef");
-        }
-        while(result == null && countRetry++ < maxRetry);
-        if (result == null)
-        {
-            throw new RuntimeException("no result found for " + query + " with id '" + orderId + "'!");
         }
         return result;
     }
