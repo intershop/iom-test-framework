@@ -3323,6 +3323,15 @@ DELETE  FROM "StockReservationDO" r2
         }
     }
 
+    public void setAggregateInvoicesFlagForCustomer(String shopCustomerNo, String shopName, boolean aggregateInvoices, OMSPlatformSchedules.Invoicing aggregationInterval)
+    {
+        String sqlStatementUpdateCustomer = "UPDATE \"CustomerDO\" SET \"aggregateInvoices\" = " + aggregateInvoices
+                        + ", \"invoiceAggregationIntervalDefRef\" = "+aggregationInterval.ordinal()+" WHERE \"shopCustomerNo\" = '"
+                        + shopCustomerNo + "' " + "AND \"shopRef\" IN (SELECT id FROM \"ShopDO\" WHERE \"shopName\" = '"
+                        + shopName + "') RETURNING true";
+        runDBStmt(sqlStatementUpdateCustomer, true);
+    }
+
     @Override
     public void setAggregateInvoicesFlagForCustomer(String shopCustomerNo, String shopName, boolean aggregateInvoices)
     {
@@ -3337,16 +3346,16 @@ DELETE  FROM "StockReservationDO" r2
     public boolean[] getInvoiceProcessState()
     {
         // Check whether job is configured
-        String query = "SELECT * FROM \"ScheduleDO\" WHERE \"key\" = '" + OMSPlatformSchedules.Invoicing.AGGREGATE_DISPATCH_INVOICES_DAILY + "' LIMIT 1";
+        String query = "SELECT * FROM \"ScheduleDO\" WHERE \"key\" = '" + OMSPlatformSchedules.Invoicing.AGGREGATE_DISPATCH_INVOICES_DAILY.toString() + "' LIMIT 1";
         boolean dailyJobEnabledBeforeTest = runDBStmtBoolean(query, "active", true);
 
-        query = "SELECT * FROM \"ScheduleDO\" WHERE \"key\" = '" + OMSPlatformSchedules.Invoicing.AGGREGATE_DISPATCH_INVOICES_WEEKLY + "' LIMIT 1";
+        query = "SELECT * FROM \"ScheduleDO\" WHERE \"key\" = '" + OMSPlatformSchedules.Invoicing.AGGREGATE_DISPATCH_INVOICES_WEEKLY.toString() + "' LIMIT 1";
         boolean weeklyJobEnabledBeforeTest = runDBStmtBoolean(query, "active", true);
 
-        query = "SELECT * FROM \"ScheduleDO\" WHERE \"key\" = '" + OMSPlatformSchedules.Invoicing.AGGREGATE_DISPATCH_INVOICES_MONTHLY + "' LIMIT 1";
+        query = "SELECT * FROM \"ScheduleDO\" WHERE \"key\" = '" + OMSPlatformSchedules.Invoicing.AGGREGATE_DISPATCH_INVOICES_MONTHLY.toString() + "' LIMIT 1";
         boolean monthlyJobEnabledBeforeTest = runDBStmtBoolean(query, "active", true);
 
-        query = "SELECT * FROM \"ScheduleDO\" WHERE \"key\" = '" + OMSPlatformSchedules.Invoicing.AGGREGATE_DISPATCH_INVOICES_CLEANUP_DISABLED + "' LIMIT 1";
+        query = "SELECT * FROM \"ScheduleDO\" WHERE \"key\" = '" + OMSPlatformSchedules.Invoicing.AGGREGATE_DISPATCH_INVOICES_CLEANUP_DISABLED.toString() + "' LIMIT 1";
         boolean cleanupJobEnabledBeforeTest = runDBStmtBoolean(query, "active", true);
 
         boolean[] preservedState = new boolean[] {dailyJobEnabledBeforeTest, weeklyJobEnabledBeforeTest, monthlyJobEnabledBeforeTest, cleanupJobEnabledBeforeTest};
@@ -3373,27 +3382,26 @@ DELETE  FROM "StockReservationDO" r2
         setJobActive(OMSPlatformSchedules.Invoicing.AGGREGATE_DISPATCH_INVOICES_CLEANUP_DISABLED, cleanupJobEnabled);
     }
 
-    public void setJobActive(String jobKey, boolean active)
+    public void setJobActive(OMSPlatformSchedules.Invoicing jobKey, boolean active)
     {
-        String statementEnableJob = "UPDATE \"ScheduleDO\" SET \"active\" = " + active + " WHERE \"key\" = '" + jobKey + "' RETURNING true";
+        String statementEnableJob = "UPDATE \"ScheduleDO\" SET \"active\" = " + active + " WHERE \"key\" = '" + jobKey.toString() + "' RETURNING true";
         runDBStmt(statementEnableJob, true);
     }
 
     @Override
-    public boolean triggerAggregation(String aggregationInterval)
+    public boolean triggerAggregation(OMSPlatformSchedules.Invoicing aggregationInterval)
     {
-        String jobKey;
+        OMSPlatformSchedules.Invoicing jobKey = aggregationInterval;
 
         Calendar cal = Calendar.getInstance();
 
         switch(aggregationInterval)
         {
-            case "daily":
+            case AGGREGATE_DISPATCH_INVOICES_DAILY:
                 cal.add(Calendar.DAY_OF_MONTH, -1);
                 cal.add(Calendar.MINUTE, -1);
-                jobKey = OMSPlatformSchedules.Invoicing.AGGREGATE_DISPATCH_INVOICES_DAILY;
                 break;
-            case "weekly":
+            case AGGREGATE_DISPATCH_INVOICES_WEEKLY:
                 int dayOfMonth = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
                 int lastDayOfCurrentMonth = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH);
                 if (dayOfMonth == lastDayOfCurrentMonth)
@@ -3408,15 +3416,13 @@ DELETE  FROM "StockReservationDO" r2
                 {
                     cal.add(Calendar.DAY_OF_MONTH, -7);
                     cal.add(Calendar.MINUTE, -1);
-                    jobKey = OMSPlatformSchedules.Invoicing.AGGREGATE_DISPATCH_INVOICES_WEEKLY;
                 }
                 break;
-            case "monthly":
+            case AGGREGATE_DISPATCH_INVOICES_MONTHLY:
                 cal.add(Calendar.MONTH, -1);
                 cal.add(Calendar.MINUTE, -1);
-                jobKey = OMSPlatformSchedules.Invoicing.AGGREGATE_DISPATCH_INVOICES_MONTHLY;
                 break;
-            case "endOfMonth":
+            case AGGREGATE_DISPATCH_INVOICES_CLEANUP_WEEKLY:
                 cal.add(Calendar.MONTH, -1);
                 cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
                 cal.getActualMaximum(Calendar.DAY_OF_MONTH);
@@ -3432,8 +3438,10 @@ DELETE  FROM "StockReservationDO" r2
     }
 
     @Override
-    public boolean aggregateInvoices(Optional<Date> lastRun, String aggregationKey)
+    public boolean aggregateInvoices(Optional<Date> lastRun, OMSPlatformSchedules.Invoicing aggregationInterval)
     {
+        String aggregationKey = aggregationInterval.toString();
+
         log.info("DBHandler.aggregateInvoices: lastRun " + lastRun + " aggregationKey " + aggregationKey);
 
         // Update table "ScheduleDO" to reset the field "lastRun" and start the aggregated invoices job

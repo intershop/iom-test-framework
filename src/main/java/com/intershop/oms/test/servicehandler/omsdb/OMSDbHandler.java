@@ -26,6 +26,7 @@ import com.intershop.oms.test.businessobject.communication.OMSOrderResponsePosit
 import com.intershop.oms.test.businessobject.communication.OMSReturnPosition;
 import com.intershop.oms.test.businessobject.rma.OMSWriteReturnRequestPosition;
 import com.intershop.oms.test.util.Experimental;
+import com.intershop.oms.test.util.OMSPlatformSchedules;
 
 @Experimental("Full rework of the handler is still pending")
 public interface OMSDbHandler
@@ -978,13 +979,13 @@ public interface OMSDbHandler
      * @param aggregationInterval - supported is "daily", "weekly", "monthly", or "endOfMonth"
      * @return true if the statement went through without a DB-exception
      */
-    boolean triggerAggregation(String aggregationInterval);
+    boolean triggerAggregation(OMSPlatformSchedules.Invoicing aggregationInterval);
 
     /**
      * tries to trigger the aggregation of invoices
      */
-    boolean aggregateInvoices(Optional<Date> lastRun, String aggregationKey);
-    default boolean aggregateInvoices(String aggregationKey)
+    boolean aggregateInvoices(Optional<Date> lastRun, OMSPlatformSchedules.Invoicing aggregationKey);
+    default boolean aggregateInvoices(OMSPlatformSchedules.Invoicing aggregationKey)
     {
         return aggregateInvoices(Optional.empty(), aggregationKey);
     }
