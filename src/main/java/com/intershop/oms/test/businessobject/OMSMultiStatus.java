@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import com.intershop.oms.rest.transmission.v1_1.model.Link;
+import com.intershop.oms.rest.transmission.v2_0.model.Link;
 
 /**
  * Contains multiple responses &#x60;MultiStatusResponse&#x60; for different requests, that was done within one single request.

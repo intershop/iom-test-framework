@@ -12,66 +12,25 @@
 
 package com.intershop.oms.test.businessobject.transmission;
 
-import java.util.Objects;
-
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 
+import lombok.AllArgsConstructor;
 /**
  * A transmission id and the process that should be done on this transmission.
  */
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
 @Getter
 @Setter
+@Accessors(chain = true)
+@ToString
+@AllArgsConstructor
 public class OMSTransmissionUpdate extends OMSBusinessObject
 {
-    private String id = null;
+    private String id;
+    private OMSTransmissionUpdateType updateType;
 
-    private OMSTransmissionUpdateType updateType = null;
-
-    public OMSTransmissionUpdate id(String id)
-    {
-        this.id = id;
-        return this;
-    }
-
-    public OMSTransmissionUpdate updateType(OMSTransmissionUpdateType updateType)
-    {
-        this.updateType = updateType;
-        return this;
-    }
-
-    @Override
-    public boolean equals(java.lang.Object o)
-    {
-        if (this == o)
-        {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass())
-        {
-            return false;
-        }
-        OMSTransmissionUpdate transmissionUpdate = (OMSTransmissionUpdate) o;
-        return Objects.equals(this.id, transmissionUpdate.id) && Objects.equals(this.updateType, transmissionUpdate.updateType);
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return java.util.Objects.hash(id, updateType);
-    }
-
-    @Override
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class TransmissionUpdate {\n");
-
-        sb.append("    id: ").append(toIndentedString(id)).append("\n");
-        sb.append("    updateType: ").append(toIndentedString(updateType)).append("\n");
-        sb.append("}");
-        return sb.toString();
-    }
 }

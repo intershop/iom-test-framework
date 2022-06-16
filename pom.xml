@@ -344,39 +344,23 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>Transmissions v1.1</id>
+                        <id>Transmissions v2.0</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>${project.basedir}/openapi/transmission/intershop-order-management-transmission-1.1.yaml</inputSpec>
+                            <inputSpec>${project.basedir}/openapi/transmission/intershop-order-management-transmission-2.0.yaml</inputSpec>
                             <ignoreFileOverride>${project.basedir}/.openapi-generator-ignore</ignoreFileOverride>
                             <generatorName>java</generatorName>
                             <library>jersey3</library>
-                            <configurationFile>${project.basedir}/openapi/transmission/v1_1-config.json</configurationFile>
+                            <configurationFile>${project.basedir}/openapi/transmission/v2_0-config.json</configurationFile>
                             <configOptions>
                                 <useOneOfDiscriminatorLookup>true</useOneOfDiscriminatorLookup>
                                 
                             </configOptions>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>Transmissions v1.0</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <inputSpec>${project.basedir}/openapi/transmission/intershop-order-management-transmission-1.0.yaml</inputSpec>
-                            <ignoreFileOverride>${project.basedir}/.openapi-generator-ignore</ignoreFileOverride>
-                            <generatorName>java</generatorName>
-                            <library>jersey3</library>
-                            <configurationFile>${project.basedir}/openapi/transmission/v1-config.json</configurationFile>
-                            <configOptions>
-                                <useOneOfDiscriminatorLookup>true</useOneOfDiscriminatorLookup>
-                                
-                            </configOptions>
-                        </configuration>
-                    </execution>
+
                     <execution>
                         <id>GDPR v2.9.4.0</id>
                         <goals>
@@ -535,6 +519,10 @@
                         </path>
                     </annotationProcessorPaths>
                     <showWarnings>true</showWarnings>
+                    <compilerArgs>
+                        <arg>-Amapstruct.unmappedTargetPolicy=ERROR</arg>
+                        <arg>-Amapstruct.unmappedSourcePolicy=ERROR</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
         </plugins>

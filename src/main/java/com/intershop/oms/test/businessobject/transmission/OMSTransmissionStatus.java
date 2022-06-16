@@ -1,5 +1,8 @@
 package com.intershop.oms.test.businessobject.transmission;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 /**
  * The processing status of the transmission.&lt;br&gt; &lt;br&gt;
  * &#x60;INITIAL&#x60; - Transmission is initially stored.&lt;br&gt;
@@ -17,23 +20,25 @@ package com.intershop.oms.test.businessobject.transmission;
  * submitted.&lt;br&gt; &#x60;CONFIRMED&#x60; - Transmission was confirmed from
  * the receiver.
  */
-public enum OMSTransmissionStatus
+@EqualsAndHashCode
+@ToString
+public class OMSTransmissionStatus
 {
-    INITIAL("INITIAL"),
-    DO_PULL("DO_PULL"),
-    PULLED("PULLED"),
-    DO_PUSH("DO_PUSH"),
-    PUSHED("PUSHED"),
-    DO_MANUAL_CHECK("DO_MANUAL_CHECK"),
-    CHECKED("CHECKED"),
-    DO_CANCEL("DO_CANCEL"),
-    CANCELED("CANCELED"),
-    TRANSMISSIONED("TRANSMISSIONED"),
-    CONFIRMED("CONFIRMED");
+    public static final OMSTransmissionStatus INITIAL = new OMSTransmissionStatus("INITIAL");
+    public static final OMSTransmissionStatus DO_PULL = new OMSTransmissionStatus("DO_PULL");
+    public static final OMSTransmissionStatus PULLED = new OMSTransmissionStatus("PULLED");
+    public static final OMSTransmissionStatus DO_PUSH = new OMSTransmissionStatus("DO_PUSH");
+    public static final OMSTransmissionStatus PUSHED = new OMSTransmissionStatus("PUSHED");
+    public static final OMSTransmissionStatus DO_MANUAL_CHECK = new OMSTransmissionStatus("DO_MANUAL_CHECK");
+    public static final OMSTransmissionStatus CHECKED = new OMSTransmissionStatus("CHECKED");
+    public static final OMSTransmissionStatus DO_CANCEL = new OMSTransmissionStatus("DO_CANCEL");
+    public static final OMSTransmissionStatus CANCELED = new OMSTransmissionStatus("CANCELED");
+    public static final OMSTransmissionStatus TRANSMISSIONED = new OMSTransmissionStatus("TRANSMISSIONED");
+    public static final OMSTransmissionStatus CONFIRMED = new OMSTransmissionStatus("CONFIRMED");
 
     private String value;
 
-    OMSTransmissionStatus(String value)
+    public OMSTransmissionStatus(String value)
     {
         this.value = value;
     }
@@ -43,21 +48,4 @@ public enum OMSTransmissionStatus
         return value;
     }
 
-    @Override
-    public String toString()
-    {
-        return String.valueOf(value);
-    }
-
-    public static OMSTransmissionStatus fromValue(String text)
-    {
-        for (OMSTransmissionStatus b : OMSTransmissionStatus.values())
-        {
-            if (String.valueOf(b.value).equals(text))
-            {
-                return b;
-            }
-        }
-        return null;
-    }
 }
