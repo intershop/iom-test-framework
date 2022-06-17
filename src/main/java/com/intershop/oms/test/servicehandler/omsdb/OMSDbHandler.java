@@ -974,20 +974,18 @@ public interface OMSDbHandler
     void setInvoiceProcessesActive(boolean dailyJobEnabled, boolean weeklyJobEnabled, boolean monthlyJobEnabled, boolean cleanupJobEnabled);
 
     /**
-     * tries to trigger the aggregation of invoices
+     * tries to trigger the aggregation of invoices by resetting
+     * the DB to a state that runs a specific invoice aggregation job with the next scheduler check
      *
-     * @param aggregationInterval - supported is "daily", "weekly", "monthly", or "endOfMonth"
-     * @return true if the statement went through without a DB-exception
+     * @param aggregationKey the identifier of the job
+     * @param lastRun a date when the last run of this job should be simulated (might be null, meaning the job never ran before)
+     *
+     * @return true if the job ran successfully --&gt; "nextRetryDate\" IS NULL
      */
-    boolean triggerAggregation(OMSPlatformSchedules.Invoicing aggregationInterval);
-
-    /**
-     * tries to trigger the aggregation of invoices
-     */
-    boolean aggregateInvoices(Optional<Date> lastRun, OMSPlatformSchedules.Invoicing aggregationKey);
-    default boolean aggregateInvoices(OMSPlatformSchedules.Invoicing aggregationKey)
+    boolean runInvoiceAggregationJob(OMSPlatformSchedules.Invoicing aggregationKey, Date lastRun);
+    default boolean runInvoiceAggregationJob(OMSPlatformSchedules.Invoicing aggregationKey)
     {
-        return aggregateInvoices(Optional.empty(), aggregationKey);
+        return runInvoiceAggregationJob(aggregationKey, null);
     }
 
     /**
