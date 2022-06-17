@@ -33,6 +33,7 @@ import com.intershop.oms.test.businessobject.order.OMSOrder;
 import com.intershop.oms.test.businessobject.order.OMSOrderPosition;
 import com.intershop.oms.test.businessobject.rma.OMSWriteReturnRequestPosition;
 import com.intershop.oms.test.configuration.ServiceConfiguration;
+import com.intershop.oms.test.util.InvoiceAggregationInterval;
 import com.intershop.oms.test.util.OMSPlatformSchedules;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -3324,20 +3325,11 @@ DELETE  FROM "StockReservationDO" r2
         }
     }
 
-    public void setAggregateInvoicesFlagForCustomer(String shopCustomerNo, String shopName, boolean aggregateInvoices, OMSPlatformSchedules.Invoicing aggregationInterval)
+    @Override
+    public void setAggregateInvoicesFlagForCustomer(String shopCustomerNo, String shopName, boolean aggregateInvoices, InvoiceAggregationInterval aggregationInterval)
     {
         String sqlStatementUpdateCustomer = "UPDATE \"CustomerDO\" SET \"aggregateInvoices\" = " + aggregateInvoices
                         + ", \"invoiceAggregationIntervalDefRef\" = "+aggregationInterval.ordinal()+" WHERE \"shopCustomerNo\" = '"
-                        + shopCustomerNo + "' " + "AND \"shopRef\" IN (SELECT id FROM \"ShopDO\" WHERE \"shopName\" = '"
-                        + shopName + "') RETURNING true";
-        runDBStmt(sqlStatementUpdateCustomer, true);
-    }
-
-    @Override
-    public void setAggregateInvoicesFlagForCustomer(String shopCustomerNo, String shopName, boolean aggregateInvoices)
-    {
-        String sqlStatementUpdateCustomer = "UPDATE \"CustomerDO\" SET \"aggregateInvoices\" = " + aggregateInvoices
-                        + ", \"invoiceAggregationIntervalDefRef\" = 1 " + "WHERE \"shopCustomerNo\" = '"
                         + shopCustomerNo + "' " + "AND \"shopRef\" IN (SELECT id FROM \"ShopDO\" WHERE \"shopName\" = '"
                         + shopName + "') RETURNING true";
         runDBStmt(sqlStatementUpdateCustomer, true);

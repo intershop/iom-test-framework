@@ -26,6 +26,7 @@ import com.intershop.oms.test.businessobject.communication.OMSOrderResponsePosit
 import com.intershop.oms.test.businessobject.communication.OMSReturnPosition;
 import com.intershop.oms.test.businessobject.rma.OMSWriteReturnRequestPosition;
 import com.intershop.oms.test.util.Experimental;
+import com.intershop.oms.test.util.InvoiceAggregationInterval;
 import com.intershop.oms.test.util.OMSPlatformSchedules;
 
 @Experimental("Full rework of the handler is still pending")
@@ -1019,7 +1020,7 @@ public interface OMSDbHandler
      * sets the aggregation flag for a customer
      *
      */
-    void setAggregateInvoicesFlagForCustomer(String shopCustomerNo, String shopName, boolean aggregateInvoices);
+    void setAggregateInvoicesFlagForCustomer(String shopCustomerNo, String shopName, boolean aggregateInvoices, InvoiceAggregationInterval invoiceAggregationInterval);
 
     /**
      * @param paymentState one of: INITIAL, DO_ROUTE, DO_PROCESS, PROCESS_FAILED, DO_MANUAL_APPROVE, DO_TRANSMIT, DO_CLOSE, CLOSED, CANCELED
