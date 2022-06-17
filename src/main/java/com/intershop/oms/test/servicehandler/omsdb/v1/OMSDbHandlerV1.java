@@ -3329,7 +3329,7 @@ DELETE  FROM "StockReservationDO" r2
     public void setAggregateInvoicesFlagForCustomer(String shopCustomerNo, String shopName, boolean aggregateInvoices, InvoiceAggregationInterval aggregationInterval)
     {
         String sqlStatementUpdateCustomer = "UPDATE \"CustomerDO\" SET \"aggregateInvoices\" = " + aggregateInvoices
-                        + ", \"invoiceAggregationIntervalDefRef\" = "+aggregationInterval.ordinal()+" WHERE \"shopCustomerNo\" = '"
+                        + ", \"invoiceAggregationIntervalDefRef\" = "+aggregationInterval.getId()+" WHERE \"shopCustomerNo\" = '"
                         + shopCustomerNo + "' " + "AND \"shopRef\" IN (SELECT id FROM \"ShopDO\" WHERE \"shopName\" = '"
                         + shopName + "') RETURNING true";
         runDBStmt(sqlStatementUpdateCustomer, true);
