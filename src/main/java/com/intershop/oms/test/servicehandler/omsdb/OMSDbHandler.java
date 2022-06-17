@@ -26,6 +26,8 @@ import com.intershop.oms.test.businessobject.communication.OMSOrderResponsePosit
 import com.intershop.oms.test.businessobject.communication.OMSReturnPosition;
 import com.intershop.oms.test.businessobject.rma.OMSWriteReturnRequestPosition;
 import com.intershop.oms.test.util.Experimental;
+import com.intershop.oms.test.util.InvoiceAggregationInterval;
+import com.intershop.oms.test.util.OMSPlatformSchedules;
 
 @Experimental("Full rework of the handler is still pending")
 public interface OMSDbHandler
@@ -973,20 +975,18 @@ public interface OMSDbHandler
     void setInvoiceProcessesActive(boolean dailyJobEnabled, boolean weeklyJobEnabled, boolean monthlyJobEnabled, boolean cleanupJobEnabled);
 
     /**
-     * tries to trigger the aggregation of invoices
+     * tries to trigger the aggregation of invoices by resetting
+     * the DB to a state that runs a specific invoice aggregation job with the next scheduler check
      *
-     * @param aggregationInterval - supported is "daily", "weekly", "monthly", or "endOfMonth"
-     * @return true if the statement went through without a DB-exception
+     * @param aggregationKey the identifier of the job
+     * @param lastRun a date when the last run of this job should be simulated (might be null, meaning the job never ran before)
+     *
+     * @return true if the job ran successfully --&gt; "nextRetryDate\" IS NULL
      */
-    boolean triggerAggregation(String aggregationInterval);
-
-    /**
-     * tries to trigger the aggregation of invoices
-     */
-    boolean aggregateInvoices(Optional<Date> lastRun, String aggregationKey);
-    default boolean aggregateInvoices(String aggregationKey)
+    boolean runInvoiceAggregationJob(OMSPlatformSchedules.Invoicing aggregationKey, Date lastRun);
+    default boolean runInvoiceAggregationJob(OMSPlatformSchedules.Invoicing aggregationKey)
     {
-        return aggregateInvoices(Optional.empty(), aggregationKey);
+        return runInvoiceAggregationJob(aggregationKey, null);
     }
 
     /**
@@ -1020,7 +1020,7 @@ public interface OMSDbHandler
      * sets the aggregation flag for a customer
      *
      */
-    void setAggregateInvoicesFlagForCustomer(String shopCustomerNo, String shopName, boolean aggregateInvoices);
+    void setAggregateInvoicesFlagForCustomer(String shopCustomerNo, String shopName, boolean aggregateInvoices, InvoiceAggregationInterval invoiceAggregationInterval);
 
     /**
      * @param paymentState one of: INITIAL, DO_ROUTE, DO_PROCESS, PROCESS_FAILED, DO_MANUAL_APPROVE, DO_TRANSMIT, DO_CLOSE, CLOSED, CANCELED

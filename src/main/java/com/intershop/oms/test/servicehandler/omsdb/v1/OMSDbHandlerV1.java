@@ -1,21 +1,5 @@
 package com.intershop.oms.test.servicehandler.omsdb.v1;
 
-import com.intershop.oms.test.businessobject.OMSArticle;
-import com.intershop.oms.test.businessobject.OMSShop;
-import com.intershop.oms.test.businessobject.OMSSupplier;
-import com.intershop.oms.test.businessobject.communication.OMSDispatchPosition;
-import com.intershop.oms.test.businessobject.communication.OMSOrderResponsePosition;
-import com.intershop.oms.test.businessobject.communication.OMSProduct;
-import com.intershop.oms.test.businessobject.communication.OMSReturnPosition;
-import com.intershop.oms.test.businessobject.order.OMSOrder;
-import com.intershop.oms.test.businessobject.order.OMSOrderPosition;
-import com.intershop.oms.test.businessobject.rma.OMSWriteReturnRequestPosition;
-import com.intershop.oms.test.configuration.ServiceConfiguration;
-import com.intershop.oms.test.util.OMSPlatformSchedules;
-import com.zaxxer.hikari.HikariDataSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -34,6 +18,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.intershop.oms.test.businessobject.OMSArticle;
+import com.intershop.oms.test.businessobject.OMSShop;
+import com.intershop.oms.test.businessobject.OMSSupplier;
+import com.intershop.oms.test.businessobject.communication.OMSDispatchPosition;
+import com.intershop.oms.test.businessobject.communication.OMSOrderResponsePosition;
+import com.intershop.oms.test.businessobject.communication.OMSProduct;
+import com.intershop.oms.test.businessobject.communication.OMSReturnPosition;
+import com.intershop.oms.test.businessobject.order.OMSOrder;
+import com.intershop.oms.test.businessobject.order.OMSOrderPosition;
+import com.intershop.oms.test.businessobject.rma.OMSWriteReturnRequestPosition;
+import com.intershop.oms.test.configuration.ServiceConfiguration;
+import com.intershop.oms.test.util.InvoiceAggregationInterval;
+import com.intershop.oms.test.util.OMSPlatformSchedules;
+import com.zaxxer.hikari.HikariDataSource;
 
 class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSDbHandler
 {
@@ -3324,10 +3326,10 @@ DELETE  FROM "StockReservationDO" r2
     }
 
     @Override
-    public void setAggregateInvoicesFlagForCustomer(String shopCustomerNo, String shopName, boolean aggregateInvoices)
+    public void setAggregateInvoicesFlagForCustomer(String shopCustomerNo, String shopName, boolean aggregateInvoices, InvoiceAggregationInterval aggregationInterval)
     {
         String sqlStatementUpdateCustomer = "UPDATE \"CustomerDO\" SET \"aggregateInvoices\" = " + aggregateInvoices
-                        + ", \"invoiceAggregationIntervalDefRef\" = 1 " + "WHERE \"shopCustomerNo\" = '"
+                        + ", \"invoiceAggregationIntervalDefRef\" = "+aggregationInterval.getId()+" WHERE \"shopCustomerNo\" = '"
                         + shopCustomerNo + "' " + "AND \"shopRef\" IN (SELECT id FROM \"ShopDO\" WHERE \"shopName\" = '"
                         + shopName + "') RETURNING true";
         runDBStmt(sqlStatementUpdateCustomer, true);
@@ -3337,16 +3339,16 @@ DELETE  FROM "StockReservationDO" r2
     public boolean[] getInvoiceProcessState()
     {
         // Check whether job is configured
-        String query = "SELECT * FROM \"ScheduleDO\" WHERE \"key\" = '" + OMSPlatformSchedules.Invoicing.AGGREGATE_DISPATCH_INVOICES_DAILY + "' LIMIT 1";
+        String query = "SELECT * FROM \"ScheduleDO\" WHERE \"key\" = '" + OMSPlatformSchedules.Invoicing.AGGREGATE_DISPATCH_INVOICES_DAILY.toString() + "' LIMIT 1";
         boolean dailyJobEnabledBeforeTest = runDBStmtBoolean(query, "active", true);
 
-        query = "SELECT * FROM \"ScheduleDO\" WHERE \"key\" = '" + OMSPlatformSchedules.Invoicing.AGGREGATE_DISPATCH_INVOICES_WEEKLY + "' LIMIT 1";
+        query = "SELECT * FROM \"ScheduleDO\" WHERE \"key\" = '" + OMSPlatformSchedules.Invoicing.AGGREGATE_DISPATCH_INVOICES_WEEKLY.toString() + "' LIMIT 1";
         boolean weeklyJobEnabledBeforeTest = runDBStmtBoolean(query, "active", true);
 
-        query = "SELECT * FROM \"ScheduleDO\" WHERE \"key\" = '" + OMSPlatformSchedules.Invoicing.AGGREGATE_DISPATCH_INVOICES_MONTHLY + "' LIMIT 1";
+        query = "SELECT * FROM \"ScheduleDO\" WHERE \"key\" = '" + OMSPlatformSchedules.Invoicing.AGGREGATE_DISPATCH_INVOICES_MONTHLY.toString() + "' LIMIT 1";
         boolean monthlyJobEnabledBeforeTest = runDBStmtBoolean(query, "active", true);
 
-        query = "SELECT * FROM \"ScheduleDO\" WHERE \"key\" = '" + OMSPlatformSchedules.Invoicing.AGGREGATE_DISPATCH_INVOICES_CLEANUP_DISABLED + "' LIMIT 1";
+        query = "SELECT * FROM \"ScheduleDO\" WHERE \"key\" = '" + OMSPlatformSchedules.Invoicing.AGGREGATE_DISPATCH_INVOICES_CLEANUP_DISABLED.toString() + "' LIMIT 1";
         boolean cleanupJobEnabledBeforeTest = runDBStmtBoolean(query, "active", true);
 
         boolean[] preservedState = new boolean[] {dailyJobEnabledBeforeTest, weeklyJobEnabledBeforeTest, monthlyJobEnabledBeforeTest, cleanupJobEnabledBeforeTest};
@@ -3373,75 +3375,23 @@ DELETE  FROM "StockReservationDO" r2
         setJobActive(OMSPlatformSchedules.Invoicing.AGGREGATE_DISPATCH_INVOICES_CLEANUP_DISABLED, cleanupJobEnabled);
     }
 
-    public void setJobActive(String jobKey, boolean active)
+    public void setJobActive(OMSPlatformSchedules.Invoicing jobKey, boolean active)
     {
-        String statementEnableJob = "UPDATE \"ScheduleDO\" SET \"active\" = " + active + " WHERE \"key\" = '" + jobKey + "' RETURNING true";
+        String statementEnableJob = "UPDATE \"ScheduleDO\" SET \"active\" = " + active + " WHERE \"key\" = '" + jobKey.toString() + "' RETURNING true";
         runDBStmt(statementEnableJob, true);
     }
 
     @Override
-    public boolean triggerAggregation(String aggregationInterval)
+    public boolean runInvoiceAggregationJob(OMSPlatformSchedules.Invoicing aggregationKey, Date lastRun)
     {
-        String jobKey;
-
-        Calendar cal = Calendar.getInstance();
-
-        switch(aggregationInterval)
-        {
-            case "daily":
-                cal.add(Calendar.DAY_OF_MONTH, -1);
-                cal.add(Calendar.MINUTE, -1);
-                jobKey = OMSPlatformSchedules.Invoicing.AGGREGATE_DISPATCH_INVOICES_DAILY;
-                break;
-            case "weekly":
-                int dayOfMonth = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
-                int lastDayOfCurrentMonth = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH);
-                if (dayOfMonth == lastDayOfCurrentMonth)
-                {
-                    cal.add(Calendar.MONTH, -1);
-                    cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
-                    cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-                    cal.set(Calendar.HOUR_OF_DAY, 22);
-                    jobKey = OMSPlatformSchedules.Invoicing.AGGREGATE_DISPATCH_INVOICES_CLEANUP_WEEKLY;
-                }
-                else
-                {
-                    cal.add(Calendar.DAY_OF_MONTH, -7);
-                    cal.add(Calendar.MINUTE, -1);
-                    jobKey = OMSPlatformSchedules.Invoicing.AGGREGATE_DISPATCH_INVOICES_WEEKLY;
-                }
-                break;
-            case "monthly":
-                cal.add(Calendar.MONTH, -1);
-                cal.add(Calendar.MINUTE, -1);
-                jobKey = OMSPlatformSchedules.Invoicing.AGGREGATE_DISPATCH_INVOICES_MONTHLY;
-                break;
-            case "endOfMonth":
-                cal.add(Calendar.MONTH, -1);
-                cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
-                cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-                cal.set(Calendar.HOUR_OF_DAY, 22);
-                jobKey = OMSPlatformSchedules.Invoicing.AGGREGATE_DISPATCH_INVOICES_CLEANUP_WEEKLY;
-                break;
-            default:
-                throw new RuntimeException("Unsupported aggregation interval '" + aggregationInterval + "'!");
-        }
-        Date newLastRunDate = cal.getTime();
-
-        return aggregateInvoices(Optional.of(newLastRunDate), jobKey);
-    }
-
-    @Override
-    public boolean aggregateInvoices(Optional<Date> lastRun, String aggregationKey)
-    {
-        log.info("DBHandler.aggregateInvoices: lastRun " + lastRun + " aggregationKey " + aggregationKey);
+        log.info("DBHandler.runInvoiceAggregationJob: lastRun {} aggregationKey {}", lastRun, aggregationKey);
 
         // Update table "ScheduleDO" to reset the field "lastRun" and start the aggregated invoices job
         // Set also the registerDate as it is used to determine the next run time if lastRun is not set
         String sqlStatement1;
-        if (lastRun.isPresent())
+        if (lastRun != null)
         {
-            sqlStatement1 = "UPDATE \"ScheduleDO\" SET active = true," + " \"lastRun\" = '" + lastRun.get()
+            sqlStatement1 = "UPDATE \"ScheduleDO\" SET active = true," + " \"lastRun\" = '" + lastRun
                             + "', \"registerDate\" = now() - interval '2 days' " + ", \"retryDelay\" ='30s'"
                             + ", \"countRetry\" =0 " + " WHERE \"key\" = '" + aggregationKey + "' RETURNING true";
         }
@@ -3458,34 +3408,32 @@ DELETE  FROM "StockReservationDO" r2
         {
             // Wait for job to finish and document to be created
             // TO DO: add a check on nextRetryDateCurrent and retryCount to allow more than one attempt when the schedule failed ?
-            String lastRunStr = lastRun.isPresent() ? " AND \"lastRun\" != '" + lastRun.get() + "' " : "";
-            String sqlStatementJobRun = "SELECT * FROM \"ScheduleDO\" " + "WHERE \"lockedSince\" IS NULL "
-                            + "AND \"lastRun\" IS NOT NULL " + lastRunStr + " AND \"key\" = '" + aggregationKey + "'";
-            result = doDBWaitForResult("invoice aggregation", sqlStatementJobRun, Optional.empty(), Optional.empty(),
-                            1);
+            String lastRunStr = "";
+            if (lastRun != null)
+            {
+                lastRunStr = " AND \"lastRun\" != '" + lastRun + "' ";
+            }
+            String sqlStatementJobRun = "SELECT * FROM \"ScheduleDO\" " + "WHERE \"lockedSince\" IS NULL " + "AND \"lastRun\" IS NOT NULL " + lastRunStr + " AND \"key\" = '" + aggregationKey + "'";
+            result = doDBWaitForResult("invoice aggregation", sqlStatementJobRun, Optional.empty(), Optional.empty(), 1);
             if (!result)
             {
-                log.error("DBHandler.aggregateInvoices: lastRun " + lastRun + " aggregationKey " + aggregationKey
-                                + " failed to wait for result from: " + sqlStatementJobRun);
+                log.error("DBHandler.runInvoiceAggregationJob: lastRun {} aggregationKey {} failed to wait for result from: {}", lastRun, aggregationKey, sqlStatementJobRun);
             }
         }
         else
         {
-            log.error("DBHandler.aggregateInvoices: lastRun " + lastRun + " aggregationKey " + aggregationKey
-                            + " failed to call: " + sqlStatement1);
+            log.error("DBHandler.runInvoiceAggregationJob: lastRun {} aggregationKey {} failed to call: {}", lastRun, aggregationKey, sqlStatement1);
         }
 
         if (result)
         {
             // let the schedules that show an error as active (\"nextRetryDate\" IS NOT NULL)
             // return false in such cases (will cause a test error)
-            String sqlStatementActiveFalse = "UPDATE \"ScheduleDO\" SET \"active\" = \"nextRetryDate\" IS NOT NULL"
-                            + " WHERE \"key\" = '" + aggregationKey + "'" + " RETURNING \"nextRetryDate\" IS NULL";
+            String sqlStatementActiveFalse = "UPDATE \"ScheduleDO\" SET \"active\" = \"nextRetryDate\" IS NOT NULL WHERE \"key\" = '" + aggregationKey + "'" + " RETURNING \"nextRetryDate\" IS NULL";
             result = runDBStmt(sqlStatementActiveFalse, true);
             if (!result)
             {
-                log.error("DBHandler.aggregateInvoices: lastRun " + lastRun + " aggregationKey " + aggregationKey
-                                + " returned false: " + sqlStatementActiveFalse);
+                log.error("DBHandler.aggregateInvrunInvoiceAggregationJoboices: lastRun {} aggregationKey {} returned false: {}", lastRun, aggregationKey, sqlStatementActiveFalse);
             }
         }
         return result;
