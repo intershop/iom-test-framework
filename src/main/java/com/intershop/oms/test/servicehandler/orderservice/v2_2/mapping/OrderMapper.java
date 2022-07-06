@@ -8,7 +8,7 @@ import org.mapstruct.factory.Mappers;
 import com.intershop.oms.rest.order.v2_2.model.Order;
 import com.intershop.oms.test.businessobject.order.OMSOrder;
 
-@Mapper(uses= {AddressLocationMapper.class, OrderPositionMapper.class})
+@Mapper(uses= {AddressInvoiceLocationMapper.class, AddressShippingLocationMapper.class, OrderPositionMapper.class})
 public interface OrderMapper
 {
     OrderMapper INSTANCE = Mappers.getMapper(OrderMapper.class);
