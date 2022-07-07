@@ -48,6 +48,11 @@
         <jsr311-api-version>1.1.1</jsr311-api-version>
         <!-- activate m2e-apt in eclipse for better mapstruct integration -->
         <m2e.apt.activation>jdt_apt</m2e.apt.activation>
+        <jersey-version>3.0.4</jersey-version>
+        <jackson-version>2.13.2</jackson-version>
+        <jackson-databind-version>2.13.2.2</jackson-databind-version>
+        <jackson-databind-nullable-version>0.2.3</jackson-databind-nullable-version>
+        <jakarta-annotation-version>2.1.0</jakarta-annotation-version>
     </properties>
 
     <dependencies>
@@ -85,12 +90,12 @@
         <dependency>
             <groupId>io.smallrye.config</groupId>
             <artifactId>smallrye-config</artifactId>
-            <version>2.9.1</version>
+            <version>3.0.0-RC2</version>
         </dependency>
         <dependency>
             <groupId>io.smallrye.config</groupId>
             <artifactId>smallrye-config-source-yaml</artifactId>
-            <version>2.9.1</version>
+            <version>3.0.0-RC2</version>
         </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>
@@ -120,7 +125,7 @@
         <dependency>
             <groupId>jakarta.annotation</groupId>
             <artifactId>jakarta.annotation-api</artifactId>
-            <version>1.3.5</version>
+            <version>${jakarta-annotation-version}</version>
         </dependency>
         <dependency>
             <groupId>javax.ws.rs</groupId>
@@ -131,6 +136,64 @@
             <groupId>javax.ws.rs</groupId>
             <artifactId>javax.ws.rs-api</artifactId>
             <version>${javax.ws.rs-api-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>${jersey-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
+            <version>${jersey-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-multipart</artifactId>
+            <version>${jersey-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+            <version>${jersey-version}</version>
+        </dependency>
+
+        <!-- JSON processing: jackson -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson-databind-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openapitools</groupId>
+            <artifactId>jackson-databind-nullable</artifactId>
+            <version>${jackson-databind-nullable-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>${jackson-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+            <version>${jakarta-annotation-version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.connectors</groupId>
+            <artifactId>jersey-apache-connector</artifactId>
+            <version>${jersey-version}</version>
         </dependency>
         <dependency>
             <groupId>org.mapstruct</groupId>
@@ -177,20 +240,6 @@
                 <version>${openapi.generator.version}</version>
                 <executions>
                     <execution>
-                        <id>Order v2.2</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <inputSpec>${project.basedir}/openapi/order/intershop-order-management-order-2.2.yaml</inputSpec>
-                            <ignoreFileOverride>${project.basedir}/.openapi-generator-ignore</ignoreFileOverride>
-                            <generatorName>java</generatorName>
-                            <library>okhttp-gson</library>
-                            <configurationFile>${project.basedir}/openapi/order/v2_2-config.json</configurationFile>
-                            <generateSupportingFiles>true</generateSupportingFiles>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>Order v2.1</id>
                         <goals>
                             <goal>generate</goal>
@@ -199,8 +248,12 @@
                             <inputSpec>${project.basedir}/openapi/order/intershop-order-management-order-2.1.yaml</inputSpec>
                             <ignoreFileOverride>${project.basedir}/.openapi-generator-ignore</ignoreFileOverride>
                             <generatorName>java</generatorName>
-                            <library>okhttp-gson</library>
+                            <library>jersey3</library>
                             <configurationFile>${project.basedir}/openapi/order/v2_1-config.json</configurationFile>
+                            <configOptions>
+                                <useOneOfDiscriminatorLookup>true</useOneOfDiscriminatorLookup>
+                                
+                            </configOptions>
                         </configuration>
                     </execution>
                     <execution>
@@ -212,8 +265,12 @@
                             <inputSpec>${project.basedir}/openapi/order/intershop-order-management-order-2.0.yaml</inputSpec>
                             <ignoreFileOverride>${project.basedir}/.openapi-generator-ignore</ignoreFileOverride>
                             <generatorName>java</generatorName>
-                            <library>okhttp-gson</library>
+                            <library>jersey3</library>
                             <configurationFile>${project.basedir}/openapi/order/v2_0-config.json</configurationFile>
+                            <configOptions>
+                                <useOneOfDiscriminatorLookup>true</useOneOfDiscriminatorLookup>
+                                
+                            </configOptions>
                         </configuration>
                     </execution>
                     <execution>
@@ -225,8 +282,12 @@
                             <inputSpec>${project.basedir}/openapi/schedule/intershop-order-management-schedule-1.0.yaml</inputSpec>
                             <ignoreFileOverride>${project.basedir}/.openapi-generator-ignore</ignoreFileOverride>
                             <generatorName>java</generatorName>
-                            <library>okhttp-gson</library>
+                            <library>jersey3</library>
                             <configurationFile>${project.basedir}/openapi/schedule/v1-config.json</configurationFile>
+                            <configOptions>
+                                <useOneOfDiscriminatorLookup>true</useOneOfDiscriminatorLookup>
+                                
+                            </configOptions>
                         </configuration>
                     </execution>
                     <execution>
@@ -238,8 +299,12 @@
                             <inputSpec>${project.basedir}/openapi/atp/intershop-order-management-atp-2.0.yaml</inputSpec>
                             <ignoreFileOverride>${project.basedir}/.openapi-generator-ignore</ignoreFileOverride>
                             <generatorName>java</generatorName>
-                            <library>okhttp-gson</library>
+                            <library>jersey3</library>
                             <configurationFile>${project.basedir}/openapi/atp/v2-config.json</configurationFile>
+                            <configOptions>
+                                <useOneOfDiscriminatorLookup>true</useOneOfDiscriminatorLookup>
+                                
+                            </configOptions>
                         </configuration>
                     </execution>
                     <execution>
@@ -251,8 +316,13 @@
                             <inputSpec>${project.basedir}/openapi/rma/intershop-order-management-rma-2.10.yaml</inputSpec>
                             <ignoreFileOverride>${project.basedir}/.openapi-generator-ignore</ignoreFileOverride>
                             <generatorName>java</generatorName>
-                            <library>okhttp-gson</library>
+                            <library>jersey3</library>
                             <configurationFile>${project.basedir}/openapi/rma/v2_10-config.json</configurationFile>
+                            <configOptions>
+                                <useOneOfDiscriminatorLookup>true</useOneOfDiscriminatorLookup>
+                                
+                            </configOptions>
+
                         </configuration>
                     </execution>
                     <execution>
@@ -264,8 +334,12 @@
                             <inputSpec>${project.basedir}/openapi/rma/intershop-order-management-rma-2.9.4.0.yaml</inputSpec>
                             <ignoreFileOverride>${project.basedir}/.openapi-generator-ignore</ignoreFileOverride>
                             <generatorName>java</generatorName>
-                            <library>okhttp-gson</library>
+                            <library>jersey3</library>
                             <configurationFile>${project.basedir}/openapi/rma/v2-config.json</configurationFile>
+                            <configOptions>
+                                <useOneOfDiscriminatorLookup>true</useOneOfDiscriminatorLookup>
+                                
+                            </configOptions>
                         </configuration>
                     </execution>
                     <execution>
@@ -277,8 +351,12 @@
                             <inputSpec>${project.basedir}/openapi/orderstate/intershop-order-management-orderstate-1.0.yaml</inputSpec>
                             <ignoreFileOverride>${project.basedir}/.openapi-generator-ignore</ignoreFileOverride>
                             <generatorName>java</generatorName>
-                            <library>okhttp-gson</library>
+                            <library>jersey3</library>
                             <configurationFile>${project.basedir}/openapi/orderstate/v1-config.json</configurationFile>
+                            <configOptions>
+                                <useOneOfDiscriminatorLookup>true</useOneOfDiscriminatorLookup>
+                                
+                            </configOptions>
                         </configuration>
                     </execution>
                     <execution>
@@ -290,8 +368,12 @@
                             <inputSpec>${project.basedir}/openapi/transmission/intershop-order-management-transmission-1.1.yaml</inputSpec>
                             <ignoreFileOverride>${project.basedir}/.openapi-generator-ignore</ignoreFileOverride>
                             <generatorName>java</generatorName>
-                            <library>okhttp-gson</library>
+                            <library>jersey3</library>
                             <configurationFile>${project.basedir}/openapi/transmission/v1_1-config.json</configurationFile>
+                            <configOptions>
+                                <useOneOfDiscriminatorLookup>true</useOneOfDiscriminatorLookup>
+                                
+                            </configOptions>
                         </configuration>
                     </execution>
                     <execution>
@@ -303,8 +385,12 @@
                             <inputSpec>${project.basedir}/openapi/transmission/intershop-order-management-transmission-1.0.yaml</inputSpec>
                             <ignoreFileOverride>${project.basedir}/.openapi-generator-ignore</ignoreFileOverride>
                             <generatorName>java</generatorName>
-                            <library>okhttp-gson</library>
+                            <library>jersey3</library>
                             <configurationFile>${project.basedir}/openapi/transmission/v1-config.json</configurationFile>
+                            <configOptions>
+                                <useOneOfDiscriminatorLookup>true</useOneOfDiscriminatorLookup>
+                                
+                            </configOptions>
                         </configuration>
                     </execution>
                     <execution>
@@ -316,8 +402,12 @@
                             <inputSpec>${project.basedir}/openapi/gdpr/intershop-order-management-gdpr-2.9.4.0.yaml</inputSpec>
                             <ignoreFileOverride>${project.basedir}/.openapi-generator-ignore</ignoreFileOverride>
                             <generatorName>java</generatorName>
-                            <library>okhttp-gson</library>
+                            <library>jersey3</library>
                             <configurationFile>${project.basedir}/openapi/gdpr/v2-config.json</configurationFile>
+                            <configOptions>
+                                <useOneOfDiscriminatorLookup>true</useOneOfDiscriminatorLookup>
+                                
+                            </configOptions>
                         </configuration>
                     </execution>
                     <execution>
@@ -329,8 +419,12 @@
                             <inputSpec>${project.basedir}/openapi/communication/intershop-order-management-communication-2.11.yaml</inputSpec>
                             <ignoreFileOverride>${project.basedir}/.openapi-generator-ignore</ignoreFileOverride>
                             <generatorName>java</generatorName>
-                            <library>okhttp-gson</library>
+                            <library>jersey3</library>
                             <configurationFile>${project.basedir}/openapi/communication/v2_11-config.json</configurationFile>
+                            <configOptions>
+                                <useOneOfDiscriminatorLookup>true</useOneOfDiscriminatorLookup>
+                                
+                            </configOptions>
                         </configuration>
                     </execution>
                     <execution>
@@ -342,8 +436,12 @@
                             <inputSpec>${project.basedir}/openapi/communication/intershop-order-management-communication-2.10.yaml</inputSpec>
                             <ignoreFileOverride>${project.basedir}/.openapi-generator-ignore</ignoreFileOverride>
                             <generatorName>java</generatorName>
-                            <library>okhttp-gson</library>
+                            <library>jersey3</library>
                             <configurationFile>${project.basedir}/openapi/communication/v2_10-config.json</configurationFile>
+                            <configOptions>
+                                <useOneOfDiscriminatorLookup>true</useOneOfDiscriminatorLookup>
+                                
+                            </configOptions>
                         </configuration>
                     </execution>
                     <execution>
@@ -355,10 +453,33 @@
                             <inputSpec>${project.basedir}/openapi/communication/intershop-order-management-communication-2.9.4.0.yaml</inputSpec>
                             <ignoreFileOverride>${project.basedir}/.openapi-generator-ignore</ignoreFileOverride>
                             <generatorName>java</generatorName>
-                            <library>okhttp-gson</library>
+                            <library>jersey3</library>
                             <configurationFile>${project.basedir}/openapi/communication/v2-config.json</configurationFile>
+                            <configOptions>
+                                <useOneOfDiscriminatorLookup>true</useOneOfDiscriminatorLookup>
+                                
+                            </configOptions>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>Order v2.2</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/openapi/order/intershop-order-management-order-2.2.yaml</inputSpec>
+                            <ignoreFileOverride>${project.basedir}/.openapi-generator-ignore</ignoreFileOverride>
+                            <generatorName>java</generatorName>
+                            <library>jersey3</library>
+                            <configurationFile>${project.basedir}/openapi/order/v2_2-config.json</configurationFile>
+                            <configOptions>
+                                <useOneOfDiscriminatorLookup>true</useOneOfDiscriminatorLookup>
+                                
+                            </configOptions>
+                            <generateSupportingFiles>true</generateSupportingFiles>
+                        </configuration>
+                    </execution>
+
                 </executions>
             </plugin>
             <plugin>

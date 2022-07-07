@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.intershop.oms.rest.shared.ApiClient;
 import com.intershop.oms.rest.shared.auth.HttpBasicAuth;
 import com.intershop.oms.rest.shared.auth.HttpBearerAuth;
@@ -25,6 +26,12 @@ public abstract class RESTServiceHandler implements OMSServiceHandler
     protected String defaultBasePath = null;
 
     protected static final String HTTP_HEADER_LOCATION = "Location";
+
+    static
+    {
+        // JSON json = new JSON();
+        // JSON.getGson().newBuilder().typ
+    }
 
     /**
      * @param logger
@@ -46,7 +53,8 @@ public abstract class RESTServiceHandler implements OMSServiceHandler
         }
         else
         {
-            this.apiClient = getBasicAuthApiClient(credentialsConfig.username().get(), credentialsConfig.password().get());
+            this.apiClient = getBasicAuthApiClient(credentialsConfig.username().get(),
+                            credentialsConfig.password().get());
         }
 
         ServiceEndpoint endpoint = serviceConfig.serviceEndpoint().orElseGet(
@@ -54,7 +62,7 @@ public abstract class RESTServiceHandler implements OMSServiceHandler
                                         ? defaultEndpoint.get().serviceEndpoint().get()
                                         : null);
 
-        if(endpoint == null)
+        if (endpoint == null)
         {
             throw new RuntimeException("neither service config nor default-endpoint are configured");
         }
@@ -142,13 +150,21 @@ public abstract class RESTServiceHandler implements OMSServiceHandler
     protected static ApiClient getBasicAuthApiClient(String wsUser, String wsPassword)
     {
 
-        ApiClient apiClient = new ApiClient();
+        ApiClient apiClient = createApiClient();
         apiClient.setConnectTimeout(5000);
         apiClient.setReadTimeout(30000);
         apiClient.setUsername(wsUser);
         apiClient.setPassword(wsPassword);
 
         return apiClient;
+    }
+
+    private static ApiClient createApiClient()
+    {
+        // reconfigure API clients to ignore unknown properties
+        ApiClient client = new ApiClient();
+        client.getJSON().getMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        return client;
     }
 
     /**
@@ -160,7 +176,7 @@ public abstract class RESTServiceHandler implements OMSServiceHandler
     protected static ApiClient getBearerAuthApiClient(String wsUser)
     {
 
-        ApiClient apiClient = new ApiClient();
+        ApiClient apiClient = createApiClient();
         apiClient.setConnectTimeout(5000);
         apiClient.setReadTimeout(30000);
 

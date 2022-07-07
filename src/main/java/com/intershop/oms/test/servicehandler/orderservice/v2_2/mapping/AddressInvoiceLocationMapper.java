@@ -5,7 +5,6 @@ import org.mapstruct.factory.Mappers;
 
 import com.intershop.oms.rest.order.v2_2.model.AddressInvoiceLocation;
 import com.intershop.oms.rest.order.v2_2.model.AddressLocationPOBox;
-import com.intershop.oms.rest.order.v2_2.model.AddressLocationPackstation;
 import com.intershop.oms.rest.order.v2_2.model.AddressLocationStreet;
 import com.intershop.oms.test.businessobject.address.OMSAddressLocation;
 import com.intershop.oms.test.businessobject.address.OMSAddressLocationPOBox;
@@ -30,10 +29,10 @@ public interface AddressInvoiceLocationMapper
             return (T)AddressLocationStreetMapper.INSTANCE
                             .fromApiAddressLocationStreet((AddressLocationStreet)actualInstance);
         }
-        else if (actualInstance instanceof AddressLocationPackstation)
+        else if (actualInstance instanceof AddressLocationPOBox)
         {
-            return (T)AddressLocationPackstationMapper.INSTANCE
-                            .fromApiAddressLocationPackstation((AddressLocationPackstation)actualInstance);
+            return (T)AddressLocationPOBoxMapper.INSTANCE
+                            .fromApiAddressLocationPOBox((AddressLocationPOBox)actualInstance);
         }
 
         throw new RuntimeException(
@@ -66,5 +65,25 @@ public interface AddressInvoiceLocationMapper
             throw new RuntimeException("Unknown source type " + omsAddressLocation.getClass().getSimpleName());
         }
 
+    }
+
+    public static void main(String[] args) throws Exception
+    {
+//        JSON x = new JSON();
+//        String json = "{\"street\":\"Intershop Tower\",\r\n"
+//                        + "            \"streetNumber\":\"1A\",\r\n"
+//                        + "            \"city\":\"Jena\",\r\n"
+//                        + "            \"postCode\":\"07740\",\r\n"
+//                        + "            \"countryCode\":\"DEU\",\r\n"
+//                        + "            \"additions\":[\r\n"
+//                        + "               \"22. Etage\",\r\n"
+//                        + "               \"Konfi Süd\"\r\n"
+//                        + "            ],\r\n"
+//                        + "            \"type\":\"AddressLocationStreet\"\r\n"
+//                        + "         }";
+//        //AddressInvoiceLocation loc = AddressInvoiceLocation.fromJson(json);
+//        Gson gson = JSON.getGson();
+//        AddressInvoiceLocation loc = gson.fromJson(json, AddressInvoiceLocation.class);
+//        System.out.println(gson.toJson(loc));
     }
 }
