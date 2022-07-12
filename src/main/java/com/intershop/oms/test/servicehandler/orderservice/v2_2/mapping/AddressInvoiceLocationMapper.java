@@ -10,6 +10,9 @@ import com.intershop.oms.test.businessobject.address.OMSAddressLocation;
 import com.intershop.oms.test.businessobject.address.OMSAddressLocationPOBox;
 import com.intershop.oms.test.businessobject.address.OMSAddressLocationStreet;
 
+/**
+ * pack stations cannot be invoice addresses
+ */
 @Mapper
 public interface AddressInvoiceLocationMapper
 {
@@ -35,13 +38,10 @@ public interface AddressInvoiceLocationMapper
                             .fromApiAddressLocationPOBox((AddressLocationPOBox)actualInstance);
         }
 
-        throw new RuntimeException(
-                        "Unexpected address location type on shipping address: " + actualInstance.getClass());
-
+        throw new RuntimeException("Unexpected address location type on shipping address: " + actualInstance.getClass());
     }
 
-    default public <S extends OMSAddressLocation> AddressInvoiceLocation toApiAddressInvoiceLocation(
-                    S omsAddressLocation)
+    default public <S extends OMSAddressLocation> AddressInvoiceLocation toApiAddressInvoiceLocation(S omsAddressLocation)
     {
         if (omsAddressLocation == null)
         {
@@ -64,26 +64,5 @@ public interface AddressInvoiceLocationMapper
         {
             throw new RuntimeException("Unknown source type " + omsAddressLocation.getClass().getSimpleName());
         }
-
-    }
-
-    public static void main(String[] args) throws Exception
-    {
-//        JSON x = new JSON();
-//        String json = "{\"street\":\"Intershop Tower\",\r\n"
-//                        + "            \"streetNumber\":\"1A\",\r\n"
-//                        + "            \"city\":\"Jena\",\r\n"
-//                        + "            \"postCode\":\"07740\",\r\n"
-//                        + "            \"countryCode\":\"DEU\",\r\n"
-//                        + "            \"additions\":[\r\n"
-//                        + "               \"22. Etage\",\r\n"
-//                        + "               \"Konfi Süd\"\r\n"
-//                        + "            ],\r\n"
-//                        + "            \"type\":\"AddressLocationStreet\"\r\n"
-//                        + "         }";
-//        //AddressInvoiceLocation loc = AddressInvoiceLocation.fromJson(json);
-//        Gson gson = JSON.getGson();
-//        AddressInvoiceLocation loc = gson.fromJson(json, AddressInvoiceLocation.class);
-//        System.out.println(gson.toJson(loc));
     }
 }
