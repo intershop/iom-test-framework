@@ -31,12 +31,6 @@ public abstract class RESTServiceHandler implements OMSServiceHandler
 
     protected static final String HTTP_HEADER_LOCATION = "Location";
 
-    static
-    {
-        // JSON json = new JSON();
-        // JSON.getGson().newBuilder().typ
-    }
-
     /**
      * @param logger
      *            <b>NOTE:</b> this is not being used yet - the intention is to
@@ -170,6 +164,7 @@ public abstract class RESTServiceHandler implements OMSServiceHandler
         ApiClient client = new ExtendedApiClient();
         client.getJSON().getMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
+        // force the usage of custom deserializers since the generated ones can't handle the missing type discriminator...
         client.getJSON().getMapper().addMixIn(OrderPositionReturned.class, OrderPositionReturnedMixIn.class);
         client.getJSON().getMapper().addMixIn(OrderStateOrderPositionReturned.class, OrderStateOrderPositionReturnedMixIn.class);
 

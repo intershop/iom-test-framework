@@ -16,6 +16,10 @@ import com.intershop.oms.rest.orderstate.v1.model.OrderStateOrderPositionReturne
 import com.intershop.oms.rest.orderstate.v1.model.OrderStateOrderPositionReturnedQuantities;
 import com.intershop.oms.rest.orderstate.v1.model.OrderStateOrderPositionReturnedUnits;
 
+/**
+ * a slightly changed deserializer that can handle the differences between OrderPositionsReturned
+ * using quantities or units without the need to specify a type discriminator
+ */
 public class OrderStateOrderPositionReturnedDeserializer extends StdDeserializer<OrderStateOrderPositionReturned>
 {
     private static final long serialVersionUID = 6044487482537011757L;
