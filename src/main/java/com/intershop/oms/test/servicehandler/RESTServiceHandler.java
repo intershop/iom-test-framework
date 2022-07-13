@@ -72,10 +72,11 @@ public abstract class RESTServiceHandler implements OMSServiceHandler
         defaultPort = endpoint.port().orElse(80);
         defaultBasePath = basePath;
 
-        if (ConfigBuilder.getDefault().clientLogging())
-        {
-            this.apiClient.setDebugging(true);
-        }
+//        if (ConfigBuilder.getDefault().clientLogging())
+//        {
+//            //this.apiClient.setDebugging(true);
+//            apiClient.fe
+//        }
 
         apiClient.setBasePath(defaultProtocol + "://" + defaultHost + ":" + defaultPort + defaultBasePath);
 
@@ -162,8 +163,9 @@ public abstract class RESTServiceHandler implements OMSServiceHandler
     private static ApiClient createApiClient()
     {
         // reconfigure API clients to ignore unknown properties
-        ApiClient client = new ApiClient();
+        ApiClient client = new ExtendedApiClient();
         client.getJSON().getMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
         return client;
     }
 
