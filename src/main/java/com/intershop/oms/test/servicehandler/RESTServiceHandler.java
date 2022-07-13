@@ -7,12 +7,16 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.intershop.oms.rest.order.v2_0.model.OrderPositionReturned;
+import com.intershop.oms.rest.orderstate.v1.model.OrderStateOrderPositionReturned;
 import com.intershop.oms.rest.shared.ApiClient;
 import com.intershop.oms.rest.shared.auth.HttpBasicAuth;
 import com.intershop.oms.rest.shared.auth.HttpBearerAuth;
 import com.intershop.oms.test.configuration.ConfigBuilder;
 import com.intershop.oms.test.configuration.ServiceConfiguration;
 import com.intershop.oms.test.configuration.ServiceEndpoint;
+import com.intershop.oms.test.servicehandler.orderstateservice.v2_0.mapping.OrderPositionReturnedMixIn;
+import com.intershop.oms.test.servicehandler.orderstateservice.v1.mapping.OrderStateOrderPositionReturnedMixIn;
 import com.intershop.oms.test.util.AuthTokenUtil;
 
 public abstract class RESTServiceHandler implements OMSServiceHandler
@@ -165,6 +169,9 @@ public abstract class RESTServiceHandler implements OMSServiceHandler
         // reconfigure API clients to ignore unknown properties
         ApiClient client = new ExtendedApiClient();
         client.getJSON().getMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        client.getJSON().getMapper().addMixIn(OrderPositionReturned.class, OrderPositionReturnedMixIn.class);
+        client.getJSON().getMapper().addMixIn(OrderStateOrderPositionReturned.class, OrderStateOrderPositionReturnedMixIn.class);
 
         return client;
     }
