@@ -1,11 +1,7 @@
 package com.intershop.oms.test.businessobject.address;
 
-import java.io.IOException;
 import java.util.Objects;
 
-import com.google.gson.TypeAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 
 import lombok.Getter;
@@ -48,22 +44,6 @@ public class OMSAddressReceiver extends OMSBusinessObject
                 }
             }
             throw new IllegalArgumentException("Unexpected value '" + value + "'");
-        }
-
-        public static class Adapter extends TypeAdapter<OMSAddressReceiverTypeEnum>
-        {
-            @Override
-            public void write(final JsonWriter jsonWriter, final OMSAddressReceiverTypeEnum enumeration) throws IOException
-            {
-                jsonWriter.value(enumeration.getValue());
-            }
-
-            @Override
-            public OMSAddressReceiverTypeEnum read(final JsonReader jsonReader) throws IOException
-            {
-                String value =  jsonReader.nextString();
-                return OMSAddressReceiverTypeEnum.fromValue(value);
-            }
         }
     }
 

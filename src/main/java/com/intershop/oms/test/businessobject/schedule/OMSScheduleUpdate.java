@@ -1,14 +1,10 @@
 package com.intershop.oms.test.businessobject.schedule;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import com.google.gson.TypeAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 
 /**
@@ -80,22 +76,6 @@ public class OMSScheduleUpdate extends OMSBusinessObject
                 }
             }
             throw new IllegalArgumentException("Unexpected value '" + value + "'");
-        }
-
-        public static class Adapter extends TypeAdapter<ResetListEnum>
-        {
-            @Override
-            public void write(final JsonWriter jsonWriter, final ResetListEnum enumeration) throws IOException
-            {
-                jsonWriter.value(enumeration.getValue());
-            }
-
-            @Override
-            public ResetListEnum read(final JsonReader jsonReader) throws IOException
-            {
-                String value = jsonReader.nextString();
-                return ResetListEnum.fromValue(value);
-            }
         }
     }
 
