@@ -4,9 +4,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import com.google.gson.TypeAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 
 import lombok.Getter;
@@ -49,22 +46,6 @@ public class OMSPromotion extends OMSBusinessObject
                 }
             }
             throw new IllegalArgumentException("Unexpected value '" + value + "'");
-        }
-
-        public static class Adapter extends TypeAdapter<OMSPromotionValueTypeEnum>
-        {
-            @Override
-            public void write(final JsonWriter jsonWriter, final OMSPromotionValueTypeEnum enumeration) throws IOException
-            {
-                jsonWriter.value(enumeration.getValue());
-            }
-
-            @Override
-            public OMSPromotionValueTypeEnum read(final JsonReader jsonReader) throws IOException
-            {
-                String value =  jsonReader.nextString();
-                return OMSPromotionValueTypeEnum.fromValue(value);
-            }
         }
     }
 

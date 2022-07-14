@@ -6,12 +6,17 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.intershop.oms.rest.order.v2_0.model.OrderPositionReturned;
+import com.intershop.oms.rest.orderstate.v1.model.OrderStateOrderPositionReturned;
 import com.intershop.oms.rest.shared.ApiClient;
 import com.intershop.oms.rest.shared.auth.HttpBasicAuth;
 import com.intershop.oms.rest.shared.auth.HttpBearerAuth;
 import com.intershop.oms.test.configuration.ConfigBuilder;
 import com.intershop.oms.test.configuration.ServiceConfiguration;
 import com.intershop.oms.test.configuration.ServiceEndpoint;
+import com.intershop.oms.test.servicehandler.orderstateservice.v2_0.mapping.OrderPositionReturnedMixIn;
+import com.intershop.oms.test.servicehandler.orderstateservice.v1.mapping.OrderStateOrderPositionReturnedMixIn;
 import com.intershop.oms.test.util.AuthTokenUtil;
 
 public abstract class RESTServiceHandler implements OMSServiceHandler
@@ -46,7 +51,8 @@ public abstract class RESTServiceHandler implements OMSServiceHandler
         }
         else
         {
-            this.apiClient = getBasicAuthApiClient(credentialsConfig.username().get(), credentialsConfig.password().get());
+            this.apiClient = getBasicAuthApiClient(credentialsConfig.username().get(),
+                            credentialsConfig.password().get());
         }
 
         ServiceEndpoint endpoint = serviceConfig.serviceEndpoint().orElseGet(
@@ -54,7 +60,7 @@ public abstract class RESTServiceHandler implements OMSServiceHandler
                                         ? defaultEndpoint.get().serviceEndpoint().get()
                                         : null);
 
-        if(endpoint == null)
+        if (endpoint == null)
         {
             throw new RuntimeException("neither service config nor default-endpoint are configured");
         }
@@ -64,10 +70,11 @@ public abstract class RESTServiceHandler implements OMSServiceHandler
         defaultPort = endpoint.port().orElse(80);
         defaultBasePath = basePath;
 
-        if (ConfigBuilder.getDefault().clientLogging())
-        {
-            this.apiClient.setDebugging(true);
-        }
+//        if (ConfigBuilder.getDefault().clientLogging())
+//        {
+//            //this.apiClient.setDebugging(true);
+//            apiClient.fe
+//        }
 
         apiClient.setBasePath(defaultProtocol + "://" + defaultHost + ":" + defaultPort + defaultBasePath);
 
@@ -142,13 +149,26 @@ public abstract class RESTServiceHandler implements OMSServiceHandler
     protected static ApiClient getBasicAuthApiClient(String wsUser, String wsPassword)
     {
 
-        ApiClient apiClient = new ApiClient();
+        ApiClient apiClient = createApiClient();
         apiClient.setConnectTimeout(5000);
         apiClient.setReadTimeout(30000);
         apiClient.setUsername(wsUser);
         apiClient.setPassword(wsPassword);
 
         return apiClient;
+    }
+
+    private static ApiClient createApiClient()
+    {
+        // reconfigure API clients to ignore unknown properties
+        ApiClient client = new ExtendedApiClient();
+        client.getJSON().getMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        // force the usage of custom deserializers since the generated ones can't handle the missing type discriminator...
+        client.getJSON().getMapper().addMixIn(OrderPositionReturned.class, OrderPositionReturnedMixIn.class);
+        client.getJSON().getMapper().addMixIn(OrderStateOrderPositionReturned.class, OrderStateOrderPositionReturnedMixIn.class);
+
+        return client;
     }
 
     /**
@@ -160,7 +180,7 @@ public abstract class RESTServiceHandler implements OMSServiceHandler
     protected static ApiClient getBearerAuthApiClient(String wsUser)
     {
 
-        ApiClient apiClient = new ApiClient();
+        ApiClient apiClient = createApiClient();
         apiClient.setConnectTimeout(5000);
         apiClient.setReadTimeout(30000);
 

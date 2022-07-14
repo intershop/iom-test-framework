@@ -1,11 +1,7 @@
 package com.intershop.oms.test.businessobject.order;
 
-import java.io.IOException;
 import java.util.Objects;
 
-import com.google.gson.TypeAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 
 import lombok.Getter;
@@ -48,22 +44,6 @@ public class OMSCustomerData extends OMSBusinessObject
                 }
             }
             throw new IllegalArgumentException("Unexpected value '" + value + "'");
-        }
-
-        public static class Adapter extends TypeAdapter<OMSCustomerDataTypeEnum>
-        {
-            @Override
-            public void write(final JsonWriter jsonWriter, final OMSCustomerDataTypeEnum enumeration) throws IOException
-            {
-                jsonWriter.value(enumeration.getValue());
-            }
-
-            @Override
-            public OMSCustomerDataTypeEnum read(final JsonReader jsonReader) throws IOException
-            {
-                String value =  jsonReader.nextString();
-                return OMSCustomerDataTypeEnum.fromValue(value);
-            }
         }
     }
 

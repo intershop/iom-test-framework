@@ -1,12 +1,8 @@
 package com.intershop.oms.test.businessobject.order;
 
-import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
-import com.google.gson.TypeAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 
 import lombok.Getter;
@@ -51,22 +47,6 @@ public class OMSDeliveryDate extends OMSBusinessObject
                 }
             }
             throw new IllegalArgumentException("Unexpected value '" + value + "'");
-        }
-
-        public static class Adapter extends TypeAdapter<OMSDeliveryDateTypeEnum>
-        {
-            @Override
-            public void write(final JsonWriter jsonWriter, final OMSDeliveryDateTypeEnum enumeration) throws IOException
-            {
-                jsonWriter.value(enumeration.getValue());
-            }
-
-            @Override
-            public OMSDeliveryDateTypeEnum read(final JsonReader jsonReader) throws IOException
-            {
-                String value =  jsonReader.nextString();
-                return OMSDeliveryDateTypeEnum.fromValue(value);
-            }
         }
     }
 

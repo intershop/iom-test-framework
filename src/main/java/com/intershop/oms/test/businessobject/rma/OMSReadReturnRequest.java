@@ -1,14 +1,10 @@
 package com.intershop.oms.test.businessobject.rma;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import com.google.gson.TypeAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 import com.intershop.oms.test.businessobject.OMSLink;
 
@@ -55,20 +51,6 @@ public class OMSReadReturnRequest extends OMSBusinessObject
                 }
             }
             throw new IllegalArgumentException("Unexpected value '" + value + "'");
-        }
-
-        public static class Adapter extends TypeAdapter<TypeEnum>
-        {
-            @Override
-            public void write(final JsonWriter jsonWriter, final TypeEnum enumeration) throws IOException {
-                jsonWriter.value(enumeration.getValue());
-            }
-
-            @Override
-            public TypeEnum read(final JsonReader jsonReader) throws IOException {
-                String value = jsonReader.nextString();
-                return TypeEnum.fromValue(value);
-            }
         }
     }
 
@@ -136,22 +118,6 @@ public class OMSReadReturnRequest extends OMSBusinessObject
             }
             throw new IllegalArgumentException("Unexpected value '" + value + "'");
         }
-
-        public static class Adapter extends TypeAdapter<StatusEnum>
-        {
-            @Override
-            public void write(final JsonWriter jsonWriter, final StatusEnum enumeration) throws IOException
-            {
-                jsonWriter.value(enumeration.getValue());
-            }
-
-            @Override
-            public StatusEnum read(final JsonReader jsonReader) throws IOException
-            {
-                String value = jsonReader.nextString();
-                return StatusEnum.fromValue(value);
-            }
-        }
     }
 
     private StatusEnum status;
@@ -199,22 +165,6 @@ public class OMSReadReturnRequest extends OMSBusinessObject
                 }
             }
             throw new IllegalArgumentException("Unexpected value '" + value + "'");
-        }
-
-        public static class Adapter extends TypeAdapter<BusinessStatusEnum>
-        {
-            @Override
-            public void write(final JsonWriter jsonWriter, final BusinessStatusEnum enumeration) throws IOException
-            {
-                jsonWriter.value(enumeration.getValue());
-            }
-
-            @Override
-            public BusinessStatusEnum read(final JsonReader jsonReader) throws IOException
-            {
-                String value = jsonReader.nextString();
-                return BusinessStatusEnum.fromValue(value);
-            }
         }
     }
 

@@ -470,8 +470,8 @@ components:
       properties:
         location:
           oneOf:
-            - '#/components/schemas/AddressLocationStreet'
-            - '#/components/schemas/AddressLocationPOBox'
+            - $ref: '#/components/schemas/AddressLocationStreet'
+            - $ref: '#/components/schemas/AddressLocationPOBox'
         contact:
           $ref: '#/components/schemas/Contact'
         receiver:
@@ -621,9 +621,9 @@ components:
       properties:
         location:
           oneOf:
-            - '#/components/schemas/AddressLocationStreet'
-            - '#/components/schemas/AddressLocationPOBox'
-            - '#/components/schemas/AddressLocationPackstation'
+            - $ref: '#/components/schemas/AddressLocationStreet'
+            - $ref: '#/components/schemas/AddressLocationPOBox'
+            - $ref: '#/components/schemas/AddressLocationPackstation'
         contact:
           $ref: '#/components/schemas/Contact'
         receiver:

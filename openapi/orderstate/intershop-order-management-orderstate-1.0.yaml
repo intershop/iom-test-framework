@@ -321,6 +321,11 @@ components:
       oneOf:
         - $ref: '#/components/schemas/OrderStatePersonCustomer'
         - $ref: '#/components/schemas/OrderStateCompanyCustomer'
+      discriminator:
+        propertyName: type
+        mapping:
+          PERSON: '#/components/schemas/OrderStatePersonCustomer'
+          COMPANY: '#/components/schemas/OrderStateCompanyCustomer'
     OrderStateCustomerContactPerson:
       required:
         - lastName
@@ -656,6 +661,14 @@ components:
         - $ref: '#/components/schemas/OrderStateOrderPositionOrderedFixedDeliveryDateDelivery'
         - $ref: '#/components/schemas/OrderStateOrderPositionOrderedEarliestDeliveryDateDelivery'
         - $ref: '#/components/schemas/OrderStateOrderPositionOrderedExpressDelivery'
+      discriminator:
+        propertyName: type
+        mapping:
+          STANDARD: '#/components/schemas/OrderStateOrderPositionOrderedStandardDelivery'
+          FIXED_DELIVERY_DATE: '#/components/schemas/OrderStateOrderPositionOrderedFixedDeliveryDateDelivery'
+          EARLIEST_DELIVERY_DATE: '#/components/schemas/OrderStateOrderPositionOrderedEarliestDeliveryDateDelivery'
+          EXPRESS: '#/components/schemas/OrderStateOrderPositionOrderedExpressDelivery'
+
     OrderStateOrderPositionOrderedEarliestDeliveryDateDelivery:
       required:
         - earliestDeliveryDate
