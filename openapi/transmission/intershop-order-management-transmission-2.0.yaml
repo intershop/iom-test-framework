@@ -261,11 +261,7 @@ components:
         default: 1000
         example: 50
         type: integer
-        x-field-extra-annotation: com.intershop.TestAnnotation
-        x-class-extra-annotation: com.intershop.TestAnnotation
       style: form
-      x-field-extra-annotation: com.intershop.TestAnnotation
-      x-class-extra-annotation: com.intershop.TestAnnotation
     OffsetParam:
       description: The number of items to skip before starting to collect the result
         set.
@@ -713,7 +709,7 @@ components:
       required:
       - transmissionTypeGroup
       type: object
-      x-field-extra-annotation: '@javax.validation.Valid'
+      x-field-extra-annotation: '@jakarta.validation.Valid'
     TransmissionTypeName:
       description: |
         Name of the TransmissionType. Internally translates to TransmissionTypeDefDOEnumInterface::getFieldName

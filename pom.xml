@@ -53,6 +53,7 @@
         <jackson-databind-version>2.13.2.2</jackson-databind-version>
         <jackson-databind-nullable-version>0.2.3</jackson-databind-nullable-version>
         <jakarta-annotation-version>2.1.0</jakarta-annotation-version>
+        <jakarta-validation-version>3.0.2</jakarta-validation-version>
     </properties>
 
     <dependencies>
@@ -116,6 +117,11 @@
             <groupId>jakarta.annotation</groupId>
             <artifactId>jakarta.annotation-api</artifactId>
             <version>${jakarta-annotation-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>${jakarta-validation-version}</version>
         </dependency>
         <dependency>
             <groupId>javax.ws.rs</groupId>
