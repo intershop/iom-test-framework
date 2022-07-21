@@ -58,7 +58,7 @@ public class OMSReturnRequestServiceHandlerV2_10 extends RESTServiceHandler
                         .toApiWriteReturnRequest(omsWriteReturnRequest);
 
         response = shopApi.createReturnRequestWithHttpInfo(shopOrderNo, shopName, writeReturnRequest);
-        return response.getHeaders().get("Location").get(0);
+        return response.getHeaders().get(HTTP_HEADER_LOCATION).get(0);
 
     }
 
