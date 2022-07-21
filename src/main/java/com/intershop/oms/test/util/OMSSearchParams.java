@@ -7,22 +7,22 @@ import lombok.Data;
 @Data
 public class OMSSearchParams
 {
-    private int limit  = 1000;
-    private int offset = 0;
+    private Integer limit  = 1000;
+    private Integer offset = 0;
     private OMSSortDirection sortDirection = OMSSortDirection.ASC;
     private String sortableAttribute = "id";
 
     /**
      * using the default values:
      *
-     * limit = 1000
+     * limit = 50
      * offset= 0
      * sortDir = ASC
      * sortableAttribute = "id"
      */
     public OMSSearchParams() {};
 
-    public OMSSearchParams(int limit, int offset, OMSSortDirection sortDirection, String sortableAttribute)
+    public OMSSearchParams(Integer limit, Integer offset, OMSSortDirection sortDirection, String sortableAttribute)
     {
         this.limit = limit;
         this.offset = offset;

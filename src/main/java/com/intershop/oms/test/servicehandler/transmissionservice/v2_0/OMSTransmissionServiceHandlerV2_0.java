@@ -66,10 +66,22 @@ public class OMSTransmissionServiceHandlerV2_0 extends RESTServiceHandler
             searchParams = new OMSSearchParams();
         }
         TransmissionSearchRequest request = new TransmissionSearchRequest();
-        request.setLimit(searchParams.getLimit());
-        request.setOffset(searchParams.getOffset());
-        request.setSortDirection(TransmissionSearchRequest.SortDirectionEnum.fromValue(searchParams.getSortDirection().toString()));
-        request.setSortBy(searchParams.getSortableAttribute());
+        if (searchParams.getLimit() != null)
+        {
+            request.setLimit(searchParams.getLimit());
+        }
+        if (searchParams.getOffset() != null)
+        {
+            request.setOffset(searchParams.getOffset());
+        }
+        if (searchParams.getSortDirection() != null)
+        {
+            request.setSortDirection(TransmissionSearchRequest.SortDirectionEnum.fromValue(searchParams.getSortDirection().toString()));
+        }
+        if (searchParams.getSortableAttribute() != null)
+        {
+            request.setSortBy(searchParams.getSortableAttribute());
+        }
         request.setTransmissionFilter(TransmissionFilterMapper.INSTANCE.toApiTransmissionFilter(filter));
         return TransmissionCollectionContainerMapper.INSTANCE.fromApiTransmissionCollectionContainer(
                         transmissionApi.searchTransmissions(request));
