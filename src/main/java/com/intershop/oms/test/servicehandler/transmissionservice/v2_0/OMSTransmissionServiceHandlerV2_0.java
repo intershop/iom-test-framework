@@ -23,6 +23,8 @@ import com.intershop.oms.test.servicehandler.transmissionservice.v2_0.mapping.Tr
 import com.intershop.oms.test.servicehandler.transmissionservice.v2_0.mapping.TransmissionMapper;
 import com.intershop.oms.test.servicehandler.transmissionservice.v2_0.mapping.TransmissionUpdateMapper;
 import com.intershop.oms.test.servicehandler.transmissionservice.v2_0.mapping.TransmissionUpdateTypeMapper;
+import com.intershop.oms.test.util.OMSSearchParams;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +35,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import javax.annotation.Nullable;
 
 public class OMSTransmissionServiceHandlerV2_0 extends RESTServiceHandler
                 implements com.intershop.oms.test.servicehandler.transmissionservice.OMSTransmissionServiceHandler
@@ -55,12 +59,17 @@ public class OMSTransmissionServiceHandlerV2_0 extends RESTServiceHandler
     }
 
     @Override
-    public OMSTransmissionCollectionContainer searchTransmissions(OMSTransmissionFilter filter) throws ApiException
+    public OMSTransmissionCollectionContainer searchTransmissions(OMSTransmissionFilter filter, @Nullable OMSSearchParams searchParams) throws ApiException
     {
-        // testframework doesn't expose pagination right now - assumed not to be required outside of platform api tests
+        if (searchParams == null)
+        {
+            searchParams = new OMSSearchParams();
+        }
         TransmissionSearchRequest request = new TransmissionSearchRequest();
-        request.setLimit(1000);
-        request.setOffset(0);
+        request.setLimit(searchParams.getLimit());
+        request.setOffset(searchParams.getOffset());
+        request.setSortDirection(TransmissionSearchRequest.SortDirectionEnum.fromValue(searchParams.getSortDirection().toString()));
+        request.setSortBy(searchParams.getSortableAttribute());
         request.setTransmissionFilter(TransmissionFilterMapper.INSTANCE.toApiTransmissionFilter(filter));
         return TransmissionCollectionContainerMapper.INSTANCE.fromApiTransmissionCollectionContainer(
                         transmissionApi.searchTransmissions(request));

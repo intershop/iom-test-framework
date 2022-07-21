@@ -10,13 +10,16 @@ import com.intershop.oms.test.businessobject.transmission.OMSTransmissionTypeGro
 import com.intershop.oms.test.businessobject.transmission.OMSTransmissionUpdate;
 import com.intershop.oms.test.businessobject.transmission.OMSTransmissionUpdateType;
 import com.intershop.oms.test.servicehandler.OMSServiceHandler;
+import com.intershop.oms.test.util.OMSSearchParams;
 
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 public interface OMSTransmissionServiceHandler extends OMSServiceHandler
 {
-    OMSTransmissionCollectionContainer searchTransmissions(OMSTransmissionFilter filter) throws ApiException;
+    OMSTransmissionCollectionContainer searchTransmissions(OMSTransmissionFilter filter, @Nullable OMSSearchParams searchParams) throws ApiException;
 
     OMSTransmission getTransmission(String transmissionId) throws ApiException;
 
