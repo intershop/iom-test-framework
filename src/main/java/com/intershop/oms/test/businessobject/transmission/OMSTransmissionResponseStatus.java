@@ -1,5 +1,8 @@
 package com.intershop.oms.test.businessobject.transmission;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -17,15 +20,12 @@ import lombok.ToString;
 @ToString
 public class OMSTransmissionResponseStatus
 {
-    public static final OMSTransmissionResponseStatus OK = new OMSTransmissionResponseStatus("OK");
-    public static final OMSTransmissionResponseStatus INVALID = new OMSTransmissionResponseStatus("INVALID");
-    public static final OMSTransmissionResponseStatus REJECTED = new OMSTransmissionResponseStatus("REJECTED");
-    public static final OMSTransmissionResponseStatus EXTERNAL_ERROR = new OMSTransmissionResponseStatus(
-                    "EXTERNAL_ERROR");
-    public static final OMSTransmissionResponseStatus INTERNAL_ERROR = new OMSTransmissionResponseStatus(
-                    "INTERNAL_ERROR");
-    public static final OMSTransmissionResponseStatus NOT_AVAILABLE = new OMSTransmissionResponseStatus(
-                    "NOT_AVAILABLE");
+    public static final OMSTransmissionResponseStatus OK             = new OMSTransmissionResponseStatus("OK");
+    public static final OMSTransmissionResponseStatus INVALID        = new OMSTransmissionResponseStatus("INVALID");
+    public static final OMSTransmissionResponseStatus REJECTED       = new OMSTransmissionResponseStatus("REJECTED");
+    public static final OMSTransmissionResponseStatus EXTERNAL_ERROR = new OMSTransmissionResponseStatus("EXTERNAL_ERROR");
+    public static final OMSTransmissionResponseStatus INTERNAL_ERROR = new OMSTransmissionResponseStatus("INTERNAL_ERROR");
+    public static final OMSTransmissionResponseStatus NOT_AVAILABLE  = new OMSTransmissionResponseStatus("NOT_AVAILABLE");
 
     private String value;
 
@@ -39,4 +39,15 @@ public class OMSTransmissionResponseStatus
         return value;
     }
 
+    public static Collection<OMSTransmissionResponseStatus> getAllValues()
+    {
+        return Arrays.asList(
+            OK,
+            INVALID,
+            REJECTED,
+            EXTERNAL_ERROR,
+            INTERNAL_ERROR,
+            NOT_AVAILABLE
+        );
+    }
 }

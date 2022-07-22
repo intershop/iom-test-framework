@@ -1,5 +1,8 @@
 package com.intershop.oms.test.businessobject.transmission;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -24,17 +27,17 @@ import lombok.ToString;
 @ToString
 public class OMSTransmissionStatus
 {
-    public static final OMSTransmissionStatus INITIAL = new OMSTransmissionStatus("INITIAL");
-    public static final OMSTransmissionStatus DO_PULL = new OMSTransmissionStatus("DO_PULL");
-    public static final OMSTransmissionStatus PULLED = new OMSTransmissionStatus("PULLED");
-    public static final OMSTransmissionStatus DO_PUSH = new OMSTransmissionStatus("DO_PUSH");
-    public static final OMSTransmissionStatus PUSHED = new OMSTransmissionStatus("PUSHED");
+    public static final OMSTransmissionStatus INITIAL         = new OMSTransmissionStatus("INITIAL");
+    public static final OMSTransmissionStatus DO_PULL         = new OMSTransmissionStatus("DO_PULL");
+    public static final OMSTransmissionStatus PULLED          = new OMSTransmissionStatus("PULLED");
+    public static final OMSTransmissionStatus DO_PUSH         = new OMSTransmissionStatus("DO_PUSH");
+    public static final OMSTransmissionStatus PUSHED          = new OMSTransmissionStatus("PUSHED");
     public static final OMSTransmissionStatus DO_MANUAL_CHECK = new OMSTransmissionStatus("DO_MANUAL_CHECK");
-    public static final OMSTransmissionStatus CHECKED = new OMSTransmissionStatus("CHECKED");
-    public static final OMSTransmissionStatus DO_CANCEL = new OMSTransmissionStatus("DO_CANCEL");
-    public static final OMSTransmissionStatus CANCELED = new OMSTransmissionStatus("CANCELED");
-    public static final OMSTransmissionStatus TRANSMISSIONED = new OMSTransmissionStatus("TRANSMISSIONED");
-    public static final OMSTransmissionStatus CONFIRMED = new OMSTransmissionStatus("CONFIRMED");
+    public static final OMSTransmissionStatus CHECKED         = new OMSTransmissionStatus("CHECKED");
+    public static final OMSTransmissionStatus DO_CANCEL       = new OMSTransmissionStatus("DO_CANCEL");
+    public static final OMSTransmissionStatus CANCELED        = new OMSTransmissionStatus("CANCELED");
+    public static final OMSTransmissionStatus TRANSMISSIONED  = new OMSTransmissionStatus("TRANSMISSIONED");
+    public static final OMSTransmissionStatus CONFIRMED       = new OMSTransmissionStatus("CONFIRMED");
 
     private String value;
 
@@ -48,4 +51,20 @@ public class OMSTransmissionStatus
         return value;
     }
 
+    public static Collection<OMSTransmissionStatus> getAllValues()
+    {
+        return Arrays.asList(
+            INITIAL,
+            DO_PULL,
+            PULLED,
+            DO_PUSH,
+            PUSHED,
+            DO_MANUAL_CHECK,
+            CHECKED,
+            DO_CANCEL,
+            CANCELED,
+            TRANSMISSIONED,
+            CONFIRMED
+        );
+    }
 }

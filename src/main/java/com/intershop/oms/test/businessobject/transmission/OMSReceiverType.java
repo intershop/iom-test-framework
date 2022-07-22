@@ -1,5 +1,8 @@
 package com.intershop.oms.test.businessobject.transmission;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -19,11 +22,11 @@ import lombok.ToString;
 @ToString
 public class OMSReceiverType
 {
-    public static final OMSReceiverType OMS = new OMSReceiverType("OMS");
-    public static final OMSReceiverType SHOP = new OMSReceiverType("SHOP");
-    public static final OMSReceiverType SUPPLIER = new OMSReceiverType("SUPPLIER");
-    public static final OMSReceiverType CUSTOMER = new OMSReceiverType("CUSTOMER");
-    public static final OMSReceiverType PAYMENTPROVIDER = new OMSReceiverType("PAYMENTPROVIDER");
+    public static final OMSReceiverType OMS               = new OMSReceiverType("OMS");
+    public static final OMSReceiverType SHOP              = new OMSReceiverType("SHOP");
+    public static final OMSReceiverType SUPPLIER          = new OMSReceiverType("SUPPLIER");
+    public static final OMSReceiverType CUSTOMER          = new OMSReceiverType("CUSTOMER");
+    public static final OMSReceiverType PAYMENTPROVIDER   = new OMSReceiverType("PAYMENTPROVIDER");
     public static final OMSReceiverType FINANCECONTROLLER = new OMSReceiverType("FINANCECONTROLLER");
 
     private String value;
@@ -38,4 +41,15 @@ public class OMSReceiverType
         return value;
     }
 
+    public static Collection<OMSReceiverType> getAllValues()
+    {
+        return Arrays.asList(
+            OMS,
+            SHOP,
+            SUPPLIER,
+            CUSTOMER,
+            PAYMENTPROVIDER,
+            FINANCECONTROLLER
+        );
+    }
 }
