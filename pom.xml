@@ -39,8 +39,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
-        <org.projectlombok.version>1.18.22</org.projectlombok.version>
+        <org.mapstruct.version>1.5.2.Final</org.mapstruct.version>
+        <org.projectlombok.version>1.18.24</org.projectlombok.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
         <openapi.generator.version>6.0.1</openapi.generator.version>
         <junit.jupiter.version>5.8.2</junit.jupiter.version>
@@ -48,7 +48,7 @@
         <jsr311-api-version>1.1.1</jsr311-api-version>
         <!-- activate m2e-apt in eclipse for better mapstruct integration -->
         <m2e.apt.activation>jdt_apt</m2e.apt.activation>
-        <jersey-version>3.0.4</jersey-version>
+        <jersey-version>3.0.5</jersey-version>
         <jackson-version>2.13.2</jackson-version>
         <jackson-databind-version>2.13.2.2</jackson-databind-version>
         <jackson-databind-nullable-version>0.2.3</jackson-databind-nullable-version>
@@ -57,16 +57,6 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>com.squareup.okhttp3</groupId>
-            <artifactId>okhttp</artifactId>
-            <version>4.9.3</version>
-        </dependency>
-        <dependency>
-            <groupId>com.squareup.okhttp3</groupId>
-            <artifactId>logging-interceptor</artifactId>
-            <version>4.9.3</version>
-        </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -151,6 +141,11 @@
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-json-jackson</artifactId>
+            <version>${jersey-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.connectors</groupId>
+            <artifactId>jersey-grizzly-connector</artifactId>
             <version>${jersey-version}</version>
         </dependency>
 
@@ -242,7 +237,7 @@
                             <configurationFile>${project.basedir}/openapi/order/v2_1-config.json</configurationFile>
                             <configOptions>
                                 <useOneOfDiscriminatorLookup>true</useOneOfDiscriminatorLookup>
-                                
+                                <caseInsensitiveResponseHeaders>true</caseInsensitiveResponseHeaders>
                             </configOptions>
                         </configuration>
                     </execution>
@@ -259,7 +254,7 @@
                             <configurationFile>${project.basedir}/openapi/order/v2_0-config.json</configurationFile>
                             <configOptions>
                                 <useOneOfDiscriminatorLookup>true</useOneOfDiscriminatorLookup>
-                                
+                                <caseInsensitiveResponseHeaders>true</caseInsensitiveResponseHeaders>
                             </configOptions>
                         </configuration>
                     </execution>
@@ -276,7 +271,7 @@
                             <configurationFile>${project.basedir}/openapi/schedule/v1-config.json</configurationFile>
                             <configOptions>
                                 <useOneOfDiscriminatorLookup>true</useOneOfDiscriminatorLookup>
-                                
+                                <caseInsensitiveResponseHeaders>true</caseInsensitiveResponseHeaders>
                             </configOptions>
                         </configuration>
                     </execution>
@@ -293,7 +288,7 @@
                             <configurationFile>${project.basedir}/openapi/atp/v2-config.json</configurationFile>
                             <configOptions>
                                 <useOneOfDiscriminatorLookup>true</useOneOfDiscriminatorLookup>
-                                
+                                <caseInsensitiveResponseHeaders>true</caseInsensitiveResponseHeaders>
                             </configOptions>
                         </configuration>
                     </execution>
@@ -310,7 +305,7 @@
                             <configurationFile>${project.basedir}/openapi/rma/v2_10-config.json</configurationFile>
                             <configOptions>
                                 <useOneOfDiscriminatorLookup>true</useOneOfDiscriminatorLookup>
-                                
+                                <caseInsensitiveResponseHeaders>true</caseInsensitiveResponseHeaders>
                             </configOptions>
 
                         </configuration>
@@ -328,7 +323,7 @@
                             <configurationFile>${project.basedir}/openapi/rma/v2-config.json</configurationFile>
                             <configOptions>
                                 <useOneOfDiscriminatorLookup>true</useOneOfDiscriminatorLookup>
-                                
+                                <caseInsensitiveResponseHeaders>true</caseInsensitiveResponseHeaders>
                             </configOptions>
                         </configuration>
                     </execution>
@@ -345,7 +340,7 @@
                             <configurationFile>${project.basedir}/openapi/orderstate/v1-config.json</configurationFile>
                             <configOptions>
                                 <useOneOfDiscriminatorLookup>true</useOneOfDiscriminatorLookup>
-                                
+                                <caseInsensitiveResponseHeaders>true</caseInsensitiveResponseHeaders>
                             </configOptions>
                         </configuration>
                     </execution>
@@ -362,7 +357,7 @@
                             <configurationFile>${project.basedir}/openapi/transmission/v2_0-config.json</configurationFile>
                             <configOptions>
                                 <useOneOfDiscriminatorLookup>true</useOneOfDiscriminatorLookup>
-                                
+                                <caseInsensitiveResponseHeaders>true</caseInsensitiveResponseHeaders>
                             </configOptions>
                         </configuration>
                     </execution>
@@ -380,7 +375,7 @@
                             <configurationFile>${project.basedir}/openapi/gdpr/v2-config.json</configurationFile>
                             <configOptions>
                                 <useOneOfDiscriminatorLookup>true</useOneOfDiscriminatorLookup>
-                                
+                                <caseInsensitiveResponseHeaders>true</caseInsensitiveResponseHeaders>
                             </configOptions>
                         </configuration>
                     </execution>
@@ -397,7 +392,7 @@
                             <configurationFile>${project.basedir}/openapi/communication/v2_11-config.json</configurationFile>
                             <configOptions>
                                 <useOneOfDiscriminatorLookup>true</useOneOfDiscriminatorLookup>
-                                
+                                <caseInsensitiveResponseHeaders>true</caseInsensitiveResponseHeaders>
                             </configOptions>
                         </configuration>
                     </execution>
@@ -414,7 +409,7 @@
                             <configurationFile>${project.basedir}/openapi/communication/v2_10-config.json</configurationFile>
                             <configOptions>
                                 <useOneOfDiscriminatorLookup>true</useOneOfDiscriminatorLookup>
-                                
+                                <caseInsensitiveResponseHeaders>true</caseInsensitiveResponseHeaders>
                             </configOptions>
                         </configuration>
                     </execution>
@@ -431,7 +426,7 @@
                             <configurationFile>${project.basedir}/openapi/communication/v2-config.json</configurationFile>
                             <configOptions>
                                 <useOneOfDiscriminatorLookup>true</useOneOfDiscriminatorLookup>
-                                
+                                <caseInsensitiveResponseHeaders>true</caseInsensitiveResponseHeaders>
                             </configOptions>
                         </configuration>
                     </execution>
@@ -448,7 +443,7 @@
                             <configurationFile>${project.basedir}/openapi/order/v2_2-config.json</configurationFile>
                             <configOptions>
                                 <useOneOfDiscriminatorLookup>true</useOneOfDiscriminatorLookup>
-                                
+                                <caseInsensitiveResponseHeaders>true</caseInsensitiveResponseHeaders>
                             </configOptions>
                             <generateSupportingFiles>true</generateSupportingFiles>
                         </configuration>
@@ -506,7 +501,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.10.1</version>
                 <configuration>
-                    <release>11</release>
+                    <release>17</release>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.mapstruct</groupId>
@@ -527,7 +522,7 @@
                     <showWarnings>true</showWarnings>
                     <compilerArgs>
                         <arg>-Amapstruct.unmappedTargetPolicy=ERROR</arg>
-                        <arg>-Amapstruct.unmappedSourcePolicy=ERROR</arg>
+                        <arg>-Amapstruct.unmappedSourcePolicy=WARN</arg>
                     </compilerArgs>
                 </configuration>
             </plugin>

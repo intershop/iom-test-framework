@@ -1,6 +1,7 @@
 package com.intershop.oms.test.servicehandler;
 
 import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.grizzly.connector.GrizzlyConnectorProvider;
 
 import com.intershop.oms.rest.shared.ApiClient;
 import com.intershop.oms.rest.shared.logging.SLF4JClientLoggingHandler;
@@ -18,6 +19,7 @@ public class ExtendedApiClient extends ApiClient
             defaultClientConfig.register(SLF4JClientLoggingHandler.class);
             defaultClientConfig.register(SLF4JWriterInterceptor.class);
         }
+        defaultClientConfig.connectorProvider(new GrizzlyConnectorProvider());
         return defaultClientConfig;
     }
 
