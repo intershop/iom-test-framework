@@ -73,8 +73,7 @@ public class OMSSortableTransmissionAttribute
             RETRYCOUNT,
             RETRYDATE,
             NEXTRETRYDATE,
-            INVOICENUMBER,
-            ERRORTEXT
+            INVOICENUMBER
         );
     }
 }
