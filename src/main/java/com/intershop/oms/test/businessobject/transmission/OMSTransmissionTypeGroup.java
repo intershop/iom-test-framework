@@ -1,5 +1,8 @@
 package com.intershop.oms.test.businessobject.transmission;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -10,14 +13,14 @@ import lombok.ToString;
 @ToString
 public class OMSTransmissionTypeGroup
 {
-    public static final OMSTransmissionTypeGroup ORDERTRANSMISSION = new OMSTransmissionTypeGroup("ORDERTRANSMISSION");
-    public static final OMSTransmissionTypeGroup DISPATCHTRANSMISSION = new OMSTransmissionTypeGroup("DISPATCHTRANSMISSION");
-    public static final OMSTransmissionTypeGroup RETURNTRANSMISSION = new OMSTransmissionTypeGroup("RETURNTRANSMISSION");
-    public static final OMSTransmissionTypeGroup PAYMENTTRANSMISSION = new OMSTransmissionTypeGroup("PAYMENTTRANSMISSION");
-    public static final OMSTransmissionTypeGroup MAILTRANSMISSION = new OMSTransmissionTypeGroup("MAILTRANSMISSION");
-    public static final OMSTransmissionTypeGroup RESPONSETRANSMISSION = new OMSTransmissionTypeGroup("RESPONSETRANSMISSION");
-    public static final OMSTransmissionTypeGroup INVOICETRANSMISSION = new OMSTransmissionTypeGroup("INVOICETRANSMISSION");
-    public static final OMSTransmissionTypeGroup DOCUMENTTRANSMISSION = new OMSTransmissionTypeGroup("DOCUMENTTRANSMISSION");
+    public static final OMSTransmissionTypeGroup ORDERTRANSMISSION              = new OMSTransmissionTypeGroup("ORDERTRANSMISSION");
+    public static final OMSTransmissionTypeGroup DISPATCHTRANSMISSION           = new OMSTransmissionTypeGroup("DISPATCHTRANSMISSION");
+    public static final OMSTransmissionTypeGroup RETURNTRANSMISSION             = new OMSTransmissionTypeGroup("RETURNTRANSMISSION");
+    public static final OMSTransmissionTypeGroup PAYMENTTRANSMISSION            = new OMSTransmissionTypeGroup("PAYMENTTRANSMISSION");
+    public static final OMSTransmissionTypeGroup MAILTRANSMISSION               = new OMSTransmissionTypeGroup("MAILTRANSMISSION");
+    public static final OMSTransmissionTypeGroup RESPONSETRANSMISSION           = new OMSTransmissionTypeGroup("RESPONSETRANSMISSION");
+    public static final OMSTransmissionTypeGroup INVOICETRANSMISSION            = new OMSTransmissionTypeGroup("INVOICETRANSMISSION");
+    public static final OMSTransmissionTypeGroup DOCUMENTTRANSMISSION           = new OMSTransmissionTypeGroup("DOCUMENTTRANSMISSION");
     public static final OMSTransmissionTypeGroup RETURNANNOUNCEMENTTRANSMISSION = new OMSTransmissionTypeGroup("RETURNANNOUNCEMENTTRANSMISSION");
 
     private String transmissionTypeGroupName;
@@ -30,5 +33,20 @@ public class OMSTransmissionTypeGroup
     public String getTransmissionTypeGroupName()
     {
         return transmissionTypeGroupName;
+    }
+
+    public static Collection<OMSTransmissionTypeGroup> getAllValues()
+    {
+        return Arrays.asList(
+            ORDERTRANSMISSION,
+            DISPATCHTRANSMISSION,
+            RETURNTRANSMISSION,
+            PAYMENTTRANSMISSION,
+            MAILTRANSMISSION,
+            RESPONSETRANSMISSION,
+            INVOICETRANSMISSION,
+            DOCUMENTTRANSMISSION,
+            RETURNANNOUNCEMENTTRANSMISSION
+        );
     }
 }

@@ -1,5 +1,8 @@
 package com.intershop.oms.test.businessobject.transmission;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -28,35 +31,22 @@ import lombok.ToString;
 @ToString
 public class OMSSortableTransmissionAttribute
 {
-    public static final OMSSortableTransmissionAttribute ID = new OMSSortableTransmissionAttribute("id");
-    public static final OMSSortableTransmissionAttribute TRANSMISSIONTYPE = new OMSSortableTransmissionAttribute(
-                    "transmissionType");
-    public static final OMSSortableTransmissionAttribute TRANSMISSIONSUBTYPE = new OMSSortableTransmissionAttribute(
-                    "transmissionSubtype");
-    public static final OMSSortableTransmissionAttribute STATUS = new OMSSortableTransmissionAttribute("status");
-    public static final OMSSortableTransmissionAttribute RESPONSESTATUS = new OMSSortableTransmissionAttribute(
-                    "responseStatus");
-    public static final OMSSortableTransmissionAttribute CREATIONDATE = new OMSSortableTransmissionAttribute(
-                    "creationDate");
-    public static final OMSSortableTransmissionAttribute MODIFICATIONDATE = new OMSSortableTransmissionAttribute(
-                    "modificationDate");
-    public static final OMSSortableTransmissionAttribute SHOPORDERNUMBER = new OMSSortableTransmissionAttribute(
-                    "shopOrderNumber");
-    public static final OMSSortableTransmissionAttribute ORDERID = new OMSSortableTransmissionAttribute("orderId");
-    public static final OMSSortableTransmissionAttribute SHOPID = new OMSSortableTransmissionAttribute("shopId");
-    public static final OMSSortableTransmissionAttribute SHOPNAME = new OMSSortableTransmissionAttribute("shopName");
-    public static final OMSSortableTransmissionAttribute SUPPLIERID = new OMSSortableTransmissionAttribute(
-                    "supplierId");
-    public static final OMSSortableTransmissionAttribute SUPPLIERNAME = new OMSSortableTransmissionAttribute(
-                    "supplierName");
-    public static final OMSSortableTransmissionAttribute RECEIVERTYPE = new OMSSortableTransmissionAttribute(
-                    "receiverType");
-    public static final OMSSortableTransmissionAttribute RETRYCOUNT = new OMSSortableTransmissionAttribute(
-                    "retryCount");
-    public static final OMSSortableTransmissionAttribute RETRYDATE = new OMSSortableTransmissionAttribute("retryDate");
-    public static final OMSSortableTransmissionAttribute NEXTRETRYDATE = new OMSSortableTransmissionAttribute(
-                    "nextRetryDate");
-    public static final OMSSortableTransmissionAttribute ERRORTEXT = new OMSSortableTransmissionAttribute("errorText");
+    public static final OMSSortableTransmissionAttribute ID                  = new OMSSortableTransmissionAttribute("id");
+    public static final OMSSortableTransmissionAttribute TRANSMISSIONTYPE    = new OMSSortableTransmissionAttribute("transmissionType");
+    public static final OMSSortableTransmissionAttribute STATUS              = new OMSSortableTransmissionAttribute("status");
+    public static final OMSSortableTransmissionAttribute RESPONSESTATUS      = new OMSSortableTransmissionAttribute("responseStatus");
+    public static final OMSSortableTransmissionAttribute CREATIONDATE        = new OMSSortableTransmissionAttribute("creationDate");
+    public static final OMSSortableTransmissionAttribute MODIFICATIONDATE    = new OMSSortableTransmissionAttribute("modificationDate");
+    public static final OMSSortableTransmissionAttribute SHOPID              = new OMSSortableTransmissionAttribute("shopId");
+    public static final OMSSortableTransmissionAttribute SHOPNAME            = new OMSSortableTransmissionAttribute("shopName");
+    public static final OMSSortableTransmissionAttribute SUPPLIERID          = new OMSSortableTransmissionAttribute("supplierId");
+    public static final OMSSortableTransmissionAttribute SUPPLIERNAME        = new OMSSortableTransmissionAttribute("supplierName");
+    public static final OMSSortableTransmissionAttribute RECEIVERTYPE        = new OMSSortableTransmissionAttribute("receiverType");
+    public static final OMSSortableTransmissionAttribute RETRYCOUNT          = new OMSSortableTransmissionAttribute("retryCount");
+    public static final OMSSortableTransmissionAttribute RETRYDATE           = new OMSSortableTransmissionAttribute("retryDate");
+    public static final OMSSortableTransmissionAttribute NEXTRETRYDATE       = new OMSSortableTransmissionAttribute("nextRetryDate");
+    public static final OMSSortableTransmissionAttribute INVOICENUMBER       = new OMSSortableTransmissionAttribute("invoiceNumber");
+    public static final OMSSortableTransmissionAttribute ERRORTEXT           = new OMSSortableTransmissionAttribute("errorText");
 
     private String value;
 
@@ -68,5 +58,27 @@ public class OMSSortableTransmissionAttribute
     public String getValue()
     {
         return value;
+    }
+
+    public static Collection<OMSSortableTransmissionAttribute> getAllValues()
+    {
+        return Arrays.asList(
+            ID,
+            TRANSMISSIONTYPE,
+            STATUS,
+            RESPONSESTATUS,
+            CREATIONDATE,
+            MODIFICATIONDATE,
+            SHOPID,
+            SHOPNAME,
+            SUPPLIERID,
+            SUPPLIERNAME,
+            RECEIVERTYPE,
+            RETRYCOUNT,
+            RETRYDATE,
+            NEXTRETRYDATE,
+            INVOICENUMBER,
+            ERRORTEXT
+        );
     }
 }
