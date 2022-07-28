@@ -1,5 +1,11 @@
 package com.intershop.oms.test.businessobject.transmission;
 
+import java.util.Arrays;
+import java.util.Collection;
+
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 /**
  * The type of the receiver of a transmission.&lt;br&gt; &lt;br&gt;
  * &#x60;OMS&#x60; - The OMS-application itself.&lt;br&gt; &#x60;SHOP&#x60; -
@@ -12,18 +18,20 @@ package com.intershop.oms.test.businessobject.transmission;
  * &#x60;FINANCECONTROLLER&#x60; - A finance contoller is the receiver of the
  * transmission, e.g. a debitor management system that receives open amounts.
  */
-public enum OMSReceiverType
+@EqualsAndHashCode
+@ToString
+public class OMSReceiverType
 {
-    OMS("OMS"),
-    SHOP("SHOP"),
-    SUPPLIER("SUPPLIER"),
-    CUSTOMER("CUSTOMER"),
-    PAYMENTPROVIDER("PAYMENTPROVIDER"),
-    FINANCECONTROLLER("FINANCECONTROLLER");
+    public static final OMSReceiverType OMS               = new OMSReceiverType("OMS");
+    public static final OMSReceiverType SHOP              = new OMSReceiverType("SHOP");
+    public static final OMSReceiverType SUPPLIER          = new OMSReceiverType("SUPPLIER");
+    public static final OMSReceiverType CUSTOMER          = new OMSReceiverType("CUSTOMER");
+    public static final OMSReceiverType PAYMENTPROVIDER   = new OMSReceiverType("PAYMENTPROVIDER");
+    public static final OMSReceiverType FINANCECONTROLLER = new OMSReceiverType("FINANCECONTROLLER");
 
     private String value;
 
-    OMSReceiverType(String value)
+    public OMSReceiverType(String value)
     {
         this.value = value;
     }
@@ -33,21 +41,15 @@ public enum OMSReceiverType
         return value;
     }
 
-    @Override
-    public String toString()
+    public static Collection<OMSReceiverType> getAllValues()
     {
-        return String.valueOf(value);
-    }
-
-    public static OMSReceiverType fromValue(String text)
-    {
-        for (OMSReceiverType b : OMSReceiverType.values())
-        {
-            if (String.valueOf(b.value).equals(text))
-            {
-                return b;
-            }
-        }
-        return null;
+        return Arrays.asList(
+            OMS,
+            SHOP,
+            SUPPLIER,
+            CUSTOMER,
+            PAYMENTPROVIDER,
+            FINANCECONTROLLER
+        );
     }
 }

@@ -1,12 +1,5 @@
 package com.intershop.oms.test.servicehandler;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.intershop.oms.test.configuration.ConfigBuilder;
 import com.intershop.oms.test.configuration.Configuration;
 import com.intershop.oms.test.configuration.ServiceConfiguration;
@@ -29,14 +22,21 @@ import com.intershop.oms.test.servicehandler.supplierservice.v1.OMSSupplierServi
 import com.intershop.oms.test.servicehandler.supplierservice.v2_10.OMSSupplierServiceHandlerProviderV2_10;
 import com.intershop.oms.test.servicehandler.supplierservice.v2_11.OMSSupplierServiceHandlerProviderV2_11;
 import com.intershop.oms.test.servicehandler.transmissionservice.OMSTransmissionServiceHandler;
-import com.intershop.oms.test.servicehandler.transmissionservice.v1_0.OMSTransmissionServiceHandlerProviderV1_0;
-import com.intershop.oms.test.servicehandler.transmissionservice.v1_1.OMSTransmissionServiceHandlerProviderV1_1;
+import com.intershop.oms.test.servicehandler.transmissionservice.v2_0.OMSTransmissionServiceHandlerProviderV2;
+
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 @SuppressWarnings("rawtypes")
 public class ServiceHandlerFactory
 {
     public static final String DEFAULT_ID = "default";
-    private static final ConcurrentHashMap<Class, Map<String, ServiceProvider>> registeredImpls = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Class, Map<String, ServiceProvider>> registeredImpls =
+                    new ConcurrentHashMap<>();
     private static final Configuration defaultConfig = ConfigBuilder.getDefault();
 
     static
@@ -66,8 +66,7 @@ public class ServiceHandlerFactory
         registerServiceHandler(OMSSupplierServiceHandler.class, new OMSSupplierServiceHandlerProviderV2_11());
 
         // transmission service
-        registerServiceHandler(OMSTransmissionServiceHandler.class, new OMSTransmissionServiceHandlerProviderV1_0());
-        registerServiceHandler(OMSTransmissionServiceHandler.class, new OMSTransmissionServiceHandlerProviderV1_1());
+        registerServiceHandler(OMSTransmissionServiceHandler.class, new OMSTransmissionServiceHandlerProviderV2());
 
     }
 
@@ -141,12 +140,13 @@ public class ServiceHandlerFactory
                         .putIfAbsent(serviceProvider.getVersion(), serviceProvider);
         if (previousVal != null)
         {
-            throw new IllegalArgumentException(String.format(
-                            "A service handler of TYPE: %s - VERSION: %s - has already been registered."
-                                            + " Overwriting this is not allowed, please register "
-                                            + "custom implementations with a "
-                                            + "different version string or use some prefix.",
-                            serviceType.getName(), serviceProvider.getVersion()));
+            throw new IllegalArgumentException(
+                            String.format("A service handler of TYPE: %s - VERSION: %s - has already been registered."
+                                                            + " Overwriting this is not allowed, please register "
+                                                            + "custom implementations with a "
+                                                            + "different version string or use some prefix.",
+                                            serviceType.getName(),
+                                            serviceProvider.getVersion()));
         }
     }
 

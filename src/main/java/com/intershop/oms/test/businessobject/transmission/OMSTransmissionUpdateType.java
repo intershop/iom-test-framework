@@ -12,18 +12,27 @@
 
 package com.intershop.oms.test.businessobject.transmission;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 /**
- * The type of process to create on a transmission, e.g. to resend a transmission.&lt;br&gt; &lt;br&gt; &#x60;RESEND&#x60; - Resend the transmission.&lt;br&gt; &#x60;CANCEL&#x60; - Cancel the transmission.&lt;br&gt; &#x60;SENT&#x60; - Set the transmission as already sent.&lt;br&gt;
+ * The type of process to create on a transmission, e.g. to resend a
+ * transmission.&lt;br&gt; &lt;br&gt; &#x60;RESEND&#x60; - Resend the
+ * transmission.&lt;br&gt; &#x60;CANCEL&#x60; - Cancel the
+ * transmission.&lt;br&gt; &#x60;SENT&#x60; - Set the transmission as already
+ * sent.&lt;br&gt;
  */
-public enum OMSTransmissionUpdateType
+@EqualsAndHashCode
+@ToString
+public class OMSTransmissionUpdateType
 {
-    RESEND("RESEND"),
-    CANCEL("CANCEL"),
-    SENT("SENT");
+    public static final OMSTransmissionUpdateType RESEND = new OMSTransmissionUpdateType("RESEND");
+    public static final OMSTransmissionUpdateType CANCEL = new OMSTransmissionUpdateType("CANCEL");
+    public static final OMSTransmissionUpdateType SENT = new OMSTransmissionUpdateType("SENT");
 
     private String value;
 
-    OMSTransmissionUpdateType(String value)
+    public OMSTransmissionUpdateType(String value)
     {
         this.value = value;
     }
@@ -33,21 +42,4 @@ public enum OMSTransmissionUpdateType
         return value;
     }
 
-    @Override
-    public String toString()
-    {
-        return String.valueOf(value);
-    }
-
-    public static OMSTransmissionUpdateType fromValue(String text)
-    {
-        for (OMSTransmissionUpdateType b : OMSTransmissionUpdateType.values())
-        {
-            if (String.valueOf(b.value).equals(text))
-            {
-                return b;
-            }
-        }
-        return null;
-    }
 }
