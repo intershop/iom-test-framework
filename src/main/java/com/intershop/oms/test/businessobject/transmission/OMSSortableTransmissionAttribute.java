@@ -23,7 +23,6 @@ import lombok.ToString;
  * &#x60;retryDate&#x60; - Sort by the date of the last attempt to send.&lt;br&gt;
  * &#x60;nextRetryDate&#x60; - Sort by the next date to send.&lt;br&gt;
  * &#x60;invoiceNumber&#x60; - Sort by the id of an invoice.&lt;br&gt;
- * &#x60;errorText&#x60; - Sort by the possible error message of the transmission.
  */
 @EqualsAndHashCode
 @ToString
@@ -44,7 +43,6 @@ public class OMSSortableTransmissionAttribute
     public static final OMSSortableTransmissionAttribute RETRYDATE           = new OMSSortableTransmissionAttribute("retryDate");
     public static final OMSSortableTransmissionAttribute NEXTRETRYDATE       = new OMSSortableTransmissionAttribute("nextRetryDate");
     public static final OMSSortableTransmissionAttribute INVOICENUMBER       = new OMSSortableTransmissionAttribute("invoiceNumber");
-    public static final OMSSortableTransmissionAttribute ERRORTEXT           = new OMSSortableTransmissionAttribute("errorText");
 
     private String value;
 
