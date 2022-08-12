@@ -124,7 +124,7 @@ public class OMSTransmissionType
         return value;
     }
 
-    public Collection<OMSTransmissionType> getAllValues()
+    public static Collection<OMSTransmissionType> getAllValues()
     {
         return Arrays.asList(
             SEND_CHECKED_ORDER,

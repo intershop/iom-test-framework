@@ -11,7 +11,6 @@ public interface TransmissionTypeMapper
     TransmissionTypeMapper INSTANCE = Mappers.getMapper(TransmissionTypeMapper.class);
 
     @Mapping(target = "value", expression = "java(apiTransmissionType)")
-    @Mapping(target = "allValues", ignore = true)
     OMSTransmissionType fromApiTransmissionType(String apiTransmissionType);
 
     default String toApiTransmissionType(OMSTransmissionType omsTransmissionType)
