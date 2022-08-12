@@ -1,5 +1,8 @@
 package com.intershop.oms.test.businessobject.transmission;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -10,104 +13,104 @@ import lombok.ToString;
 @ToString
 public class OMSTransmissionType
 {
-    public static final OMSTransmissionType SEND_CHECKED_ORDER = new OMSTransmissionType("SEND_CHECKED_ORDER");
-    public static final OMSTransmissionType SEND_ANNOUNCE_ORDER = new OMSTransmissionType("SEND_ANNOUNCE_ORDER");
-    public static final OMSTransmissionType CONFIRM_RESERVATION = new OMSTransmissionType("CONFIRM_RESERVATION");
-    public static final OMSTransmissionType CANCEL_RESERVATION = new OMSTransmissionType("CANCEL_RESERVATION");
-    public static final OMSTransmissionType SEND_ORDER_BACKLOG = new OMSTransmissionType("SEND_ORDER_BACKLOG");
-    public static final OMSTransmissionType SEND_ORDER_RECALL = new OMSTransmissionType("SEND_ORDER_RECALL");
-    public static final OMSTransmissionType SEND_ORDER_CONFIRM = new OMSTransmissionType("SEND_ORDER_CONFIRM");
-    public static final OMSTransmissionType SEND_ORDER_RESERVATION = new OMSTransmissionType("SEND_ORDER_RESERVATION");
-    public static final OMSTransmissionType SEND_RECALL_REQUEST = new OMSTransmissionType("SEND_RECALL_REQUEST");
-    public static final OMSTransmissionType SEND_BACKLOG_REQUEST = new OMSTransmissionType("SEND_BACKLOG_REQUEST");
-    public static final OMSTransmissionType SEND_ORDER_APPROVAL = new OMSTransmissionType("SEND_ORDER_APPROVAL");
-    public static final OMSTransmissionType RESEND_ORDER = new OMSTransmissionType("RESEND_ORDER");
-    public static final OMSTransmissionType SEND_RESPONSE = new OMSTransmissionType("SEND_RESPONSE");
-    public static final OMSTransmissionType CONFIRM_RESPONSE = new OMSTransmissionType("CONFIRM_RESPONSE");
-    public static final OMSTransmissionType REQUEST_NEW_RESPONSE = new OMSTransmissionType("REQUEST_NEW_RESPONSE");
-    public static final OMSTransmissionType SEND_RESPONSE_TEMP = new OMSTransmissionType("SEND_RESPONSE_TEMP");
-    public static final OMSTransmissionType SEND_RESPONSE_INIT = new OMSTransmissionType("SEND_RESPONSE_INIT");
-    public static final OMSTransmissionType SEND_RESPONSE_CONT = new OMSTransmissionType("SEND_RESPONSE_CONT");
-    public static final OMSTransmissionType SEND_RETURN = new OMSTransmissionType("SEND_RETURN");
-    public static final OMSTransmissionType CONFIRM_RETURN = new OMSTransmissionType("CONFIRM_RETURN");
-    public static final OMSTransmissionType REJECT_RETURN = new OMSTransmissionType("REJECT_RETURN");
-    public static final OMSTransmissionType REQUEST_NEW_RETURN = new OMSTransmissionType("REQUEST_NEW_RETURN");
-    public static final OMSTransmissionType SEND_RETURN_ANNOUNCEMENT = new OMSTransmissionType("SEND_RETURN_ANNOUNCEMENT");
-    public static final OMSTransmissionType SEND_DISPATCH = new OMSTransmissionType("SEND_DISPATCH");
-    public static final OMSTransmissionType REQUEST_NEW_DISPATCH = new OMSTransmissionType("REQUEST_NEW_DISPATCH");
-    public static final OMSTransmissionType SEND_SUPPLIER_DOCUMENT_DELIVERY_NOTE = new OMSTransmissionType("SEND_SUPPLIER_DOCUMENT_DELIVERY_NOTE");
-    public static final OMSTransmissionType SEND_SUPPLIER_DOCUMENT_RETURN_SLIP = new OMSTransmissionType("SEND_SUPPLIER_DOCUMENT_RETURN_SLIP");
-    public static final OMSTransmissionType SEND_SUPPLIER_DOCUMENT_ORDER_RETURN_LABEL = new OMSTransmissionType("SEND_SUPPLIER_DOCUMENT_ORDER_RETURN_LABEL");
-    public static final OMSTransmissionType SEND_SHOP_DOCUMENT_DELIVERY_NOTE = new OMSTransmissionType("SEND_SHOP_DOCUMENT_DELIVERY_NOTE");
-    public static final OMSTransmissionType SEND_SHOP_DOCUMENT_RETURN_SLIP = new OMSTransmissionType("SEND_SHOP_DOCUMENT_RETURN_SLIP");
-    public static final OMSTransmissionType SEND_SHOP_DOCUMENT_ORDER_RETURN_LABEL = new OMSTransmissionType("SEND_SHOP_DOCUMENT_ORDER_RETURN_LABEL");
-    public static final OMSTransmissionType ARTICLE_DATA_IMPORT = new OMSTransmissionType("ARTICLE_DATA_IMPORT");
-    public static final OMSTransmissionType SEND_DYNAMIC_ARTICLE_DATA = new OMSTransmissionType("SEND_DYNAMIC_ARTICLE_DATA");
-    public static final OMSTransmissionType ARTICLE_PICTURE = new OMSTransmissionType("ARTICLE_PICTURE");
-    public static final OMSTransmissionType RECEIVE_ORDER = new OMSTransmissionType("RECEIVE_ORDER");
-    public static final OMSTransmissionType RECEIVE_RESPONSE = new OMSTransmissionType("RECEIVE_RESPONSE");
-    public static final OMSTransmissionType RECEIVE_RETURN = new OMSTransmissionType("RECEIVE_RETURN");
-    public static final OMSTransmissionType RECEIVE_DISPATCH = new OMSTransmissionType("RECEIVE_DISPATCH");
-    public static final OMSTransmissionType CREATE_DOCUMENT = new OMSTransmissionType("CREATE_DOCUMENT");
-    public static final OMSTransmissionType CREATE_CUSTOMER_CONTACT = new OMSTransmissionType("CREATE_CUSTOMER_CONTACT");
-    public static final OMSTransmissionType PAYMENTJOB = new OMSTransmissionType("PAYMENTJOB");
-    public static final OMSTransmissionType SEND_OPEN_ITEM = new OMSTransmissionType("SEND_OPEN_ITEM");
-    public static final OMSTransmissionType RETURN_REPORT = new OMSTransmissionType("RETURN_REPORT");
-    public static final OMSTransmissionType SEND_DEBITOR = new OMSTransmissionType("SEND_DEBITOR");
-    public static final OMSTransmissionType RECEIVE_OPEN_ITEM = new OMSTransmissionType("RECEIVE_OPEN_ITEM");
-    public static final OMSTransmissionType SEND_SHOP_DOCUMENT_INVOICECREDIT_NOTE = new OMSTransmissionType("SEND_SHOP_DOCUMENT_INVOICECREDIT_NOTE");
-    public static final OMSTransmissionType REQUEST_IDENT_CODE = new OMSTransmissionType("REQUEST_IDENT_CODE");
-    public static final OMSTransmissionType DOWNLOAD_DOCUMENT = new OMSTransmissionType("DOWNLOAD_DOCUMENT");
-    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_ORDER = new OMSTransmissionType("SEND_CUSTOMER_MAIL_ORDER");
-    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_ORDER_MERGE = new OMSTransmissionType("SEND_CUSTOMER_MAIL_ORDER_MERGE");
-    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_READY_FOR_PICK_UP = new OMSTransmissionType("SEND_CUSTOMER_MAIL_READY_FOR_PICK_UP");
-    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_ORDER_COMMISSIONED = new OMSTransmissionType("SEND_CUSTOMER_MAIL_ORDER_COMMISSIONED");
-    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RESPONSE_TEMPORARY = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RESPONSE_TEMPORARY");
-    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RESPONSE_INITIAL = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RESPONSE_INITIAL");
-    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RESPONSE_CONTINUOUS = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RESPONSE_CONTINUOUS");
-    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_DISPATCH = new OMSTransmissionType("SEND_CUSTOMER_MAIL_DISPATCH");
-    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_DISPATCH_IMMATERIAL = new OMSTransmissionType("SEND_CUSTOMER_MAIL_DISPATCH_IMMATERIAL");
-    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_CAN = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_CAN");
-    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_RCL = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_RCL");
-    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_INV = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_INV");
-    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_RET = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_RET");
-    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_DEF = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_DEF");
-    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_PAYMENT_REMINDER = new OMSTransmissionType("SEND_CUSTOMER_MAIL_PAYMENT_REMINDER");
-    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_DELIVERY_DELAY = new OMSTransmissionType("SEND_CUSTOMER_MAIL_DELIVERY_DELAY");
-    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_INVOICE = new OMSTransmissionType("SEND_CUSTOMER_MAIL_INVOICE");
-    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_CREDITNOTE = new OMSTransmissionType("SEND_CUSTOMER_MAIL_CREDITNOTE");
-    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_RCL010 = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_RCL010");
-    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_RCL020 = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_RCL020");
-    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_RCL021 = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_RCL021");
-    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_RCL045 = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_RCL045");
-    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_RCL980 = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_RCL980");
-    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_REJECTED = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_REJECTED");
-    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_DISPATCH_INVOICE = new OMSTransmissionType("SEND_CUSTOMER_MAIL_DISPATCH_INVOICE");
-    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_CREDITNOTE = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_CREDITNOTE");
-    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_CAN_CREDITNOTE = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_CAN_CREDITNOTE");
-    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_RCL_CREDITNOTE = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_RCL_CREDITNOTE");
-    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_INV_CREDITNOTE = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_INV_CREDITNOTE");
-    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_RET_CREDITNOTE = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_RET_CREDITNOTE");
-    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_DEF_CREDITNOTE = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_DEF_CREDITNOTE");
-    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_RCL010_CREDITNOTE = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_RCL010_CREDITNOTE");
-    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_RCL020_CREDITNOTE = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_RCL020_CREDITNOTE");
-    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_RCL045_CREDITNOTE = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_RCL045_CREDITNOTE");
-    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_REFUNDED = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_REFUNDED");
-    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_RCL980_CREDITNOTE = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_RCL980_CREDITNOTE");
-    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_RCL021_CREDITNOTE = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_RCL021_CREDITNOTE");
-    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_LABEL = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_LABEL");
-    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_ANNOUNCEMENT = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_ANNOUNCEMENT");
+    public static final OMSTransmissionType SEND_CHECKED_ORDER                                  = new OMSTransmissionType("SEND_CHECKED_ORDER");
+    public static final OMSTransmissionType SEND_ANNOUNCE_ORDER                                 = new OMSTransmissionType("SEND_ANNOUNCE_ORDER");
+    public static final OMSTransmissionType CONFIRM_RESERVATION                                 = new OMSTransmissionType("CONFIRM_RESERVATION");
+    public static final OMSTransmissionType CANCEL_RESERVATION                                  = new OMSTransmissionType("CANCEL_RESERVATION");
+    public static final OMSTransmissionType SEND_ORDER_BACKLOG                                  = new OMSTransmissionType("SEND_ORDER_BACKLOG");
+    public static final OMSTransmissionType SEND_ORDER_RECALL                                   = new OMSTransmissionType("SEND_ORDER_RECALL");
+    public static final OMSTransmissionType SEND_ORDER_CONFIRM                                  = new OMSTransmissionType("SEND_ORDER_CONFIRM");
+    public static final OMSTransmissionType SEND_ORDER_RESERVATION                              = new OMSTransmissionType("SEND_ORDER_RESERVATION");
+    public static final OMSTransmissionType SEND_RECALL_REQUEST                                 = new OMSTransmissionType("SEND_RECALL_REQUEST");
+    public static final OMSTransmissionType SEND_BACKLOG_REQUEST                                = new OMSTransmissionType("SEND_BACKLOG_REQUEST");
+    public static final OMSTransmissionType SEND_ORDER_APPROVAL                                 = new OMSTransmissionType("SEND_ORDER_APPROVAL");
+    public static final OMSTransmissionType RESEND_ORDER                                        = new OMSTransmissionType("RESEND_ORDER");
+    public static final OMSTransmissionType SEND_RESPONSE                                       = new OMSTransmissionType("SEND_RESPONSE");
+    public static final OMSTransmissionType CONFIRM_RESPONSE                                    = new OMSTransmissionType("CONFIRM_RESPONSE");
+    public static final OMSTransmissionType REQUEST_NEW_RESPONSE                                = new OMSTransmissionType("REQUEST_NEW_RESPONSE");
+    public static final OMSTransmissionType SEND_RESPONSE_TEMP                                  = new OMSTransmissionType("SEND_RESPONSE_TEMP");
+    public static final OMSTransmissionType SEND_RESPONSE_INIT                                  = new OMSTransmissionType("SEND_RESPONSE_INIT");
+    public static final OMSTransmissionType SEND_RESPONSE_CONT                                  = new OMSTransmissionType("SEND_RESPONSE_CONT");
+    public static final OMSTransmissionType SEND_RETURN                                         = new OMSTransmissionType("SEND_RETURN");
+    public static final OMSTransmissionType CONFIRM_RETURN                                      = new OMSTransmissionType("CONFIRM_RETURN");
+    public static final OMSTransmissionType REJECT_RETURN                                       = new OMSTransmissionType("REJECT_RETURN");
+    public static final OMSTransmissionType REQUEST_NEW_RETURN                                  = new OMSTransmissionType("REQUEST_NEW_RETURN");
+    public static final OMSTransmissionType SEND_RETURN_ANNOUNCEMENT                            = new OMSTransmissionType("SEND_RETURN_ANNOUNCEMENT");
+    public static final OMSTransmissionType SEND_DISPATCH                                       = new OMSTransmissionType("SEND_DISPATCH");
+    public static final OMSTransmissionType REQUEST_NEW_DISPATCH                                = new OMSTransmissionType("REQUEST_NEW_DISPATCH");
+    public static final OMSTransmissionType SEND_SUPPLIER_DOCUMENT_DELIVERY_NOTE                = new OMSTransmissionType("SEND_SUPPLIER_DOCUMENT_DELIVERY_NOTE");
+    public static final OMSTransmissionType SEND_SUPPLIER_DOCUMENT_RETURN_SLIP                  = new OMSTransmissionType("SEND_SUPPLIER_DOCUMENT_RETURN_SLIP");
+    public static final OMSTransmissionType SEND_SUPPLIER_DOCUMENT_ORDER_RETURN_LABEL           = new OMSTransmissionType("SEND_SUPPLIER_DOCUMENT_ORDER_RETURN_LABEL");
+    public static final OMSTransmissionType SEND_SHOP_DOCUMENT_DELIVERY_NOTE                    = new OMSTransmissionType("SEND_SHOP_DOCUMENT_DELIVERY_NOTE");
+    public static final OMSTransmissionType SEND_SHOP_DOCUMENT_RETURN_SLIP                      = new OMSTransmissionType("SEND_SHOP_DOCUMENT_RETURN_SLIP");
+    public static final OMSTransmissionType SEND_SHOP_DOCUMENT_ORDER_RETURN_LABEL               = new OMSTransmissionType("SEND_SHOP_DOCUMENT_ORDER_RETURN_LABEL");
+    public static final OMSTransmissionType ARTICLE_DATA_IMPORT                                 = new OMSTransmissionType("ARTICLE_DATA_IMPORT");
+    public static final OMSTransmissionType SEND_DYNAMIC_ARTICLE_DATA                           = new OMSTransmissionType("SEND_DYNAMIC_ARTICLE_DATA");
+    public static final OMSTransmissionType ARTICLE_PICTURE                                     = new OMSTransmissionType("ARTICLE_PICTURE");
+    public static final OMSTransmissionType RECEIVE_ORDER                                       = new OMSTransmissionType("RECEIVE_ORDER");
+    public static final OMSTransmissionType RECEIVE_RESPONSE                                    = new OMSTransmissionType("RECEIVE_RESPONSE");
+    public static final OMSTransmissionType RECEIVE_RETURN                                      = new OMSTransmissionType("RECEIVE_RETURN");
+    public static final OMSTransmissionType RECEIVE_DISPATCH                                    = new OMSTransmissionType("RECEIVE_DISPATCH");
+    public static final OMSTransmissionType CREATE_DOCUMENT                                     = new OMSTransmissionType("CREATE_DOCUMENT");
+    public static final OMSTransmissionType CREATE_CUSTOMER_CONTACT                             = new OMSTransmissionType("CREATE_CUSTOMER_CONTACT");
+    public static final OMSTransmissionType PAYMENTJOB                                          = new OMSTransmissionType("PAYMENTJOB");
+    public static final OMSTransmissionType SEND_OPEN_ITEM                                      = new OMSTransmissionType("SEND_OPEN_ITEM");
+    public static final OMSTransmissionType RETURN_REPORT                                       = new OMSTransmissionType("RETURN_REPORT");
+    public static final OMSTransmissionType SEND_DEBITOR                                        = new OMSTransmissionType("SEND_DEBITOR");
+    public static final OMSTransmissionType RECEIVE_OPEN_ITEM                                   = new OMSTransmissionType("RECEIVE_OPEN_ITEM");
+    public static final OMSTransmissionType SEND_SHOP_DOCUMENT_INVOICECREDIT_NOTE               = new OMSTransmissionType("SEND_SHOP_DOCUMENT_INVOICECREDIT_NOTE");
+    public static final OMSTransmissionType REQUEST_IDENT_CODE                                  = new OMSTransmissionType("REQUEST_IDENT_CODE");
+    public static final OMSTransmissionType DOWNLOAD_DOCUMENT                                   = new OMSTransmissionType("DOWNLOAD_DOCUMENT");
+    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_ORDER                            = new OMSTransmissionType("SEND_CUSTOMER_MAIL_ORDER");
+    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_ORDER_MERGE                      = new OMSTransmissionType("SEND_CUSTOMER_MAIL_ORDER_MERGE");
+    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_READY_FOR_PICK_UP                = new OMSTransmissionType("SEND_CUSTOMER_MAIL_READY_FOR_PICK_UP");
+    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_ORDER_COMMISSIONED               = new OMSTransmissionType("SEND_CUSTOMER_MAIL_ORDER_COMMISSIONED");
+    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RESPONSE_TEMPORARY               = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RESPONSE_TEMPORARY");
+    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RESPONSE_INITIAL                 = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RESPONSE_INITIAL");
+    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RESPONSE_CONTINUOUS              = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RESPONSE_CONTINUOUS");
+    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_DISPATCH                         = new OMSTransmissionType("SEND_CUSTOMER_MAIL_DISPATCH");
+    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_DISPATCH_IMMATERIAL              = new OMSTransmissionType("SEND_CUSTOMER_MAIL_DISPATCH_IMMATERIAL");
+    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_CAN                       = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_CAN");
+    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_RCL                       = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_RCL");
+    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_INV                       = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_INV");
+    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_RET                       = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_RET");
+    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_DEF                       = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_DEF");
+    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_PAYMENT_REMINDER                 = new OMSTransmissionType("SEND_CUSTOMER_MAIL_PAYMENT_REMINDER");
+    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_DELIVERY_DELAY                   = new OMSTransmissionType("SEND_CUSTOMER_MAIL_DELIVERY_DELAY");
+    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_INVOICE                          = new OMSTransmissionType("SEND_CUSTOMER_MAIL_INVOICE");
+    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_CREDITNOTE                       = new OMSTransmissionType("SEND_CUSTOMER_MAIL_CREDITNOTE");
+    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_RCL010                    = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_RCL010");
+    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_RCL020                    = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_RCL020");
+    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_RCL021                    = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_RCL021");
+    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_RCL045                    = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_RCL045");
+    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_RCL980                    = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_RCL980");
+    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_REJECTED                  = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_REJECTED");
+    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_DISPATCH_INVOICE                 = new OMSTransmissionType("SEND_CUSTOMER_MAIL_DISPATCH_INVOICE");
+    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_CREDITNOTE                = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_CREDITNOTE");
+    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_CAN_CREDITNOTE            = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_CAN_CREDITNOTE");
+    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_RCL_CREDITNOTE            = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_RCL_CREDITNOTE");
+    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_INV_CREDITNOTE            = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_INV_CREDITNOTE");
+    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_RET_CREDITNOTE            = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_RET_CREDITNOTE");
+    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_DEF_CREDITNOTE            = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_DEF_CREDITNOTE");
+    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_RCL010_CREDITNOTE         = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_RCL010_CREDITNOTE");
+    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_RCL020_CREDITNOTE         = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_RCL020_CREDITNOTE");
+    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_RCL045_CREDITNOTE         = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_RCL045_CREDITNOTE");
+    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_REFUNDED                  = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_REFUNDED");
+    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_RCL980_CREDITNOTE         = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_RCL980_CREDITNOTE");
+    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_RCL021_CREDITNOTE         = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_RCL021_CREDITNOTE");
+    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_LABEL                     = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_LABEL");
+    public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_ANNOUNCEMENT              = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_ANNOUNCEMENT");
     public static final OMSTransmissionType SEND_CUSTOMER_MAIL_RETURN_ANNOUNCEMENT_TRANSMISSION = new OMSTransmissionType("SEND_CUSTOMER_MAIL_RETURN_ANNOUNCEMENT_TRANSMISSION");
-    public static final OMSTransmissionType EXT_SEND_ORDER = new OMSTransmissionType("EXT_SEND_ORDER");
-    public static final OMSTransmissionType EXT_RECEIVE_ORDER = new OMSTransmissionType("EXT_RECEIVE_ORDER");
-    public static final OMSTransmissionType EXT_SEND_ARTICLE = new OMSTransmissionType("EXT_SEND_ARTICLE");
-    public static final OMSTransmissionType EXT_RECEIVE_ARTICLE = new OMSTransmissionType("EXT_RECEIVE_ARTICLE");
-    public static final OMSTransmissionType EXT_RECEIVE_STOCK = new OMSTransmissionType("EXT_RECEIVE_STOCK");
-    public static final OMSTransmissionType EXT_RECEIVE_RETURN = new OMSTransmissionType("EXT_RECEIVE_RETURN");
-    public static final OMSTransmissionType EXT_RECEIVE_DISPATCH = new OMSTransmissionType("EXT_RECEIVE_DISPATCH");
-    public static final OMSTransmissionType EXT_TRANSFER_FILE = new OMSTransmissionType("EXT_TRANSFER_FILE");
-    public static final OMSTransmissionType EXT_SEND_SUPPLIER_DOCUMENT_DELIVERY_NOTE = new OMSTransmissionType("EXT_SEND_SUPPLIER_DOCUMENT_DELIVERY_NOTE");
-    public static final OMSTransmissionType EXT_SEND_SALES_ANALYTICS = new OMSTransmissionType("EXT_SEND_SALES_ANALYTICS");
+    public static final OMSTransmissionType EXT_SEND_ORDER                                      = new OMSTransmissionType("EXT_SEND_ORDER");
+    public static final OMSTransmissionType EXT_RECEIVE_ORDER                                   = new OMSTransmissionType("EXT_RECEIVE_ORDER");
+    public static final OMSTransmissionType EXT_SEND_ARTICLE                                    = new OMSTransmissionType("EXT_SEND_ARTICLE");
+    public static final OMSTransmissionType EXT_RECEIVE_ARTICLE                                 = new OMSTransmissionType("EXT_RECEIVE_ARTICLE");
+    public static final OMSTransmissionType EXT_RECEIVE_STOCK                                   = new OMSTransmissionType("EXT_RECEIVE_STOCK");
+    public static final OMSTransmissionType EXT_RECEIVE_RETURN                                  = new OMSTransmissionType("EXT_RECEIVE_RETURN");
+    public static final OMSTransmissionType EXT_RECEIVE_DISPATCH                                = new OMSTransmissionType("EXT_RECEIVE_DISPATCH");
+    public static final OMSTransmissionType EXT_TRANSFER_FILE                                   = new OMSTransmissionType("EXT_TRANSFER_FILE");
+    public static final OMSTransmissionType EXT_SEND_SUPPLIER_DOCUMENT_DELIVERY_NOTE            = new OMSTransmissionType("EXT_SEND_SUPPLIER_DOCUMENT_DELIVERY_NOTE");
+    public static final OMSTransmissionType EXT_SEND_SALES_ANALYTICS                            = new OMSTransmissionType("EXT_SEND_SALES_ANALYTICS");
 
     private String value;
 
@@ -121,4 +124,107 @@ public class OMSTransmissionType
         return value;
     }
 
+    public Collection<OMSTransmissionType> getAllValues()
+    {
+        return Arrays.asList(
+            SEND_CHECKED_ORDER,
+            SEND_ANNOUNCE_ORDER,
+            CONFIRM_RESERVATION,
+            CANCEL_RESERVATION,
+            SEND_ORDER_BACKLOG,
+            SEND_ORDER_RECALL,
+            SEND_ORDER_CONFIRM,
+            SEND_ORDER_RESERVATION,
+            SEND_RECALL_REQUEST,
+            SEND_BACKLOG_REQUEST,
+            SEND_ORDER_APPROVAL,
+            RESEND_ORDER,
+            SEND_RESPONSE,
+            CONFIRM_RESPONSE,
+            REQUEST_NEW_RESPONSE,
+            SEND_RESPONSE_TEMP,
+            SEND_RESPONSE_INIT,
+            SEND_RESPONSE_CONT,
+            SEND_RETURN,
+            CONFIRM_RETURN,
+            REJECT_RETURN,
+            REQUEST_NEW_RETURN,
+            SEND_RETURN_ANNOUNCEMENT,
+            SEND_DISPATCH,
+            REQUEST_NEW_DISPATCH,
+            SEND_SUPPLIER_DOCUMENT_DELIVERY_NOTE,
+            SEND_SUPPLIER_DOCUMENT_RETURN_SLIP,
+            SEND_SUPPLIER_DOCUMENT_ORDER_RETURN_LABEL,
+            SEND_SHOP_DOCUMENT_DELIVERY_NOTE,
+            SEND_SHOP_DOCUMENT_RETURN_SLIP,
+            SEND_SHOP_DOCUMENT_ORDER_RETURN_LABEL,
+            ARTICLE_DATA_IMPORT,
+            SEND_DYNAMIC_ARTICLE_DATA,
+            ARTICLE_PICTURE,
+            RECEIVE_ORDER,
+            RECEIVE_RESPONSE,
+            RECEIVE_RETURN,
+            RECEIVE_DISPATCH,
+            CREATE_DOCUMENT,
+            CREATE_CUSTOMER_CONTACT,
+            PAYMENTJOB,
+            SEND_OPEN_ITEM,
+            RETURN_REPORT,
+            SEND_DEBITOR,
+            RECEIVE_OPEN_ITEM,
+            SEND_SHOP_DOCUMENT_INVOICECREDIT_NOTE,
+            REQUEST_IDENT_CODE,
+            DOWNLOAD_DOCUMENT,
+            SEND_CUSTOMER_MAIL_ORDER,
+            SEND_CUSTOMER_MAIL_ORDER_MERGE,
+            SEND_CUSTOMER_MAIL_READY_FOR_PICK_UP,
+            SEND_CUSTOMER_MAIL_ORDER_COMMISSIONED,
+            SEND_CUSTOMER_MAIL_RESPONSE_TEMPORARY,
+            SEND_CUSTOMER_MAIL_RESPONSE_INITIAL,
+            SEND_CUSTOMER_MAIL_RESPONSE_CONTINUOUS,
+            SEND_CUSTOMER_MAIL_DISPATCH,
+            SEND_CUSTOMER_MAIL_DISPATCH_IMMATERIAL,
+            SEND_CUSTOMER_MAIL_RETURN_CAN,
+            SEND_CUSTOMER_MAIL_RETURN_RCL,
+            SEND_CUSTOMER_MAIL_RETURN_INV,
+            SEND_CUSTOMER_MAIL_RETURN_RET,
+            SEND_CUSTOMER_MAIL_RETURN_DEF,
+            SEND_CUSTOMER_MAIL_PAYMENT_REMINDER,
+            SEND_CUSTOMER_MAIL_DELIVERY_DELAY,
+            SEND_CUSTOMER_MAIL_INVOICE,
+            SEND_CUSTOMER_MAIL_CREDITNOTE,
+            SEND_CUSTOMER_MAIL_RETURN_RCL010,
+            SEND_CUSTOMER_MAIL_RETURN_RCL020,
+            SEND_CUSTOMER_MAIL_RETURN_RCL021,
+            SEND_CUSTOMER_MAIL_RETURN_RCL045,
+            SEND_CUSTOMER_MAIL_RETURN_RCL980,
+            SEND_CUSTOMER_MAIL_RETURN_REJECTED,
+            SEND_CUSTOMER_MAIL_DISPATCH_INVOICE,
+            SEND_CUSTOMER_MAIL_RETURN_CREDITNOTE,
+            SEND_CUSTOMER_MAIL_RETURN_CAN_CREDITNOTE,
+            SEND_CUSTOMER_MAIL_RETURN_RCL_CREDITNOTE,
+            SEND_CUSTOMER_MAIL_RETURN_INV_CREDITNOTE,
+            SEND_CUSTOMER_MAIL_RETURN_RET_CREDITNOTE,
+            SEND_CUSTOMER_MAIL_RETURN_DEF_CREDITNOTE,
+            SEND_CUSTOMER_MAIL_RETURN_RCL010_CREDITNOTE,
+            SEND_CUSTOMER_MAIL_RETURN_RCL020_CREDITNOTE,
+            SEND_CUSTOMER_MAIL_RETURN_RCL045_CREDITNOTE,
+            SEND_CUSTOMER_MAIL_RETURN_REFUNDED,
+            SEND_CUSTOMER_MAIL_RETURN_RCL980_CREDITNOTE,
+            SEND_CUSTOMER_MAIL_RETURN_RCL021_CREDITNOTE,
+            SEND_CUSTOMER_MAIL_RETURN_LABEL,
+            SEND_CUSTOMER_MAIL_RETURN_ANNOUNCEMENT,
+            SEND_CUSTOMER_MAIL_RETURN_ANNOUNCEMENT_TRANSMISSION,
+            EXT_SEND_ORDER,
+            EXT_RECEIVE_ORDER,
+            EXT_SEND_ARTICLE,
+            EXT_RECEIVE_ARTICLE,
+            EXT_RECEIVE_STOCK,
+            EXT_RECEIVE_RETURN,
+            EXT_RECEIVE_DISPATCH,
+            EXT_TRANSFER_FILE,
+            EXT_SEND_SUPPLIER_DOCUMENT_DELIVERY_NOTE,
+            EXT_SEND_SALES_ANALYTICS
+            );
+    }
 }

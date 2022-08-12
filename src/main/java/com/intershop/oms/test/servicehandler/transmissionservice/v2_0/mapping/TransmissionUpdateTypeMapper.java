@@ -1,6 +1,5 @@
 package com.intershop.oms.test.servicehandler.transmissionservice.v2_0.mapping;
 
-import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
