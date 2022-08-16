@@ -1,5 +1,6 @@
 package com.intershop.oms.test.servicehandler.orderservice.v2_0;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -55,6 +56,36 @@ class OMSOrderServiceHandlerV2 extends RESTServiceHandler
     }
 
     /**
+     * sends a list of orders
+     *
+     * @param host
+     * @param port
+     * @param order
+     * @param expectedEndState
+     *            wait for the order to be in the given state before returning
+     *
+     * @return the orderIds
+     * @throws ApiException
+     */
+    public List<Long> sendOrders(List<OMSOrder> omsOrders, int expectedEndState) throws ApiException
+    {
+        List<Long> omsOrderCreatedIds = new ArrayList<Long>();
+
+        for (OMSOrder omsOrder: omsOrders)
+        {
+            Long orderId = sendOrder(omsOrder);
+            omsOrderCreatedIds.add(orderId);
+        }
+        
+        for (Long orderId: omsOrderCreatedIds)
+        {
+            assert dbHandler.waitForOrderState(orderId, expectedEndState);
+        }
+
+        return omsOrderCreatedIds;
+    }
+    
+    /**
      * sends an order
      *
      * @param host
@@ -82,9 +113,11 @@ class OMSOrderServiceHandlerV2 extends RESTServiceHandler
     }
 
     @Override
+    //this just calls sendOrders(List<OMSOrder>, int) in order to be upwards-compatible with tests from OrderServiceSpec
     public List<OMSOrder> createOrders(List<OMSOrder> omsOrders, Integer targetState) throws ApiException
     {
-        throw new RuntimeException("Method not supported for version < 2.2!");
+        sendOrders(omsOrders, targetState);
+        return omsOrders;
     }
 
     @Override
