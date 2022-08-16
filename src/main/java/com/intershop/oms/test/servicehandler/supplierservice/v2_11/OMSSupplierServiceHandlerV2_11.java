@@ -60,7 +60,7 @@ public class OMSSupplierServiceHandlerV2_11 extends RESTServiceHandler
 
         Dispatch dispatch = DispatchMapper.INSTANCE.toApiDispatch(omsDispatch);
         response = dispatchApi.createDispatchWithHttpInfo(dispatch);
-        return response.getHeaders().get("Location").get(0);
+        return response.getHeaders().get(HTTP_HEADER_LOCATION).get(0);
 
     }
 
