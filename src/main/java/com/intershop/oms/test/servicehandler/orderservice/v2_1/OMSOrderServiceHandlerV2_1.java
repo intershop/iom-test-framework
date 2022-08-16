@@ -1,5 +1,6 @@
 package com.intershop.oms.test.servicehandler.orderservice.v2_1;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -11,6 +12,7 @@ import com.intershop.oms.rest.order.v2_1.api.OrderApi;
 import com.intershop.oms.rest.order.v2_1.model.Order;
 import com.intershop.oms.rest.shared.ApiException;
 import com.intershop.oms.rest.shared.ApiResponse;
+import com.intershop.oms.test.businessobject.OMSShop;
 import com.intershop.oms.test.businessobject.order.OMSChangeRequest;
 import com.intershop.oms.test.businessobject.order.OMSOrder;
 import com.intershop.oms.test.configuration.ServiceConfiguration;
@@ -82,9 +84,14 @@ class OMSOrderServiceHandlerV2_1 extends RESTServiceHandler
     }
 
     @Override
+    //this just calls sendOrder(OMSOrder, int) in order to be upwards-compatible with tests from OrderServiceSpec
     public List<OMSOrder> createOrders(List<OMSOrder> omsOrders, Integer targetState) throws ApiException
     {
-        throw new RuntimeException("Method not supported for version < 2.2!");
+        for (OMSOrder omsOrder : omsOrders)
+        {
+            sendOrder(omsOrder, targetState);
+        }
+        return omsOrders;
     }
 
     @Override

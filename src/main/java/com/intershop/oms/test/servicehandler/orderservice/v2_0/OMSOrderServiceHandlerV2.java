@@ -82,9 +82,14 @@ class OMSOrderServiceHandlerV2 extends RESTServiceHandler
     }
 
     @Override
+    //this just calls sendOrder(OMSOrder, int) in order to be upwards-compatible with tests from OrderServiceSpec
     public List<OMSOrder> createOrders(List<OMSOrder> omsOrders, Integer targetState) throws ApiException
     {
-        throw new RuntimeException("Method not supported for version < 2.2!");
+        for (OMSOrder omsOrder : omsOrders)
+        {
+            sendOrder(omsOrder, targetState);
+        }
+        return omsOrders;
     }
 
     @Override
