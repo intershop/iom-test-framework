@@ -55,7 +55,38 @@ class OMSOrderServiceHandlerV2_1 extends RESTServiceHandler
 
         return omsOrderCreatedId;
     }
+    
+    /**
+     * sends a list of orders
+     *
+     * @param host
+     * @param port
+     * @param order
+     * @param expectedEndState
+     *            wait for the order to be in the given state before returning
+     *
+     * @return the orderIds
+     * @throws ApiException
+     */
+    public List<Long> sendOrders(List<OMSOrder> omsOrders, int expectedEndState) throws ApiException
+    {
+        List<Long> omsOrderCreatedIds = new ArrayList<Long>();
 
+        for (OMSOrder omsOrder: omsOrders)
+        {
+            Long orderId = sendOrder(omsOrder);
+            omsOrderCreatedIds.add(orderId);
+        }
+        
+        for (Long orderId: omsOrderCreatedIds)
+        {
+            assert dbHandler.waitForOrderState(orderId, expectedEndState);
+        }
+
+        return omsOrderCreatedIds;
+    }
+    
+    
     /**
      * sends an order
      *
@@ -84,13 +115,10 @@ class OMSOrderServiceHandlerV2_1 extends RESTServiceHandler
     }
 
     @Override
-    //this just calls sendOrder(OMSOrder, int) in order to be upwards-compatible with tests from OrderServiceSpec
+    //this just calls sendOrders(List<OMSOrder>, int) in order to be upwards-compatible with tests from OrderServiceSpec
     public List<OMSOrder> createOrders(List<OMSOrder> omsOrders, Integer targetState) throws ApiException
     {
-        for (OMSOrder omsOrder : omsOrders)
-        {
-            sendOrder(omsOrder, targetState);
-        }
+        sendOrders(omsOrders, targetState);
         return omsOrders;
     }
 
