@@ -59,10 +59,11 @@ jobs:
 
   - script: |
       # Only some certain branches are allowed for publication!
-      if ! echo "$BUILD_SOURCEBRANCHNAME" | grep -q '^develop$\|^release-\|^main$\|^feature/add-new-transmissions-api$'; then
+      # Note: due to weird implementation, Azure pipelines will cut off everything before the last trailing slash
+      # "feature/some-feature" will become "some-feature"
+      if ! echo "$BUILD_SOURCEBRANCHNAME" | grep -q '^develop$\|^release-\|^main$\|^add-new-transmissions-api$'; then
         echo "##vso[task.setvariable variable=SKIP_PUBLICATION;]true"
         echo "##vso[task.logissue type=warning] publication skipped"
-        echo "$BUILD_SOURCEBRANCHNAME"
       fi
     timeoutInMinutes: 2
     displayName: "Check for publication / release build"
