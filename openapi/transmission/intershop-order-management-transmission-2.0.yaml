@@ -1,0 +1,899 @@
+openapi: 3.0.3
+info:
+  contact:
+    name: Intershop Communications AG
+    url: https://www.intershop.com
+  description: |
+    The transmission REST API supports tasks to view and manage transmissions of the IOM.
+  title: IOM Transmission REST API
+  version: "2.0"
+servers:
+- description: The production API server.
+  url: "{protocol}://{domain}:{port}/rest"
+  variables:
+    protocol:
+      default: https
+      enum:
+      - http
+      - https
+    domain:
+      default: localhost
+    port:
+      default: "443"
+tags:
+- description: Transmission related operations exposed by this service.
+  name: transmission
+paths:
+  /transmissions/by-type:
+    post:
+      description: |
+        Returns all transmissions for selected search criterias.<br/> **Note:** This is a POST request (instead of GET with query params) in order to prevent hitting URL / header length restrictions in certain browsers / API clients.
+      operationId: searchTransmissions
+      requestBody:
+        content:
+          application/vnd.intershop.transmission.v2+json:
+            schema:
+              $ref: '#/components/schemas/TransmissionSearchRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/vnd.intershop.transmission.v2+json:
+              schema:
+                $ref: '#/components/schemas/TransmissionCollectionContainer'
+          description: The response for a transmission collection request.
+        "400":
+          content:
+            application/vnd.intershop.transmission.v2+json:
+              schema:
+                $ref: '#/components/schemas/ErrorReport'
+          description: Bad request - Generic or business logic validation error.
+        "401":
+          description: Unauthorized - Authentication information is missing or invalid.
+          headers:
+            WWW-Authenticate:
+              description: ""
+              explode: false
+              schema:
+                type: string
+              style: simple
+        "403":
+          description: Forbidden - the user is not authorized to use this resource.
+        "406":
+          description: Not Acceptable - A representation of the response in the media
+            type that was requested in the ACCEPT header cannot be provided.
+        "500":
+          description: Internal Server Error - An unexpected error occured.
+      security:
+      - basicAuth: []
+      - bearerAuth: []
+      summary: Get transmissions by type + additional filter criteria.
+      tags:
+      - transmission
+  /transmissions/{transmissionId}:
+    get:
+      description: Returns a transmission for the given id.
+      operationId: getTransmission
+      parameters:
+      - description: The transmission identifier.
+        example: ORDERTRANSMISSION-10000
+        explode: false
+        in: path
+        name: transmissionId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/vnd.intershop.transmission.v2+json:
+              schema:
+                $ref: '#/components/schemas/Transmission'
+          description: The response for one transmission request.
+        "400":
+          content:
+            application/vnd.intershop.transmission.v2+json:
+              schema:
+                $ref: '#/components/schemas/ErrorReport'
+          description: Bad request - Generic or business logic validation error.
+        "401":
+          description: Unauthorized - Authentication information is missing or invalid.
+          headers:
+            WWW-Authenticate:
+              description: ""
+              explode: false
+              schema:
+                type: string
+              style: simple
+        "403":
+          description: Forbidden - the user is not authorized to use this resource.
+        "404":
+          description: Not found - the resource is not found.
+        "406":
+          description: Not Acceptable - A representation of the response in the media
+            type that was requested in the ACCEPT header cannot be provided.
+        "500":
+          description: Internal Server Error - An unexpected error occured.
+      security:
+      - basicAuth: []
+      - bearerAuth: []
+      summary: Get a transmission by id.
+      tags:
+      - transmission
+  /transmissions/types:
+    get:
+      description: Get a list of TransmissionTypes supported by the API.
+      operationId: getTransmissionTypes
+      responses:
+        "200":
+          content:
+            application/vnd.intershop.transmission.v2+json:
+              schema:
+                $ref: '#/components/schemas/TransmissionTypeMapping'
+          description: TransmissionTypes supported by the API.
+        "401":
+          description: Unauthorized - Authentication information is missing or invalid.
+          headers:
+            WWW-Authenticate:
+              description: ""
+              explode: false
+              schema:
+                type: string
+              style: simple
+        "403":
+          description: Forbidden - the user is not authorized to use this resource.
+        "406":
+          description: Not Acceptable - A representation of the response in the media
+            type that was requested in the ACCEPT header cannot be provided.
+        "500":
+          description: Internal Server Error - An unexpected error occured.
+      security:
+      - basicAuth: []
+      - bearerAuth: []
+      summary: Get a list of TransmissionTypes supported by the API.
+      tags:
+      - transmission
+  /transmission-updates/by-id:
+    post:
+      description: "Bulk create processes to update statuses of transmissions.<br>\
+        \ A process will be created for each transmission, which will be processed\
+        \ asynchronously."
+      operationId: updateTransmissionsById
+      requestBody:
+        content:
+          application/vnd.intershop.transmission.v2+json:
+            schema:
+              description: Ids of transmissions and update types that should be done.
+              items:
+                $ref: '#/components/schemas/TransmissionUpdateRequest'
+              type: array
+      responses:
+        "207":
+          content:
+            application/vnd.intershop.transmission.v2+json:
+              schema:
+                $ref: '#/components/schemas/MultiStatusCollectionContainer'
+          description: "Contains multiple responses for different requests, that was\
+            \ done within one single request."
+        "400":
+          content:
+            application/vnd.intershop.transmission.v2+json:
+              schema:
+                $ref: '#/components/schemas/ErrorReport'
+          description: Bad request - Generic or business logic validation error.
+        "401":
+          description: Unauthorized - Authentication information is missing or invalid.
+          headers:
+            WWW-Authenticate:
+              description: ""
+              explode: false
+              schema:
+                type: string
+              style: simple
+        "403":
+          description: Forbidden - the user is not authorized to use this resource.
+        "406":
+          description: Not Acceptable - A representation of the response in the media
+            type that was requested in the ACCEPT header cannot be provided.
+        "415":
+          description: Unsupported Media Type - The media type of the sent body is
+            not supported.
+      security:
+      - basicAuth: []
+      - bearerAuth: []
+      summary: Bulk create processes to update statuses of transmissions.
+      tags:
+      - transmissionUpdate
+  /transmission-updates/by-filter:
+    post:
+      description: "Bulk create processes to update statuses of transmissions.<br>\
+        \ A process will be created for each transmission, which will be processed\
+        \ asynchronously."
+      operationId: updateTransmissionsByFilter
+      requestBody:
+        content:
+          application/vnd.intershop.transmission.v2+json:
+            schema:
+              $ref: '#/components/schemas/TransmissionBulkUpdateRequest'
+      responses:
+        "202":
+          description: |
+            The request has been accepted by the system. Updates will be processed in an asynchronous fashion.
+        "400":
+          content:
+            application/vnd.intershop.transmission.v2+json:
+              schema:
+                $ref: '#/components/schemas/ErrorReport'
+          description: Bad request - Generic or business logic validation error.
+        "401":
+          description: Unauthorized - Authentication information is missing or invalid.
+          headers:
+            WWW-Authenticate:
+              description: ""
+              explode: false
+              schema:
+                type: string
+              style: simple
+        "403":
+          description: Forbidden - the user is not authorized to use this resource.
+        "406":
+          description: Not Acceptable - A representation of the response in the media
+            type that was requested in the ACCEPT header cannot be provided.
+        "415":
+          description: Unsupported Media Type - The media type of the sent body is
+            not supported.
+      security:
+      - basicAuth: []
+      - bearerAuth: []
+      summary: Bulk create processes to update statuses of transmissions.
+      tags:
+      - transmissionUpdate
+components:
+  parameters:
+    LimitParam:
+      description: The number of items to return.<br> If not set the limit is 1000.
+      explode: true
+      in: query
+      name: limit
+      required: false
+      schema:
+        default: 1000
+        example: 50
+        type: integer
+      style: form
+    OffsetParam:
+      description: The number of items to skip before starting to collect the result
+        set.
+      explode: true
+      in: query
+      name: offset
+      required: false
+      schema:
+        default: 0
+        example: 0
+        type: integer
+      style: form
+    SortDirectionParam:
+      explode: true
+      in: query
+      name: sortDirection
+      required: false
+      schema:
+        $ref: '#/components/schemas/SortDirection'
+      style: form
+  responses:
+    TransmissionCollectionContainerResponse:
+      content:
+        application/vnd.intershop.transmission.v2+json:
+          schema:
+            $ref: '#/components/schemas/TransmissionCollectionContainer'
+      description: The response for a transmission collection request.
+    Created:
+      description: Created - The entity was created successfully.
+    Accepted:
+      description: Accepted - The request was successful and will be processed asynchronously.
+    MultiStatus:
+      description: Multi Status - The request contains several response statuses.
+    BadRequest:
+      content:
+        application/vnd.intershop.transmission.v2+json:
+          schema:
+            $ref: '#/components/schemas/ErrorReport'
+      description: Bad request - Generic or business logic validation error.
+    Unauthorized:
+      description: Unauthorized - Authentication information is missing or invalid.
+      headers:
+        WWW-Authenticate:
+          description: ""
+          explode: false
+          schema:
+            type: string
+          style: simple
+    Forbidden:
+      description: Forbidden - the user is not authorized to use this resource.
+    NotFound:
+      description: Not found - the resource is not found.
+    NotAcceptable:
+      description: Not Acceptable - A representation of the response in the media
+        type that was requested in the ACCEPT header cannot be provided.
+    UnsupportedMediaType:
+      description: Unsupported Media Type - The media type of the sent body is not
+        supported.
+    InternalServerError:
+      description: Internal Server Error - An unexpected error occured.
+  schemas:
+    TransmissionCollectionContainer:
+      properties:
+        meta:
+          $ref: '#/components/schemas/CollectionMetaData'
+        data:
+          description: The core data of the transmission collection.
+          items:
+            $ref: '#/components/schemas/Transmission'
+          type: array
+      type: object
+    MultiStatusCollectionContainer:
+      properties:
+        meta:
+          $ref: '#/components/schemas/MultiStatusCollectionMetaData'
+        data:
+          description: The core data of the multi-status collection.
+          items:
+            $ref: '#/components/schemas/MultiStatus'
+          type: array
+      type: object
+    Transmission:
+      properties:
+        links:
+          items:
+            $ref: '#/components/schemas/Link'
+          type: array
+        id:
+          description: The transmission identifier.
+          example: ORDERTRANSMISSION-10000
+          type: string
+        transmissionTypeGroup:
+          description: "The type of the transmission. <br><br>\n<u>NOTE</u>: The following\
+            \ values are valid examples for this specific API version.\nAPI consumers\
+            \ <u>must</u> be able to handle other/unknown values in future\n(minor)\
+            \ versions.\n<br>\n\n| type | description |\n| --- | --- |\n| ORDERTRANSMISSION\
+            \ | Transmissions that are used for order processing messages, e.g. to\
+            \ announce an order entry. |\n| DISPATCHTRANSMISSION | Transmissions that\
+            \ are used for dispatch messages, e.g. a delivery that was made. |\n|\
+            \ MAILTRANSMISSION | Transmissions that are used for emails, e.g. to send\
+            \ a delivery email to the customer. |\n| PAYMENTTRANSMISSION | Transmissions\
+            \ that are used for payment notification messages, e.g. a received payment.\
+            \ |\n| RETURNTRANSMISSION | Transmissions that are used for return messages,\
+            \ e.g. a received return. |\n| RESPONSETRANSMISSION | Transmissions that\
+            \ are used for response messages, e.g. to respond to a delivery request.\
+            \ |\n| INVOICETRANSMISSION | Transmissions that are used for invoice processing\
+            \ messages. |\n| DOCUMENTTRANSMISSION | Transmissions that are used for\
+            \ document processing messages. |\n| RETURNANNOUNCEMENTTRANSMISSION |\
+            \ Transmissions that are used for return announcements messages. |\n"
+          example: ORDERTRANSMISSION
+          type: string
+          x-field-extra-annotation: '@com.intershop.oms.transmission.v2.validation.TransmissionTypeGroupConstraint'
+        transmissionType:
+          description: |
+            Name of the TransmissionType. Internally translates to TransmissionTypeDefDOEnumInterface::getFieldName
+          example: SEND_ANNOUNCE_ORDER
+          type: string
+          x-field-extra-annotation: '@com.intershop.oms.transmission.v2.validation.TransmissionTypeNameConstraint'
+        status:
+          description: "The processing status of the transmission.<br><br>\n<u>NOTE</u>:\
+            \ The following values are valid examples for this specific API version.\n\
+            API consumers <u>must</u> be able to handle other/unknown values in future\n\
+            (minor) versions.\n<br>\n\n| status | description |\n| ------ | -----------\
+            \ |\n| INITIAL | Transmission is initially stored. |\n| DO_PULL | Transmission\
+            \ will be pulled. |\n| PULLED | Transmission was received (pulled) from\
+            \ the sender. |\n| DO_PUSH | Transmission can be sent (pushed) to the\
+            \ receiver. |\n| PUSHED | Transmission was sent (pushed) to the receiver.\
+            \ |\n| DO_MANUAL_CHECK | The processing of transmission was canceled because\
+            \ of errors. The transmission has to be checked manually. |\n| CHECKED\
+            \ | Transmission was checked manually and is ready to process. |\n| DO_CANCEL\
+            \ | Transmission will be canceled. |\n| CANCELED | Transmission can be\
+            \ canceled because processing is not required any longer. |\n| TRANSMISSIONED\
+            \ | Transmission was submitted. |\n| CONFIRMED | Transmission was confirmed\
+            \ from the receiver. |\n"
+          example: CONFIRMED
+          type: string
+        responseStatus:
+          description: "The status of the response of the transmission.<br>\n<u>NOTE</u>:\
+            \ The following values are valid examples for this specific API version.\n\
+            API consumers <u>must</u> be able to handle other/unknown values in future\n\
+            (minor) versions.\n<br>\n\n| responseStatus | description |\n| ------\
+            \ | ----------- |\n| OK | The transmission was successfully received.\
+            \ |\n| INVALID | An error occurred during validation check at the receiver.\
+            \ |\n| REJECTED | The operation was rejected by the receiver. |\n| EXTERNAL_ERROR\
+            \ | An unexpected error occurred at the receiver. |\n| INTERNAL_ERROR\
+            \ | Internal unexpected error has occurred. |\n| NOT_AVAILABLE | The response\
+            \ status is not set. |\n"
+          example: REJECTED
+          type: string
+        creationDate:
+          description: The date when the transmission was created.
+          example: 2018-02-27T09:15:37.562+02:00
+          format: date-time
+          type: string
+        modificationDate:
+          description: The date when the transmission was modified.
+          example: 2018-02-27T09:15:40.562+02:00
+          format: date-time
+          type: string
+        orderReferences:
+          description: "The orders connected to this transmission. Multiple orders\
+            \ might me linked, e.g. for aggregated invoices.\n"
+          items:
+            $ref: '#/components/schemas/ObjectReference'
+          type: array
+        shopId:
+          description: The id of the shop.
+          example: 1000
+          format: int64
+          type: integer
+        shopName:
+          description: The name of the shop.
+          example: Test Shop US DE
+          type: string
+        supplierId:
+          description: The id of the supplier.
+          example: 1000
+          format: int64
+          type: integer
+        supplierName:
+          description: The name of the supplier.
+          example: Test Supplier US DE
+          type: string
+        receiverType:
+          description: "The type of the receiver of a transmission.<br>\n<u>NOTE</u>:\
+            \ The following values are valid examples for this specific API version.\n\
+            API consumers <u>must</u> be able to handle other/unknown values in future\n\
+            (minor) versions.\n<br>\n\n| type | description |\n| ------ | -----------\
+            \ |\n| OMS | The OMS-application itself. |\n| SHOP | The shop is the receiver\
+            \ of the transmission. |\n| SUPPLIER | The supplier is the receiver of\
+            \ the transmission, e.g. of a delivery request. |\n| CUSTOMER | The customer\
+            \ is the receiver of the transmission, e.g. an email to confirm an order.\
+            \ |\n| PAYMENTPROVIDER | A payment provider is the receiver of the transmission,\
+            \ e.g. to note a received payment to. |\n| FINANCECONTROLLER | A finance\
+            \ contoller is the receiver of the transmission, e.g. a debitor management\
+            \ system that receives open amounts. |\n"
+          example: SHOP
+          type: string
+        retryCount:
+          description: Number of sending attempts.
+          example: 2
+          type: integer
+        retryDate:
+          description: The date of the last attempt to send the transmission.
+          example: 2018-02-28T09:15:40.562+02:00
+          format: date-time
+          type: string
+        nextRetryDate:
+          description: The next date to send the transmission.
+          example: 2018-02-28T09:45:40.562+02:00
+          format: date-time
+          type: string
+        errorText:
+          description: "The error text, if the transmission failed."
+          example: Timeout - no response within 30s
+          type: string
+        invoiceReference:
+          $ref: '#/components/schemas/ObjectReference'
+      type: object
+    TransmissionBulkUpdateRequest:
+      description: |
+        A request combining updateType + transmissionFilter to trigger a mass update of transmissions.
+      properties:
+        updateType:
+          $ref: '#/components/schemas/TransmissionUpdateType'
+        transmissionFilter:
+          $ref: '#/components/schemas/TransmissionFilter'
+      type: object
+    TransmissionUpdateRequest:
+      description: A transmission id and the process that should be done on this transmission.
+      properties:
+        id:
+          description: The transmission identifier.
+          example: ORDERTRANSMISSION-10000
+          type: string
+        updateType:
+          $ref: '#/components/schemas/TransmissionUpdateType'
+      type: object
+    TransmissionTypeGroup:
+      description: "The type of the transmission. <br><br>\n<u>NOTE</u>: The following\
+        \ values are valid examples for this specific API version.\nAPI consumers\
+        \ <u>must</u> be able to handle other/unknown values in future\n(minor) versions.\n\
+        <br>\n\n| type | description |\n| --- | --- |\n| ORDERTRANSMISSION | Transmissions\
+        \ that are used for order processing messages, e.g. to announce an order entry.\
+        \ |\n| DISPATCHTRANSMISSION | Transmissions that are used for dispatch messages,\
+        \ e.g. a delivery that was made. |\n| MAILTRANSMISSION | Transmissions that\
+        \ are used for emails, e.g. to send a delivery email to the customer. |\n\
+        | PAYMENTTRANSMISSION | Transmissions that are used for payment notification\
+        \ messages, e.g. a received payment. |\n| RETURNTRANSMISSION | Transmissions\
+        \ that are used for return messages, e.g. a received return. |\n| RESPONSETRANSMISSION\
+        \ | Transmissions that are used for response messages, e.g. to respond to\
+        \ a delivery request. |\n| INVOICETRANSMISSION | Transmissions that are used\
+        \ for invoice processing messages. |\n| DOCUMENTTRANSMISSION | Transmissions\
+        \ that are used for document processing messages. |\n| RETURNANNOUNCEMENTTRANSMISSION\
+        \ | Transmissions that are used for return announcements messages. |\n"
+      example: ORDERTRANSMISSION
+      type: string
+      x-field-extra-annotation: '@com.intershop.oms.transmission.v2.validation.TransmissionTypeGroupConstraint'
+    TransmissionType:
+      description: "The type of the transmission, e.g. an email that was sent to confirm\
+        \ an order.<br> <br>TODO - link to docs\n"
+      properties:
+        name:
+          description: |
+            Name of the TransmissionType. Internally translates to TransmissionTypeDefDOEnumInterface::getFieldName
+          example: SEND_ANNOUNCE_ORDER
+          type: string
+          x-field-extra-annotation: '@com.intershop.oms.transmission.v2.validation.TransmissionTypeNameConstraint'
+        description:
+          description: |
+            Default description - can be used by frontend applications as a fallback for missing localizations.
+          example: Send an order.
+          type: string
+      type: object
+    TransmissionStatus:
+      description: "The processing status of the transmission.<br><br>\n<u>NOTE</u>:\
+        \ The following values are valid examples for this specific API version.\n\
+        API consumers <u>must</u> be able to handle other/unknown values in future\n\
+        (minor) versions.\n<br>\n\n| status | description |\n| ------ | -----------\
+        \ |\n| INITIAL | Transmission is initially stored. |\n| DO_PULL | Transmission\
+        \ will be pulled. |\n| PULLED | Transmission was received (pulled) from the\
+        \ sender. |\n| DO_PUSH | Transmission can be sent (pushed) to the receiver.\
+        \ |\n| PUSHED | Transmission was sent (pushed) to the receiver. |\n| DO_MANUAL_CHECK\
+        \ | The processing of transmission was canceled because of errors. The transmission\
+        \ has to be checked manually. |\n| CHECKED | Transmission was checked manually\
+        \ and is ready to process. |\n| DO_CANCEL | Transmission will be canceled.\
+        \ |\n| CANCELED | Transmission can be canceled because processing is not required\
+        \ any longer. |\n| TRANSMISSIONED | Transmission was submitted. |\n| CONFIRMED\
+        \ | Transmission was confirmed from the receiver. |\n"
+      example: CONFIRMED
+      type: string
+    TransmissionTypeMapping:
+      items:
+        $ref: '#/components/schemas/TransmissionTypeMapping_inner'
+      type: array
+    TransmissionUpdateType:
+      description: "The type of process to create on a transmission, e.g. to resend\
+        \ a transmission.<br>\n\n| type | description |\n| --- | --- |\n| RESEND |\
+        \ Resend the transmission. |\n| CANCEL | Cancel the transmission. |\n| SENT\
+        \ | Set the transmission as already sent. |\n"
+      enum:
+      - RESEND
+      - CANCEL
+      - SENT
+      example: RESEND
+      type: string
+    TransmissionResponseStatus:
+      description: "The status of the response of the transmission.<br>\n<u>NOTE</u>:\
+        \ The following values are valid examples for this specific API version.\n\
+        API consumers <u>must</u> be able to handle other/unknown values in future\n\
+        (minor) versions.\n<br>\n\n| responseStatus | description |\n| ------ | -----------\
+        \ |\n| OK | The transmission was successfully received. |\n| INVALID | An\
+        \ error occurred during validation check at the receiver. |\n| REJECTED |\
+        \ The operation was rejected by the receiver. |\n| EXTERNAL_ERROR | An unexpected\
+        \ error occurred at the receiver. |\n| INTERNAL_ERROR | Internal unexpected\
+        \ error has occurred. |\n| NOT_AVAILABLE | The response status is not set.\
+        \ |\n"
+      example: REJECTED
+      type: string
+    ReceiverType:
+      description: "The type of the receiver of a transmission.<br>\n<u>NOTE</u>:\
+        \ The following values are valid examples for this specific API version.\n\
+        API consumers <u>must</u> be able to handle other/unknown values in future\n\
+        (minor) versions.\n<br>\n\n| type | description |\n| ------ | -----------\
+        \ |\n| OMS | The OMS-application itself. |\n| SHOP | The shop is the receiver\
+        \ of the transmission. |\n| SUPPLIER | The supplier is the receiver of the\
+        \ transmission, e.g. of a delivery request. |\n| CUSTOMER | The customer is\
+        \ the receiver of the transmission, e.g. an email to confirm an order. |\n\
+        | PAYMENTPROVIDER | A payment provider is the receiver of the transmission,\
+        \ e.g. to note a received payment to. |\n| FINANCECONTROLLER | A finance contoller\
+        \ is the receiver of the transmission, e.g. a debitor management system that\
+        \ receives open amounts. |\n"
+      example: SHOP
+      type: string
+    SortableTransmissionAttribute:
+      default: id
+      description: "The attribute to sort by.<br>\n<u>NOTE</u>: The following values\
+        \ are valid examples for this specific API version.\nAPI consumers <u>must</u>\
+        \ be able to handle other/unknown values in future\n(minor) versions.\n<br>\n\
+        \n| type | description |\n| ------ | ----------- |\n| id | Sorts by the ID\
+        \ in scope of it's type |\n| transmissionType | Sorts by the TransmissionType\
+        \ |\n| status | Sorts by the processing status |\n| responseStatus | Sorts\
+        \ by the response status |\n| creationDate | Sorts by the creation date |\n\
+        | modificationDate | Sorts by the modification date |\n| orderId | Sorts by\
+        \ the ID of the order |\n| shopOrderNumber | Sorts by the shop order number\
+        \ |\n| shopId | Sorts by the ID of the shop |\n| shopName | Sorts by the name\
+        \ of the shop |\n| supplierId | Sorts by the ID of the supplier |\n| supplierName\
+        \ | Sorts by the name of the supplier |\n| receiver | Sorts by the receiver\
+        \ of the transmission |\n| retryCount | Sorts by the number of sending attempts\
+        \ |\n| retryDate | Sorts by the date of the last attempt to send |\n| nextRetryDate\
+        \ | Sorts by the next date to send |\n"
+      example: creationDate
+      type: string
+    SortDirection:
+      default: ASC
+      description: |
+        The direction used to sort the attributes:<br>
+
+        | type | description |
+        | ------ | ----------- |
+        | ASC | Ascending sorting. |
+        | DESC | Descending sorting. |
+      enum:
+      - ASC
+      - DESC
+      example: ASC
+      type: string
+      x-class-extra-annotation: com.intershop.TestAnnotation
+    TransmissionFilter:
+      properties:
+        creationDateFrom:
+          description: The earliest creation date of a transmission.
+          example: 2019-01-01T00:00:00.5+02:00
+          format: date-time
+          type: string
+        creationDateTo:
+          description: The latest creation date of a transmission.
+          example: 2019-01-31T23:59:59.999+02:00
+          format: date-time
+          type: string
+        transmissionTypeGroup:
+          description: "The type of the transmission. <br><br>\n<u>NOTE</u>: The following\
+            \ values are valid examples for this specific API version.\nAPI consumers\
+            \ <u>must</u> be able to handle other/unknown values in future\n(minor)\
+            \ versions.\n<br>\n\n| type | description |\n| --- | --- |\n| ORDERTRANSMISSION\
+            \ | Transmissions that are used for order processing messages, e.g. to\
+            \ announce an order entry. |\n| DISPATCHTRANSMISSION | Transmissions that\
+            \ are used for dispatch messages, e.g. a delivery that was made. |\n|\
+            \ MAILTRANSMISSION | Transmissions that are used for emails, e.g. to send\
+            \ a delivery email to the customer. |\n| PAYMENTTRANSMISSION | Transmissions\
+            \ that are used for payment notification messages, e.g. a received payment.\
+            \ |\n| RETURNTRANSMISSION | Transmissions that are used for return messages,\
+            \ e.g. a received return. |\n| RESPONSETRANSMISSION | Transmissions that\
+            \ are used for response messages, e.g. to respond to a delivery request.\
+            \ |\n| INVOICETRANSMISSION | Transmissions that are used for invoice processing\
+            \ messages. |\n| DOCUMENTTRANSMISSION | Transmissions that are used for\
+            \ document processing messages. |\n| RETURNANNOUNCEMENTTRANSMISSION |\
+            \ Transmissions that are used for return announcements messages. |\n"
+          example: ORDERTRANSMISSION
+          type: string
+          x-field-extra-annotation: '@com.intershop.oms.transmission.v2.validation.TransmissionTypeGroupConstraint'
+        transmissionTypeNames:
+          items:
+            $ref: '#/components/schemas/TransmissionTypeName'
+          type: array
+        transmissionStatuses:
+          items:
+            $ref: '#/components/schemas/TransmissionStatus'
+          type: array
+        transmissionResponseStatuses:
+          items:
+            $ref: '#/components/schemas/TransmissionResponseStatus'
+          type: array
+        receiverTypes:
+          items:
+            $ref: '#/components/schemas/ReceiverType'
+          type: array
+        shopIds:
+          description: The id(s) of the shop(s).
+          items:
+            format: int64
+            type: integer
+          type: array
+        supplierIds:
+          description: The id(s) of the supplier(s).
+          items:
+            format: int64
+            type: integer
+          type: array
+        shopOrderNumbers:
+          description: |
+            Using this filter will only return transmissions connected to the provided shopOrderNumbers.
+          items:
+            type: string
+          type: array
+        invoiceNumbers:
+          description: |
+            Using this filter will only return transmissions connected to the provided invoiceNumbers.
+          example:
+          - X1939148
+          - X1939149
+          items:
+            type: string
+          type: array
+      required:
+      - transmissionTypeGroup
+      type: object
+      x-field-extra-annotation: '@jakarta.validation.Valid'
+    TransmissionTypeName:
+      description: |
+        Name of the TransmissionType. Internally translates to TransmissionTypeDefDOEnumInterface::getFieldName
+      example: SEND_ANNOUNCE_ORDER
+      type: string
+      x-field-extra-annotation: '@com.intershop.oms.transmission.v2.validation.TransmissionTypeNameConstraint'
+    TransmissionSearchRequest:
+      properties:
+        transmissionFilter:
+          $ref: '#/components/schemas/TransmissionFilter'
+        limit:
+          default: 50
+          description: The number of items to return.<br> If not set the limit is
+            1000.
+          example: 50
+          maximum: 1000
+          type: integer
+        offset:
+          default: 0
+          description: The number of items to skip before starting to collect the
+            result set.
+          example: 0
+          type: integer
+        sortBy:
+          default: id
+          description: "The attribute to sort by.<br>\n<u>NOTE</u>: The following\
+            \ values are valid examples for this specific API version.\nAPI consumers\
+            \ <u>must</u> be able to handle other/unknown values in future\n(minor)\
+            \ versions.\n<br>\n\n| type | description |\n| ------ | ----------- |\n\
+            | id | Sorts by the ID in scope of it's type |\n| transmissionType | Sorts\
+            \ by the TransmissionType |\n| status | Sorts by the processing status\
+            \ |\n| responseStatus | Sorts by the response status |\n| creationDate\
+            \ | Sorts by the creation date |\n| modificationDate | Sorts by the modification\
+            \ date |\n| orderId | Sorts by the ID of the order |\n| shopOrderNumber\
+            \ | Sorts by the shop order number |\n| shopId | Sorts by the ID of the\
+            \ shop |\n| shopName | Sorts by the name of the shop |\n| supplierId |\
+            \ Sorts by the ID of the supplier |\n| supplierName | Sorts by the name\
+            \ of the supplier |\n| receiver | Sorts by the receiver of the transmission\
+            \ |\n| retryCount | Sorts by the number of sending attempts |\n| retryDate\
+            \ | Sorts by the date of the last attempt to send |\n| nextRetryDate |\
+            \ Sorts by the next date to send |\n"
+          example: creationDate
+          type: string
+        sortDirection:
+          default: ASC
+          description: |
+            The direction used to sort the attributes:<br> <br> `ASC` - Ascending sorting<br> `DESC` - Descending sorting by attribute
+          enum:
+          - ASC
+          - DESC
+          example: ASC
+          type: string
+      type: object
+    ObjectReference:
+      properties:
+        referenceName:
+          description: "frontend facing identifier, e.g. order number, invoice number"
+          example: X93019345
+          type: string
+        id:
+          description: internal id of the object
+          example: 10013
+          format: int64
+          type: integer
+      type: object
+    Status:
+      description: The HTTP status code.
+      example: 400
+      format: int32
+      type: integer
+    MultiStatus:
+      description: "Contains multiple responses `MultiStatusResponse` for different\
+        \ requests, that was done within one single request."
+      properties:
+        link:
+          $ref: '#/components/schemas/Link'
+        status:
+          description: The HTTP status code.
+          example: 400
+          format: int32
+          type: integer
+        errors:
+          items:
+            $ref: '#/components/schemas/Error'
+          type: array
+      required:
+      - link
+      - status
+      type: object
+    Link:
+      properties:
+        href:
+          description: The link to the resource.
+          type: string
+        rel:
+          description: "The relation of the link to the resource, i.e. self."
+          type: string
+      type: object
+    Error:
+      properties:
+        code:
+          description: Exception / Error code
+          example: VALIDATION_EXCEPTION
+          type: string
+        message:
+          description: Exception / Error message
+          example: Attribute XYZ is mandatory
+          type: string
+      required:
+      - code
+      - message
+      type: object
+    ErrorReport:
+      description: Detailed information about what went wrong.
+      properties:
+        status:
+          description: The HTTP status code.
+          example: 400
+          format: int32
+          type: integer
+        errors:
+          items:
+            $ref: '#/components/schemas/Error'
+          type: array
+      type: object
+    CollectionMetaData:
+      description: The meta data of the collection.
+      properties:
+        totalCount:
+          description: The total number of objects in the collection (without offset
+            and limit).
+          example: 10000
+          format: int64
+          type: integer
+      type: object
+    MultiStatusCollectionMetaData:
+      description: The meta data of a multi-status collection.
+      properties:
+        successCount:
+          description: The number of successful operations.
+          example: 100
+          format: int64
+          type: integer
+        failureCount:
+          description: The number of failed operations.
+          example: 5
+          format: int64
+          type: integer
+      type: object
+    TransmissionTypeMapping_inner:
+      properties:
+        transmissionTypeGroup:
+          description: "The type of the transmission. <br><br>\n<u>NOTE</u>: The following\
+            \ values are valid examples for this specific API version.\nAPI consumers\
+            \ <u>must</u> be able to handle other/unknown values in future\n(minor)\
+            \ versions.\n<br>\n\n| type | description |\n| --- | --- |\n| ORDERTRANSMISSION\
+            \ | Transmissions that are used for order processing messages, e.g. to\
+            \ announce an order entry. |\n| DISPATCHTRANSMISSION | Transmissions that\
+            \ are used for dispatch messages, e.g. a delivery that was made. |\n|\
+            \ MAILTRANSMISSION | Transmissions that are used for emails, e.g. to send\
+            \ a delivery email to the customer. |\n| PAYMENTTRANSMISSION | Transmissions\
+            \ that are used for payment notification messages, e.g. a received payment.\
+            \ |\n| RETURNTRANSMISSION | Transmissions that are used for return messages,\
+            \ e.g. a received return. |\n| RESPONSETRANSMISSION | Transmissions that\
+            \ are used for response messages, e.g. to respond to a delivery request.\
+            \ |\n| INVOICETRANSMISSION | Transmissions that are used for invoice processing\
+            \ messages. |\n| DOCUMENTTRANSMISSION | Transmissions that are used for\
+            \ document processing messages. |\n| RETURNANNOUNCEMENTTRANSMISSION |\
+            \ Transmissions that are used for return announcements messages. |\n"
+          example: ORDERTRANSMISSION
+          type: string
+          x-field-extra-annotation: '@com.intershop.oms.transmission.v2.validation.TransmissionTypeGroupConstraint'
+        transmissionTypes:
+          items:
+            $ref: '#/components/schemas/TransmissionType'
+          type: array
+      type: object
+  securitySchemes:
+    bearerAuth:
+      bearerFormat: JWT
+      description: JWT Bearer token
+      scheme: bearer
+      type: http
+    basicAuth:
+      description: Basic Authentication
+      scheme: basic
+      type: http

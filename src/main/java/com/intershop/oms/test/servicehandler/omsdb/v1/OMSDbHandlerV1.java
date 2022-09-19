@@ -3685,22 +3685,18 @@ DELETE  FROM "StockReservationDO" r2
     public boolean lockThreadRunningRead()
     {
         int[] parallelCount = parallelLockCounter(LOCK_ID_THREAD_RUNNING);
-        log.info("Trying to aquire thread running read lock: Currently are " + parallelCount[0] + "/" + parallelCount[1]
-                        + " threads active.");
+        log.info("Trying to aquire thread running read lock: Currently are " + parallelCount[0] + "/" + parallelCount[1] + " threads active.");
         long startDate = Calendar.getInstance().getTimeInMillis();
         boolean result = getDBLock(LOCK_ID_THREAD_RUNNING, 1800, DBLockType.R);
         long endDate = Calendar.getInstance().getTimeInMillis();
         parallelCount = parallelLockCounter(LOCK_ID_THREAD_RUNNING);
         if (result)
         {
-            log.info("Aquired thread running read lock in " + ((endDate - startDate) / 1000) + "s. Now there are "
-                            + parallelCount[0] + "/" + parallelCount[1] + " threads active.");
+            log.info("Aquired thread running read lock in " + ((endDate - startDate) / 1000) + "s. Now there are " + parallelCount[0] + "/" + parallelCount[1] + " threads active.");
         }
         else
         {
-            log.error("Couldn't aquire thread running read lock in " + ((endDate - startDate) / 1000)
-                            + "s! Currently there are " + parallelCount[0] + "/" + parallelCount[1]
-                            + " threads active.");
+            log.error("Couldn't aquire thread running read lock in " + ((endDate - startDate) / 1000) + "s! Currently there are " + parallelCount[0] + "/" + parallelCount[1] + " threads active.");
         }
         return result;
     }
@@ -3709,21 +3705,17 @@ DELETE  FROM "StockReservationDO" r2
     public boolean lockThreadRunningWrite()
     {
         int[] parallelCount = parallelLockCounter(LOCK_ID_THREAD_RUNNING);
-        log.info("Trying to aquire thread running WRITE lock: Currently are " + parallelCount[0] + "/"
-                        + parallelCount[1] + " threads active.");
+        log.info("Trying to aquire thread running WRITE lock: Currently are " + parallelCount[0] + "/" + parallelCount[1] + " threads active.");
         long startDate = Calendar.getInstance().getTimeInMillis();
         boolean result = getDBLock(LOCK_ID_THREAD_RUNNING, 1800, DBLockType.W);
         long endDate = Calendar.getInstance().getTimeInMillis();
         if (result)
         {
             parallelCount = parallelLockCounter(LOCK_ID_THREAD_RUNNING);
-            log.info("Aquired thread running WRITE lock in " + ((endDate - startDate) / 1000) + "s. Now there are "
-                            + parallelCount[0] + "/" + parallelCount[1] + " threads active. Am I the only one?");
-            if (parallelCount[0] != 1 || parallelCount[1] != 1)
+            log.info("Aquired thread running WRITE lock in " + ((endDate - startDate) / 1000) + "s. Now there are " + parallelCount[0] + "/" + parallelCount[1] + " threads active. I should be the only one!");
+            if (parallelCount[0] != 0 || parallelCount[1] != 1)
             {
-                throw new RuntimeException(
-                                "Acquired write lock, but am not the only one! (shared: " + parallelCount[0] + " in "
-                                                + parallelCount[2] + " sessions, exclusiv: " + parallelCount[1] + ")");
+                throw new RuntimeException("Acquired write lock, but am not the only one! (shared: " + parallelCount[0] + " in " + parallelCount[2] + " sessions, exclusiv: " + parallelCount[1] + ")");
             }
         }
         else
@@ -3737,12 +3729,10 @@ DELETE  FROM "StockReservationDO" r2
     public boolean unlockThreadRunningRead()
     {
         int[] parallelCount = parallelLockCounter(LOCK_ID_THREAD_RUNNING);
-        log.info("Releasing thread running read lock: Currently are {}/{} threads active.", parallelCount[0],
-                        parallelCount[1]);
+        log.info("Releasing thread running read lock: Currently are {}/{} threads active.", parallelCount[0], parallelCount[1]);
         boolean result = releaseDBLock(LOCK_ID_THREAD_RUNNING, DBLockType.R);
         parallelCount = parallelLockCounter(LOCK_ID_THREAD_RUNNING);
-        log.info("Released thread running read lock: Now there are {}/{} threads active.", parallelCount[0],
-                        parallelCount[1]);
+        log.info("Released thread running read lock: Now there are {}/{} threads active.", parallelCount[0], parallelCount[1]);
         return result;
     }
 
