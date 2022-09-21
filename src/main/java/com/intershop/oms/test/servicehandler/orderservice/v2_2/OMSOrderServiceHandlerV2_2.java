@@ -75,7 +75,7 @@ class OMSOrderServiceHandlerV2_2 extends RESTServiceHandler implements OMSOrderS
 
         Order order = OrderMapper.INSTANCE.toApiOrder(omsOrder);
 
-        orderApi.getApiClient().setReadTimeout(120000);
+        orderApi.getApiClient().setReadTimeout(300000);
         orderApi.createOrder(shopId, order);
 
         long orderId = dbHandler.getOrderId(shopId, omsOrder.getShopOrderNumber());
