@@ -121,6 +121,8 @@ class OMSOrderServiceHandlerV2 extends RESTServiceHandler
     }
 
     @Override
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true, since = "4.0.0")
     public Long sendOrderChangeRequest(Long shopId, String shopOrderNumber, OMSChangeRequest orderChangeRequest,
                     int expectedEndState)
     {
@@ -142,6 +144,8 @@ class OMSOrderServiceHandlerV2 extends RESTServiceHandler
     }
 
     @Override
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true, since = "4.0.0")
     public ApiResponse<OMSChangeRequest> createOrderChangeRequest(Long shopId, String shopOrderNumber,
                     OMSChangeRequest omsChangeRequestCreate) throws ApiException
     {
