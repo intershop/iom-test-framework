@@ -48,8 +48,6 @@ class OMSOrderServiceHandlerV2_2 extends RESTServiceHandler implements OMSOrderS
      * @throws ApiException
      */
     @Override
-    @SuppressWarnings("removal")
-    @Deprecated(forRemoval = true, since = "4.0.0")
     public Long sendOrder(OMSOrder omsOrder, int expectedEndState) throws ApiException
     {
         Long omsOrderCreatedId = sendOrder(omsOrder);
@@ -84,8 +82,6 @@ class OMSOrderServiceHandlerV2_2 extends RESTServiceHandler implements OMSOrderS
     }
 
     @Override
-    @SuppressWarnings("removal")
-    @Deprecated(forRemoval = true, since = "4.0.0")
     public Long sendOrderChangeRequest(Long shopId, String shopOrderNumber, OMSChangeRequest orderChangeRequest,
                     int expectedEndState) throws ApiException
     {
@@ -114,8 +110,6 @@ class OMSOrderServiceHandlerV2_2 extends RESTServiceHandler implements OMSOrderS
     }
 
     @Override
-    @SuppressWarnings("removal")
-    @Deprecated(forRemoval = true, since = "4.0.0")
     public ApiResponse<OMSOrder> createOrder(Long shopId, OMSOrder omsOrder) throws ApiException
     {
         ApiResponse<Void> response;
@@ -170,8 +164,6 @@ class OMSOrderServiceHandlerV2_2 extends RESTServiceHandler implements OMSOrderS
     }
 
     @Override
-    @SuppressWarnings("removal")
-    @Deprecated(forRemoval = true, since = "4.0.0")
     public ApiResponse<OMSChangeRequest> createOrderChangeRequest(Long shopId, String shopOrderNumber,
                     OMSChangeRequest omsChangeRequestCreate) throws ApiException
     {
@@ -233,7 +225,6 @@ class OMSOrderServiceHandlerV2_2 extends RESTServiceHandler implements OMSOrderS
     }
 
     @Override
-    @Deprecated
     public OMSOrder createOrder(String user, String password, OMSOrder orderData)
     {
         log.info("Create order called in service handler version 2.2 ---- doing nothing, anymore!");
@@ -241,7 +232,6 @@ class OMSOrderServiceHandlerV2_2 extends RESTServiceHandler implements OMSOrderS
     }
 
     @Override
-    @Deprecated
     public Long sendOrder(String host, String port, OMSOrder order, int expectedEndState) throws ApiException
     {
         sendOrder(order, expectedEndState);
@@ -249,7 +239,6 @@ class OMSOrderServiceHandlerV2_2 extends RESTServiceHandler implements OMSOrderS
     }
 
     @Override
-    @Deprecated
     public Long sendOrder(String host, String port, OMSOrder order) throws ApiException
     {
         sendOrder(order);
