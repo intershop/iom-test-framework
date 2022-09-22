@@ -45,7 +45,6 @@ class OMSOrderServiceHandlerV2 extends RESTServiceHandler
      * @throws ApiException
      */
     @Override
-    @SuppressWarnings("removal")
     public Long sendOrder(OMSOrder omsOrder, int expectedEndState) throws ApiException
     {
         Long omsOrderCreatedId = sendOrder(omsOrder);
@@ -76,7 +75,7 @@ class OMSOrderServiceHandlerV2 extends RESTServiceHandler
             Long orderId = sendOrder(omsOrder);
             omsOrderCreatedIds.add(orderId);
         }
-        
+
         for (Long orderId: omsOrderCreatedIds)
         {
             assert dbHandler.waitForOrderState(orderId, expectedEndState);
@@ -84,7 +83,7 @@ class OMSOrderServiceHandlerV2 extends RESTServiceHandler
 
         return omsOrderCreatedIds;
     }
-    
+
     /**
      * sends an order
      *
@@ -106,7 +105,6 @@ class OMSOrderServiceHandlerV2 extends RESTServiceHandler
     }
 
     @Override
-    @SuppressWarnings("removal")
     public ApiResponse<OMSOrder> createOrder(Long shopId, OMSOrder omsOrder) throws ApiException
     {
         throw new RuntimeException("Method not yet implemented for 2.0!");
@@ -162,7 +160,6 @@ class OMSOrderServiceHandlerV2 extends RESTServiceHandler
     }
 
     @Override
-    @Deprecated
     public OMSOrder createOrder(String user, String password, OMSOrder orderData)
     {
         log.info("Create order called in service handler version 2.0 ---- doing nothing, anymore!");
@@ -170,7 +167,6 @@ class OMSOrderServiceHandlerV2 extends RESTServiceHandler
     }
 
     @Override
-    @Deprecated
     public Long sendOrder(String host, String port, OMSOrder order, int expectedEndState) throws ApiException
     {
         sendOrder(order, expectedEndState);
@@ -178,7 +174,6 @@ class OMSOrderServiceHandlerV2 extends RESTServiceHandler
     }
 
     @Override
-    @Deprecated
     public Long sendOrder(String host, String port, OMSOrder order) throws ApiException
     {
         sendOrder(order);
