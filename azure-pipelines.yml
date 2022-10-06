@@ -3,6 +3,8 @@
 variables:
   M2_LOCAL_REPO: $(Pipeline.Workspace)/local-maven-repo
   MAVEN_OPTS: '-Dmaven.repo.local=$(M2_LOCAL_REPO)'
+  # mitigation for https://issues.sonatype.org/browse/NEXUS-27902
+  JDK_JAVA_OPTIONS: '--add-opens java.base/java.util=ALL-UNNAMED' 
 
 trigger:
   batch: true
