@@ -3185,7 +3185,7 @@ DELETE  FROM "StockReservationDO" r2
                                     "More than one status found for " + debugType + " with id '" + objectId + "'!");
                 }
             }
-            while((currentStatus == null || currentStatus < expectedState) && countRetry++ < maxRetry);
+            while((currentStatus == null || currentStatus != expectedState) && countRetry++ < maxRetry);
         }
         catch(SQLException sqlEx)
         {
