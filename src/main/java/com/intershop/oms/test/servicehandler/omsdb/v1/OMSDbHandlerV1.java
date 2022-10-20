@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 
+import org.flywaydb.core.Flyway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +40,7 @@ import com.zaxxer.hikari.HikariDataSource;
 
 class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSDbHandler
 {
+    private static final String TESTCASES_SCHEMA_NAME = "testcases";
     public static final String CONFIG_KEY_DB_NAME = "dbName";
     public static final String CONFIG_KEY_DUMMY_MODE = "DUMMY_MODE";
     // use this with a write lock to be the only one test running
@@ -53,38 +55,6 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
     int maxRetry = 500;
     int retryDelay = 2000;
     Connection connection;
-
-    OMSDbHandlerV1(String aHostList, String aDbName, String aDbUser, String aDbPass, boolean aForceSsl)
-    {
-        try
-        {
-            synchronized(lock)
-            {
-                if (!dsInitialized)
-                {
-                    String url = "jdbc:postgresql://" + aHostList + "/" + aDbName;
-                    ds.setJdbcUrl(url);
-                    ds.setUsername(aDbUser);
-                    ds.setPassword(aDbPass);
-                    ds.setMaximumPoolSize(20);
-
-                    if (aForceSsl)
-                    {
-                        ds.addDataSourceProperty("ssl", "true");
-                        ds.addDataSourceProperty("sslmode", "require");
-                    }
-                    dsInitialized = true;
-                }
-            }
-            connection = ds.getConnection();
-        }
-        catch(SQLException e)
-        {
-            log.error(String.format("Connection failed for \"jdbc:postgresql://%s/%s - %s - %s - SSL: %s", aHostList,
-                            aDbName, aDbUser, aDbPass, aForceSsl), e);
-            throw new RuntimeException(e);
-        }
-    }
 
     public OMSDbHandlerV1(ServiceConfiguration configuration)
     {
@@ -117,6 +87,12 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
                         ds.addDataSourceProperty("ssl", "true");
                         ds.addDataSourceProperty("sslmode", "require");
                     }
+                    Flyway flyway = Flyway.configure().dataSource(ds).schemas(TESTCASES_SCHEMA_NAME)
+                                    .locations("db/migration", "testframework-sql")
+                                    // ignore deleted migration files
+                                    .ignoreMigrationPatterns("*:missing").load();
+                    flyway.migrate();
+
                     dsInitialized = true;
                 }
             }
@@ -4184,5 +4160,11 @@ DELETE  FROM "StockReservationDO" r2
     {
         long stockLevel;
         long blockedStock;
+    }
+
+    @Override
+    public void deleteSsoUserByMail(String mail)
+    {
+        throw new RuntimeException("not implemented yet");
     }
 }

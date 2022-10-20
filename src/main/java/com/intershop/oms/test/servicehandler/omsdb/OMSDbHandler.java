@@ -365,6 +365,8 @@ public interface OMSDbHandler
         return createUniqueOMTUser( prefix +'_' + testCaseId );
     }
 
+    void deleteSsoUserByMail(String mail);
+
     /**
      * creates a user and a role to fully access the whole OMT
      * login and role have the same name to be able to cleanup afterwards

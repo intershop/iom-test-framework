@@ -6,7 +6,7 @@
 
     <groupId>com.intershop.oms</groupId>
     <artifactId>iom-test-framework</artifactId>
-    <version>4.2.1-SNAPSHOT</version>
+    <version>4.3.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>IOM Test Framework</name>
@@ -39,18 +39,18 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <org.mapstruct.version>1.5.2.Final</org.mapstruct.version>
+        <org.mapstruct.version>1.5.3.Final</org.mapstruct.version>
         <org.projectlombok.version>1.18.24</org.projectlombok.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
-        <openapi.generator.version>6.0.1</openapi.generator.version>
-        <junit.jupiter.version>5.8.2</junit.jupiter.version>
+        <openapi.generator.version>6.2.0</openapi.generator.version>
+        <junit.jupiter.version>5.9.1</junit.jupiter.version>
         <javax.ws.rs-api-version>2.1.1</javax.ws.rs-api-version>
         <jsr311-api-version>1.1.1</jsr311-api-version>
         <!-- activate m2e-apt in eclipse for better mapstruct integration -->
         <m2e.apt.activation>jdt_apt</m2e.apt.activation>
-        <jersey-version>3.0.5</jersey-version>
-        <jackson-version>2.13.2</jackson-version>
-        <jackson-databind-version>2.13.2.2</jackson-databind-version>
+        <jersey-version>3.0.8</jersey-version>
+        <jackson-version>2.13.4</jackson-version>
+        <jackson-databind-version>2.13.4.2</jackson-databind-version>
         <jackson-databind-nullable-version>0.2.3</jackson-databind-nullable-version>
         <jakarta-annotation-version>2.1.0</jakarta-annotation-version>
         <jakarta-validation-version>3.0.2</jakarta-validation-version>
@@ -71,7 +71,7 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <version>1.7.30</version>
-            <scope>test</scope>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.bitbucket.b_c</groupId>
@@ -79,19 +79,30 @@
             <version>0.6.3</version>
         </dependency>
         <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.5.0</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>9.5.0</version>
+        </dependency>
+        <dependency>
             <groupId>io.smallrye.config</groupId>
             <artifactId>smallrye-config</artifactId>
-            <version>3.0.0-RC2</version>
+            <version>3.0.0</version>
         </dependency>
         <dependency>
             <groupId>io.smallrye.config</groupId>
             <artifactId>smallrye-config-source-yaml</artifactId>
-            <version>3.0.0-RC2</version>
+            <version>3.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
-            <version>5.0.0</version>
+            <version>5.0.1</version>
         </dependency>
         <dependency>
             <groupId>io.swagger</groupId>
