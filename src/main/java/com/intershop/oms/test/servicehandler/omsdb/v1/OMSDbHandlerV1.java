@@ -1,6 +1,7 @@
 package com.intershop.oms.test.servicehandler.omsdb.v1;
 
 import java.math.BigDecimal;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -4165,6 +4166,15 @@ DELETE  FROM "StockReservationDO" r2
     @Override
     public void deleteSsoUserByMail(String mail)
     {
-        throw new RuntimeException("not implemented yet");
+        try (Connection conny = getConnection(); CallableStatement stmt = conny
+                        .prepareCall("{call " + TESTCASES_SCHEMA_NAME + ".tc_omt_drop_sso_user(?)}");)
+        {
+            stmt.setString(1, mail);
+            stmt.execute();
+        }
+        catch(SQLException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 }

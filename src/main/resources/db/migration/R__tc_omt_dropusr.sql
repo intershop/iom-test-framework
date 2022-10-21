@@ -33,7 +33,7 @@ BEGIN
 --to reduce the risk of FK exceptions during parallel tests.
 PERFORM pg_advisory_xact_lock(5,5);
 
- FOR users IN SELECT id FROM oms."UserDO" WHERE "externalId" is not null and email=p_email
+ FOR users IN SELECT id FROM oms."UserDO" WHERE "externalId" is not null and lower(email)=lower(p_email)
  LOOP
    PERFORM testcases.tc_omt_dropusr(users.id);
  END LOOP;
