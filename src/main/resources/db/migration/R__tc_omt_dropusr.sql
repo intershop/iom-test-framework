@@ -21,7 +21,7 @@ $$;
 comment on function testcases.tc_omt_dropusr(varchar) is'delete  all data bound to the local user(s) with the given accountName';
 
 
-CREATE OR REPLACE FUNCTION testcases.tc_omt_drop_sso_use(p_email character varying)
+CREATE OR REPLACE FUNCTION testcases.tc_omt_drop_sso_user(p_email character varying)
  RETURNS character varying
  LANGUAGE plpgsql
 AS $$
@@ -41,7 +41,7 @@ PERFORM pg_advisory_xact_lock(5,5);
 END;
 $$;
 
-comment on function testcases.tc_omt_drop_sso_use is'delete  all data bound to the sso user(s) with the given email';
+comment on function testcases.tc_omt_drop_sso_user is'delete  all data bound to the sso user(s) with the given email';
 
 
 
