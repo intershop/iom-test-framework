@@ -1068,8 +1068,9 @@ public interface OMSDbHandler
      * @return true if the thread running write lock has been obtained within 1800s
      * @deprecated <b>DO NOT USE!</b> There are resource locking mechanisms for both JUnit Jupiter and Spock that provide
      * the same functionality out of the box. Use those instead - this class only exists for legacy tests.
+     * <p><b>this is not thread safe anymore!</b>
      *
-     * Note: You have to release your own read lock before getting a write lock.
+     * <p>Note: You have to release your own read lock before getting a write lock.
      *       Otherwise we would get dead locks when two thread try the write lock at the same time
      */
     @Deprecated

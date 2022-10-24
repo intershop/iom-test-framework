@@ -55,7 +55,16 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
     private static boolean dsInitialized = false;
     int maxRetry = 500;
     int retryDelay = 2000;
-    Connection connection;
+
+    // NOTE: this shouldn't be here. We need a "permanent" connection on this
+    // DbHandler instance in order to handle the legacy / deprecated locking
+    // functionality - it relies on session level locking, hence we can't return
+    // the connection holding the lock to the connection pool without risking
+    // that the connection is dropped by HikariCP
+
+    // tl;dr that locking mechanism is NOT THREAD SAFE and can only be used in
+    // single threaded test environments
+    private Connection instanceConnection;
 
     public OMSDbHandlerV1(ServiceConfiguration configuration)
     {
@@ -71,40 +80,31 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
         String aDbPass =configuration.password().get();
         boolean aForceSsl = false;
 
-        try
+        synchronized(lock)
         {
-            synchronized(lock)
+            if (!dsInitialized)
             {
-                if (!dsInitialized)
+                String url = "jdbc:postgresql://" + aHostList + "/" + aDbName;
+                ds.setJdbcUrl(url);
+                ds.setUsername(aDbUser);
+                ds.setPassword(aDbPass);
+                ds.setMaximumPoolSize(20);
+
+                if (aForceSsl)
                 {
-                    String url = "jdbc:postgresql://" + aHostList + "/" + aDbName;
-                    ds.setJdbcUrl(url);
-                    ds.setUsername(aDbUser);
-                    ds.setPassword(aDbPass);
-                    ds.setMaximumPoolSize(20);
-
-                    if (aForceSsl)
-                    {
-                        ds.addDataSourceProperty("ssl", "true");
-                        ds.addDataSourceProperty("sslmode", "require");
-                    }
-                    Flyway flyway = Flyway.configure().dataSource(ds).schemas(TESTCASES_SCHEMA_NAME)
-                                    .locations("db/migration", "testframework-sql")
-                                    // ignore deleted migration files
-                                    .ignoreMigrationPatterns("*:missing").load();
-                    flyway.migrate();
-
-                    dsInitialized = true;
+                    ds.addDataSourceProperty("ssl", "true");
+                    ds.addDataSourceProperty("sslmode", "require");
                 }
+                Flyway flyway = Flyway.configure().dataSource(ds).schemas(TESTCASES_SCHEMA_NAME)
+                                .locations("db/migration", "testframework-sql")
+                                // ignore deleted migration files
+                                .ignoreMigrationPatterns("*:missing").load();
+                flyway.migrate();
+
+                dsInitialized = true;
             }
-            connection = ds.getConnection();
         }
-        catch(SQLException e)
-        {
-            log.error(String.format("Connection failed for \"jdbc:postgresql://%s/%s - %s - %s - SSL: %s", aHostList,
-                            aDbName, aDbUser, aDbPass, aForceSsl), e);
-            throw new RuntimeException(e);
-        }
+        instanceConnection = getConnection();
 
     }
 
@@ -120,7 +120,7 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
     {
         int result;
         ResultSet resultSet = null;
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             if (null != id)
@@ -171,7 +171,7 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
     {
         Long result = null;
         ResultSet resultSet = null;
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             if (null != id)
@@ -226,7 +226,7 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
     public ArrayList<String> runDBStmtString(String query, String resultColumnName)
     {
         ArrayList<String> result = new ArrayList<>();
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query);
                         ResultSet resultSet = sqlStatement.executeQuery())
         {
@@ -256,7 +256,7 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
     {
         String result = null;
         ResultSet resultSet = null;
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             if (null != id)
@@ -313,7 +313,7 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
     {
         Map<Integer, String> result = new LinkedHashMap<>();
         ResultSet resultSet = null;
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             if (null != id)
@@ -362,7 +362,7 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
     {
         Map<Integer, Integer> result = new LinkedHashMap<>();
         ResultSet resultSet = null;
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             if (null != id)
@@ -409,7 +409,7 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
     public boolean runDBStmtBoolean(String query, String resultColumnName, boolean expectedResult)
     {
         boolean resultOK;
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
              PreparedStatement sqlStatement = connection.prepareStatement(query);
              ResultSet resultSet = sqlStatement.executeQuery())
         {
@@ -444,7 +444,7 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
         ResultSet resultSet = null;
         int stillWaitFor = waitTimeSec;
 
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
 
@@ -514,7 +514,7 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
         boolean check = true;
         StringBuilder out = new StringBuilder();
 
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.executeQuery();
@@ -560,7 +560,7 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
     @Override
     public boolean runDBUpdate(String query, Optional<String> objectId1, Optional<Long> objectId2)
     {
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
 
@@ -591,7 +591,7 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
     @Override
     public boolean runDBUpdate(String query)
     {
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.executeUpdate();
@@ -644,7 +644,7 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
         String query = "SELECT \"supplierRef\" FROM oms.\"Shop2SupplierDO\" WHERE \"shopRef\"=?";
         ResultSet resultSet = null;
 
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.setLong(1, shop.getId());
@@ -713,7 +713,7 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
         String query = "SELECT \"supplierShopName\" FROM oms.\"Shop2SupplierDO\" WHERE \"shopRef\" = (select id from \"ShopDO\" where name = ? ) AND \"supplierRef\" = (select id from \"SupplierDO\" where name = ? )";
         ResultSet resultSet = null;
 
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.setString(1, shopName);
@@ -787,7 +787,7 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
         String query = "SELECT id FROM oms.\"SupplierDO\" WHERE name = ?";
         ResultSet resultSet = null;
 
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.setString(1, supplierName);
@@ -843,7 +843,7 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
         String query = "SELECT id FROM oms.\"ShopDO\" WHERE name = ?";
         ResultSet resultSet = null;
 
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.setString(1, shopName);
@@ -891,7 +891,7 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
     @Override
     public String getShopName(long shopId)
     {
-        try (PreparedStatement stmt = connection.prepareStatement(
+        try (PreparedStatement stmt = instanceConnection.prepareStatement(
                         "SELECT \"shopName\" FROM oms.\"ShopDO\" WHERE id = ?"))
         {
             stmt.setLong(1, shopId);
@@ -910,7 +910,7 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
         Long shopSpecificId = null;
         ResultSet resultSet = null;
 
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.setLong(1, shopId);
@@ -1065,7 +1065,7 @@ DELETE  FROM "StockReservationDO" r2
                         .append("DEL_2 as (DELETE FROM \"StockReservationItemDO\" it2 WHERE it2.id IN (select id FROM itlist)) ")
                         .append("SELECT string_agg ( DISTINCT \"stockReservationRef\"::text, ',') FROM itlist ");
 
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(queryString.toString());
                         Statement statement2 = connection.createStatement())
         {
@@ -1109,7 +1109,7 @@ DELETE  FROM "StockReservationDO" r2
         String query = "SELECT 1 FROM \"Shop2SupplierDO\" WHERE \"shopRef\"= ? AND \"supplierRef\" = (select id from \"SupplierDO\" where name = ?)";
         ResultSet resultSet = null;
 
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.setLong(1, shopId);
@@ -1154,7 +1154,7 @@ DELETE  FROM "StockReservationDO" r2
         query = "INSERT INTO product.\"ShopAtpAO\" (\"stockLevel\", \"blockedStock\", \"modificationDate\", \"articleRef\", \"shopRef\", \"shopSupplierName\", \"supplierRef\") "
                         + "SELECT ?, ?, now(), ?, ?, ?, (select id from \"SupplierDO\" where name = ?) RETURNING 1";
 
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.setInt(1, stockLevel);
@@ -1211,7 +1211,7 @@ DELETE  FROM "StockReservationDO" r2
                         + " SET \"stockLevel\"=? , \"modificationDate\"=now() WHERE \"shopRef\" = ? "
                         + " AND \"articleSupplierRef\"= (select id from  \"ArticleSupplierDO\" where \"supplierRef\"=(select id from \"SupplierDO\" where name = ?) AND  \"articleRef\"=?) RETURNING 1";
 
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query1))
         {
             sqlStatement.setInt(1, stockLevel);
@@ -1255,7 +1255,7 @@ DELETE  FROM "StockReservationDO" r2
 
         String query2 = "UPDATE product.\"ShopAtpAO\" SET \"blockedStock\"=?, \"modificationDate\"=now() WHERE \"articleRef\"=? AND \"shopRef\" = ? AND \"supplierRef\"=(select id from \"SupplierDO\" where name = ?) RETURNING 1";
 
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query2))
         {
             sqlStatement.setInt(1, blocked);
@@ -1308,7 +1308,7 @@ DELETE  FROM "StockReservationDO" r2
 
         String query = "select offering_shop from product.get_article_ref_and_offering_shop(?,?)";
         ResultSet resultSet = null;
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.setLong(1, shopId);
@@ -1377,7 +1377,7 @@ DELETE  FROM "StockReservationDO" r2
                         + "WHERE item.\"shopArticleNo\" = ? AND res.\"validUntil\" < now() AND res.\"shopRef\" = ? ";
 
         ResultSet resultSet = null;
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.setString(1, shopArticleNo);
@@ -1458,7 +1458,7 @@ DELETE  FROM "StockReservationDO" r2
         String query = "SELECT \"stockLevel\", \"blockedStock\" FROM product.\"ShopAtpAO\" WHERE \"articleRef\" = get_article_ref(?, ?) AND \"supplierRef\" = (select id from \"SupplierDO\" where name = ?)";
         ResultSet resultSet = null;
 
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.setLong(1, shopId);
@@ -1704,7 +1704,7 @@ DELETE  FROM "StockReservationDO" r2
         String query = "SELECT \"reservedStock\" FROM oms.\"StockReservationItemDO\" WHERE \"shopArticleNo\"=? AND \"stockReservationRef\"=?";
         ResultSet resultSet = null;
 
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.setString(1, article.getShopArticleNo());
@@ -1750,7 +1750,7 @@ DELETE  FROM "StockReservationDO" r2
                         + lifeTime + " milliseconds'";
         ResultSet resultSet = null;
 
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.setLong(1, reservationId);
@@ -1789,7 +1789,7 @@ DELETE  FROM "StockReservationDO" r2
         String query = "SELECT \"supplierRef\" FROM oms.\"StockReservationItemDO\" WHERE \"shopArticleNo\"=? AND \"stockReservationRef\"=?";
         ResultSet resultSet = null;
 
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.setString(1, article.getShopArticleNo());
@@ -1846,7 +1846,7 @@ DELETE  FROM "StockReservationDO" r2
         String query = "SELECT \"supplierArticleNo\", \"supplierShortDescription\" FROM product.\"ArticleSupplierDO\" WHERE \"articleRef\"=? AND \"supplierRef\"=?";
         ResultSet resultSet = null;
 
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.setLong(1, orderPos.getProduct().getProductId());
@@ -1922,7 +1922,7 @@ DELETE  FROM "StockReservationDO" r2
         String query = "SELECT name FROM oms.\"SupplierDO\" WHERE id = ?";
         ResultSet resultSet = null;
 
-        try (PreparedStatement sqlStatement = connection.prepareStatement(query))
+        try (PreparedStatement sqlStatement = instanceConnection.prepareStatement(query))
         {
             sqlStatement.setLong(1, supplierId);
             resultSet = sqlStatement.executeQuery();
@@ -1975,7 +1975,7 @@ DELETE  FROM "StockReservationDO" r2
         String query = "SELECT id, \"supplierRef\", \"orderPosNo\", \"articleRef\", \"quantityOrdered\", \"shopArticleName\", \"shopArticleNo\"  FROM \"OrderPosDO\" where \"orderRef\"=?";
         ResultSet resultSet = null;
 
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.setLong(1, order.getId());
@@ -2035,7 +2035,7 @@ DELETE  FROM "StockReservationDO" r2
         String query = "SELECT id, \"orderPosNo\", \"quantityOrdered\", \"shopArticleNo\" FROM \"OrderPosDO\" where \"orderRef\"=?";
         ResultSet resultSet = null;
 
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.setLong(1, order.getId());
@@ -2083,7 +2083,7 @@ DELETE  FROM "StockReservationDO" r2
         ResultSet resultSet = null;
         int numberOfReservations = -1;
 
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.setLong(1, reservationId);
@@ -2124,7 +2124,7 @@ DELETE  FROM "StockReservationDO" r2
         ResultSet resultSet = null;
         int numberOfReservations = -1;
 
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.setLong(1, reservationId);
@@ -2213,7 +2213,7 @@ DELETE  FROM "StockReservationDO" r2
         ResultSet resultSet = null;
         int numberOfReservations = -1;
 
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.setLong(1, orderId);
@@ -2259,7 +2259,7 @@ DELETE  FROM "StockReservationDO" r2
 
         String query = "SELECT id FROM oms.\"DispatchPosDO\" WHERE \"dispatchRef\" in (?) order by id";
         ResultSet resultSet = null;
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.setLong(1, dipatchRef);
@@ -2311,7 +2311,7 @@ DELETE  FROM "StockReservationDO" r2
 
         String query = "SELECT id FROM oms.\"DispatchPosPropertyDO\" WHERE \"dispatchPosRef\" in (?)";
         ResultSet resultSet = null;
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.setLong(1, dispatchPosRef);
@@ -2358,7 +2358,7 @@ DELETE  FROM "StockReservationDO" r2
 
         String query = "SELECT id FROM oms.\"DispatchItemDO\" WHERE \"dispatchPosRef\" in (?)";
         ResultSet resultSet = null;
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.setLong(1, dispatchPosRef);
@@ -2405,7 +2405,7 @@ DELETE  FROM "StockReservationDO" r2
 
         String query = "SELECT \"quantityDispatched\" FROM oms.\"DispatchPosDO\" WHERE \"id\" in (?)";
         ResultSet resultSet = null;
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.setLong(1, dispatchPosRef);
@@ -2459,7 +2459,7 @@ DELETE  FROM "StockReservationDO" r2
 
         String query = "SELECT id FROM oms.\"ResponsePosDO\" WHERE \"responseRef\" in (?)";
         ResultSet resultSet = null;
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.setLong(1, responseRef);
@@ -2513,7 +2513,7 @@ DELETE  FROM "StockReservationDO" r2
 
         String query = "SELECT id FROM oms.\"ResponsePosPropertyDO\" WHERE \"responsePosRef\" in (?)";
         ResultSet resultSet = null;
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.setLong(1, responsePosRef);
@@ -2593,7 +2593,7 @@ DELETE  FROM "StockReservationDO" r2
 
         String query = "SELECT id FROM oms.\"ReturnPosDO\" WHERE \"returnRef\" in (?)";
         ResultSet resultSet = null;
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.setLong(1, returnRef);
@@ -2646,7 +2646,7 @@ DELETE  FROM "StockReservationDO" r2
 
         String query = "SELECT id FROM oms.\"ReturnPosPropertyDO\" WHERE \"returnPosRef\" in (?)";
         ResultSet resultSet = null;
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
              PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.setLong(1, returnPosRef);
@@ -2688,7 +2688,7 @@ DELETE  FROM "StockReservationDO" r2
 
         String query = "SELECT \"invoicingRef\" from \"Invoicing2OrderDO\" where \"orderRef\" = ? ORDER BY \"invoicingRef\" ASC";
         ResultSet resultSet = null;
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
              PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.setLong(1, orderId);
@@ -2779,7 +2779,7 @@ DELETE  FROM "StockReservationDO" r2
 
         String query = "SELECT id FROM oms.\"ReturnItemDO\" WHERE \"returnPosRef\" in (?)";
         ResultSet resultSet = null;
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.setLong(1, returnPosRef);
@@ -2826,7 +2826,7 @@ DELETE  FROM "StockReservationDO" r2
 
         String query = "SELECT \"quantityReturned\" FROM oms.\"ReturnPosDO\" WHERE \"id\" in (?)";
         ResultSet resultSet = null;
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.setLong(1, returnPosRef);
@@ -2873,7 +2873,7 @@ DELETE  FROM "StockReservationDO" r2
         String query = "select count(*) from product.\"ImportDatapackDO\" where \"fileName\" ~ ? and \"importDatapackStateDefRef\" = 100";
         int imported;
 
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.setString(1, fileType);
@@ -2907,7 +2907,7 @@ DELETE  FROM "StockReservationDO" r2
         for (Map.Entry<OMSSupplier, Collection<OMSReturnPosition>> supplierReturnPosition : supplierReturnPositions.entrySet())
         {
             supplierId = supplierReturnPosition.getKey().getId();
-            try (Connection connection = ds.getConnection();
+            try (Connection connection = getConnection();
                             PreparedStatement sqlStatement = connection.prepareStatement(query))
             {
                 sqlStatement.setLong(1, supplierId);
@@ -2949,7 +2949,7 @@ DELETE  FROM "StockReservationDO" r2
 
         String query = "SELECT distinct \"invoicingRef\" FROM oms.\"Invoicing2OrderDO\" WHERE \"orderRef\" in (?, ?)";
         ResultSet resultSet = null;
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.setLong(1, orderId1);
@@ -3139,7 +3139,7 @@ DELETE  FROM "StockReservationDO" r2
         Integer currentStatus = null;
 
         ResultSet resultSet = null;
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(sqlStatementQuery))
         {
             sqlStatement.setLong(1, objectId);
@@ -3205,7 +3205,7 @@ DELETE  FROM "StockReservationDO" r2
         Integer currentStatus = null;
 
         ResultSet resultSet = null;
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(sqlStatementQuery))
         {
             sqlStatement.setLong(1, objectId);
@@ -3477,7 +3477,7 @@ DELETE  FROM "StockReservationDO" r2
         int currentResultSize = 0;
 
         ResultSet resultSet = null;
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(sqlStatementQuery))
         {
             if (objectId1.isPresent())
@@ -3577,7 +3577,7 @@ DELETE  FROM "StockReservationDO" r2
         log.info("Creating paymentNotification for order '" + shopOrderId + "' by calling:\n" + query);
 
         ResultSet resultSet = null;
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.setString(1, shopOrderId);
@@ -3818,7 +3818,7 @@ DELETE  FROM "StockReservationDO" r2
                         + "(select  count(*) as waiting    from pg_locks where locktype = 'advisory' and classid = 4 and objid = "
                         + lockId + " and objsubid = 2 and NOT granted) as boah";
         int[] parallelLockCount = new int[] { -1, -1, -1, -1 };
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(parallelLockCounter))
         {
             ResultSet resultSet = sqlStatement.executeQuery();
@@ -3870,7 +3870,7 @@ DELETE  FROM "StockReservationDO" r2
             throw new RuntimeException("Unknown lock type '" + rw + "' found! Supported are 'W' and 'R'.");
         }
 
-        try (Connection connection = ds.getConnection(); PreparedStatement sqlStatement  = connection.prepareStatement(statement))
+        try (PreparedStatement sqlStatement  = instanceConnection.prepareStatement(statement))
         {
             sqlStatement.execute();
             log.info("released gebTest {} lock {}\n", rw, lockId);
@@ -3904,8 +3904,8 @@ DELETE  FROM "StockReservationDO" r2
             throw new RuntimeException("Unknown lock type '"+rw+"' found! Supported are 'W' and 'R'.");
         }
 
-        try (Connection connection = ds.getConnection(); PreparedStatement sqlStatement  = connection.prepareStatement("SET statement_timeout='" + timeout + "s'");
-             PreparedStatement sqlStatement2 = connection.prepareStatement(statement))
+        try (PreparedStatement sqlStatement  = instanceConnection.prepareStatement("SET statement_timeout='" + timeout + "s'");
+             PreparedStatement sqlStatement2 = instanceConnection.prepareStatement(statement))
         {
             sqlStatement.executeUpdate();
             sqlStatement2.execute();
@@ -3919,7 +3919,7 @@ DELETE  FROM "StockReservationDO" r2
         }
         finally
         {
-            try (Connection connection = ds.getConnection(); PreparedStatement sqlStatement3= connection.prepareStatement("RESET statement_timeout"))
+            try (Connection connection = getConnection(); PreparedStatement sqlStatement3= connection.prepareStatement("RESET statement_timeout"))
             {
                 sqlStatement3.executeUpdate();
             }
@@ -4089,7 +4089,7 @@ DELETE  FROM "StockReservationDO" r2
     private boolean checkPairValues(String sqlWithIdPlaceholder, Long longId, String stringId,
                     Collection<AbstractMap.SimpleEntry<BigDecimal, BigDecimal>> entries)
     {
-        try (Connection connection = ds.getConnection();
+        try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(sqlWithIdPlaceholder))
         {
             if (longId != null)
@@ -4133,7 +4133,14 @@ DELETE  FROM "StockReservationDO" r2
     @Override
     public Connection getConnection()
     {
-        return connection;
+        try
+        {
+            return ds.getConnection();
+        }
+        catch(SQLException e)
+        {
+            throw new RuntimeException("error while getting connection from the pool", e);
+        }
     }
 
     @Override
