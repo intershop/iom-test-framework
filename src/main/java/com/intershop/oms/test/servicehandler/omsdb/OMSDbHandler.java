@@ -1236,4 +1236,7 @@ public interface OMSDbHandler
     // FIXME get rid of this, we want to compare business objects, not query results
     boolean checkPairValuesStringId(String sqlWithIdPlaceholder, String stringId,
                     Collection<SimpleEntry<BigDecimal, BigDecimal>> entries);
+
+    public void setPlatformConfigPropertyDO(String key, String value);
+    public void deletePlatformConfigPropertyDO(String key);
 }

@@ -68,11 +68,10 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
 
     public OMSDbHandlerV1(ServiceConfiguration configuration)
     {
-        if(configuration.getParameterValue(CONFIG_KEY_DUMMY_MODE) != null) {
+        if (configuration.getParameterValue(CONFIG_KEY_DUMMY_MODE) != null)
+        {
             return;
         }
-//        this(configuration.serviceEndpoint().get().host(), configuration.getParameterValue(CONFIG_KEY_DB_NAME),
-//                        configuration.username().get(), configuration.password().get(), false);
 
         String aHostList = configuration.serviceEndpoint().get().host();
         String aDbName = configuration.getParameterValue(CONFIG_KEY_DB_NAME);
@@ -4178,6 +4177,45 @@ DELETE  FROM "StockReservationDO" r2
         {
             stmt.setString(1, mail);
             stmt.execute();
+        }
+        catch(SQLException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static final String UPSERT_PLATFORM_CONFIG_PROPERTY_QRY = """
+          INSERT INTO oms."PlatformConfigPropertyDO" (id, "platformConfigRef", "key", value)
+            SELECT nextval('"PlatformConfigPropertyDO_id_seq"'), 1, ?, ?
+            ON CONFLICT ("key") DO UPDATE SET value = EXCLUDED.value;
+          """;
+    @Override
+    public void setPlatformConfigPropertyDO(String key, String value)
+    {
+        try(Connection conny = getConnection(); PreparedStatement stmt = conny.prepareStatement(UPSERT_PLATFORM_CONFIG_PROPERTY_QRY))
+        {
+            stmt.setString(1, key);
+            stmt.setString(2, value);
+            int resultCount = stmt.executeUpdate();
+            assert resultCount > 0 : "setPlatformConfigPropertyDO didn't update/insert any rows";
+        }
+        catch(SQLException e)
+        {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    private static final String DELETE_PLATFORM_CONFIG_PROPERTY_QRY = """
+                    DELETE FROM oms."PlatformConfigPropertyDO" WHERE "key" = ?;
+                    """;
+    @Override
+    public void deletePlatformConfigPropertyDO(String key)
+    {
+        try(Connection conny = getConnection(); PreparedStatement stmt = conny.prepareStatement(DELETE_PLATFORM_CONFIG_PROPERTY_QRY))
+        {
+            stmt.setString(1, key);
+            stmt.executeUpdate();
         }
         catch(SQLException e)
         {
