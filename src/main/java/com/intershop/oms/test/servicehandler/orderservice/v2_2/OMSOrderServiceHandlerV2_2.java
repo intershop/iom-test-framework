@@ -221,6 +221,7 @@ class OMSOrderServiceHandlerV2_2 extends RESTServiceHandler implements OMSOrderS
         Order order = response.getData();
         OMSOrder omsOrder = OrderMapper.INSTANCE.fromApiOrder(order);
         omsOrder.setShop(new OMSShop(shopId));
+        omsOrder.setId(dbHandler.getOrderId(shopId, omsOrder.getShopOrderNumber()));
         return omsOrder;
     }
 
