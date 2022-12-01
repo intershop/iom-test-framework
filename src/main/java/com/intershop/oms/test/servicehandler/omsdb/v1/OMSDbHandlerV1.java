@@ -2763,7 +2763,7 @@ DELETE  FROM "StockReservationDO" r2
     @Override
     public List<String> getDispatchPositionsErrors(Long dispatchRef)
     {
-        String sqlStatement = "SELECT \"errorText\" FROM \"DispatchPosDO\" WHERE \"id\" = (?)";
+        String sqlStatement = "SELECT \"errorText\" FROM \"DispatchPosDO\" WHERE \"id\" = ?";
 
         List<Long> positions = getAllDispatchesPositionIds(dispatchRef);
         List<String> positionsErrors = new ArrayList<>(positions.size());
@@ -2773,8 +2773,7 @@ DELETE  FROM "StockReservationDO" r2
             positionsErrors.add(runDBStmtStringById(sqlStatement, positionId, "errorText"));
         }
 
-        StringBuilder output = new StringBuilder(
-                        "getDispatchPositionsErrors: got error messages for dispatch positions:\n");
+        StringBuilder output = new StringBuilder("getDispatchPositionsErrors: got error messages for dispatch positions:\n");
         int i = 0;
         for (String err : positionsErrors)
         {
@@ -2787,8 +2786,7 @@ DELETE  FROM "StockReservationDO" r2
     @Override
     public String getDispatchError(Long dispatchRef)
     {
-        String error = runDBStmtStringById("SELECT \"errorText\" FROM \"DispatchDO\" WHERE \"id\" = (?)", dispatchRef,
-                        "errorText");
+        String error = runDBStmtStringById("SELECT \"errorText\" FROM \"DispatchDO\" WHERE \"id\" = ?", dispatchRef, "errorText");
         log.info("getDispatchError: got error messages for dispatch: " + dispatchRef + ": " + error);
         return error;
     }
@@ -2807,7 +2805,7 @@ DELETE  FROM "StockReservationDO" r2
     @Override
     public List<Long> getAllReturnIdsForOrder(OMSOrder order)
     {
-        String query = "SELECT id FROM oms.\"ReturnDO\" WHERE \"orderRef\" in (?)";
+        String query = "SELECT id FROM oms.\"ReturnDO\" WHERE \"orderRef\" = ? ORDER BY id";
         List<Long> allReturnPositionItemIds = runDBStmtLongListById(query, order.getId(), "id");
         log.info("Got all returnIds: " + allReturnPositionItemIds + " for order '" + order.getId() + "'!");
         return allReturnPositionItemIds;
@@ -2821,7 +2819,7 @@ DELETE  FROM "StockReservationDO" r2
     @Override
     public List<Long> getAllReturnPositionItemIds(Long returnPosRef)
     {
-        String query = "SELECT id FROM oms.\"ReturnItemDO\" WHERE \"returnPosRef\" in (?)";
+        String query = "SELECT id FROM oms.\"ReturnItemDO\" WHERE \"returnPosRef\" = ? ORDER BY id";
         List<Long> allReturnPositionItemIds = runDBStmtLongListById(query, returnPosRef, "id");
         log.info("Got allReturnPositionItemIds: " + allReturnPositionItemIds + " from returnPosId '" + returnPosRef + "'!");
         return allReturnPositionItemIds;
@@ -2837,7 +2835,7 @@ DELETE  FROM "StockReservationDO" r2
     {
         long quantityReturned = 0L;
 
-        String query = "SELECT \"quantityReturned\" FROM oms.\"ReturnPosDO\" WHERE \"id\" in (?)";
+        String query = "SELECT \"quantityReturned\" FROM oms.\"ReturnPosDO\" WHERE \"id\" = ?";
         ResultSet resultSet = null;
         try (Connection connection = getConnection();
              PreparedStatement sqlStatement = connection.prepareStatement(query))
@@ -2907,8 +2905,7 @@ DELETE  FROM "StockReservationDO" r2
      * getAllReturnsPositionIds(java.lang.Long)
      */
     @Override
-    public List<Boolean> hasSupplierSinglePositionArticle(
-                    Map<OMSSupplier, Collection<OMSReturnPosition>> supplierReturnPositions)
+    public List<Boolean> hasSupplierSinglePositionArticle(Map<OMSSupplier, Collection<OMSReturnPosition>> supplierReturnPositions)
     {
         List<Boolean> singlePositionArticles = new ArrayList<>();
         String query = "SELECT \"singlePositionArticle\" FROM oms.\"SupplierDO\" WHERE \"id\" in (?)";
@@ -2974,16 +2971,12 @@ DELETE  FROM "StockReservationDO" r2
             else
             {
                 log.error("No aggregated invoice found for orders '" + orderId1 + "' and '" + orderId2 + "'!");
-                throw new RuntimeException(
-                                "No aggregated invoice found for orders '" + orderId1 + "' and '" + orderId2 + "'!");
+                throw new RuntimeException("No aggregated invoice found for orders '" + orderId1 + "' and '" + orderId2 + "'!");
             }
             if (resultSet.next())
             {
-                log.error("More than one aggregated invoice found for orders '" + orderId1 + "' and '" + orderId2
-                                + "'!");
-                throw new RuntimeException(
-                                "More than one aggregated invoice found for orders '" + orderId1 + "' and '" + orderId2
-                                                + "'!");
+                log.error("More than one aggregated invoice found for orders '" + orderId1 + "' and '" + orderId2 + "'!");
+                throw new RuntimeException("More than one aggregated invoice found for orders '" + orderId1 + "' and '" + orderId2 + "'!");
             }
         }
         catch(SQLException sqlEx)
