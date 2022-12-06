@@ -39,6 +39,18 @@ public class OMSOrderPromotion
         }
     }
 
+    public BigDecimal getTaxValue()
+    {
+        if (getGrossValue() != null && getNetValue() != null)
+        {
+            return getGrossValue().subtract(getNetValue());
+        }
+        else
+        {
+            return null;
+        }
+    }
+
     /**
      * @deprecated Used only for old SOAP-requests
      */
