@@ -60,8 +60,6 @@ public class OMSWriteReturnRequest extends OMSBusinessObject
     private List<OMSWriteReturnRequestPosition> positions = new ArrayList<>();
 
     private OMSWritePickupAddress pickupAddress;
-    
-    private List<OMSWriteContactPerson> contactPersons;
 
     private List<OMSWriteCustomAttribute> customAttributes = null;
 
@@ -115,12 +113,6 @@ public class OMSWriteReturnRequest extends OMSBusinessObject
     public OMSWriteReturnRequest pickupAddress(OMSWritePickupAddress pickupAddress)
     {
         this.pickupAddress = pickupAddress;
-        return this;
-    }
-    
-    public OMSWriteReturnRequest contactPersons(List<OMSWriteContactPerson> contactPersons)
-    {
-        this.contactPersons = contactPersons;
         return this;
     }
 
