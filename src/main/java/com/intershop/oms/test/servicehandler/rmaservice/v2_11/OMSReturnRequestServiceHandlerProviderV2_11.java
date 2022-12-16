@@ -17,6 +17,6 @@ public class OMSReturnRequestServiceHandlerProviderV2_11 implements ServiceProvi
     @Override
     public String getVersion()
     {
-        return "V2_10";
+        return "V2_11";
     }
 }

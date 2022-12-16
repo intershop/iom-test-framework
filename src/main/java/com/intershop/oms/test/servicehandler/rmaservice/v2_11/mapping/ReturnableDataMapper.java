@@ -15,5 +15,5 @@ public interface ReturnableDataMapper
     OMSReturnableData fromApiReturnableData(ReturnableData returnableData);
 
     @InheritInverseConfiguration
-    public abstract ReturnableData toApiReturnableData(OMSReturnableData omsReturnableData);
+    ReturnableData toApiReturnableData(OMSReturnableData omsReturnableData);
 }

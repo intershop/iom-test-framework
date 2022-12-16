@@ -15,5 +15,5 @@ public interface WriteReturnRequestMapper
     OMSWriteReturnRequest fromApiWriteReturnRequest(WriteReturnRequest writeReturnRequest);
 
     @InheritInverseConfiguration
-    public abstract WriteReturnRequest toApiWriteReturnRequest(OMSWriteReturnRequest omsWriteReturnRequest);
+    WriteReturnRequest toApiWriteReturnRequest(OMSWriteReturnRequest omsWriteReturnRequest);
 }

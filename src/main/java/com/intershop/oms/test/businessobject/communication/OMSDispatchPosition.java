@@ -1,18 +1,19 @@
 package com.intershop.oms.test.businessobject.communication;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 import com.intershop.oms.test.businessobject.OMSPropertyGroupOwner;
+
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Getter
 @Setter
@@ -27,7 +28,7 @@ public class OMSDispatchPosition extends OMSBusinessObject implements OMSPropert
 
     private OMSProduct product;
 
-    private List<OMSDispatchItem> items = null;
+    private List<OMSDispatchItem> items = new ArrayList<>();
 
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
@@ -55,8 +56,6 @@ public class OMSDispatchPosition extends OMSBusinessObject implements OMSPropert
 
     public OMSDispatchPosition()
     {
-        // FIXME check, should be empty constructor
-        setItems(Arrays.asList(new OMSDispatchItem()));
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.intershop.oms.test.servicehandler.rmaservice.v2_11.mapping;
 
 import java.util.List;
 
+import com.intershop.oms.test.businessobject.rma.OMSReturnRequest;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
@@ -19,10 +20,10 @@ public interface ReadReturnRequestMapper
     OMSReadReturnRequest fromApiReadReturnRequest(ReadReturnRequest readReturnRequest);
 
     @InheritInverseConfiguration
-    public abstract ReadReturnRequest toApiReadReturnRequest(OMSReadReturnRequest omsReadReturnRequest);
+    ReadReturnRequest toApiReadReturnRequest(OMSReadReturnRequest omsReadReturnRequest);
 
     @AfterMapping
-    public default void fromApiReadReturnRequestList(final List<ReadReturnRequest> readReturnRequests, @MappingTarget final List<OMSReadReturnRequest> omsReadReturnRequests)
+    default void fromApiReadReturnRequestList(final List<ReadReturnRequest> readReturnRequests, @MappingTarget final List<OMSReadReturnRequest> omsReadReturnRequests)
     {
         readReturnRequests.stream().forEach(readReturnRequest -> omsReadReturnRequests.add(fromApiReadReturnRequest(readReturnRequest)));
     }

@@ -19,10 +19,10 @@ public interface ShopReturnReasonMapper
     OMSShopReturnReason fromApiShopReturnReason(ShopReturnReason shopReturnReason);
 
     @InheritInverseConfiguration
-    public abstract ShopReturnReason toApiShopReturnReason(OMSShopReturnReason omsShopReturnReason);
+    ShopReturnReason toApiShopReturnReason(OMSShopReturnReason omsShopReturnReason);
 
     @AfterMapping
-    public default void fromApiShopReturnReasonList(final List<ShopReturnReason> shopReturnReasons, @MappingTarget final List<OMSShopReturnReason> omsShopReturnReasons)
+    default void fromApiShopReturnReasonList(final List<ShopReturnReason> shopReturnReasons, @MappingTarget final List<OMSShopReturnReason> omsShopReturnReasons)
     {
         shopReturnReasons.stream().forEach(shopReturnReason -> omsShopReturnReasons.add(fromApiShopReturnReason(shopReturnReason)));
     }

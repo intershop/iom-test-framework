@@ -19,10 +19,10 @@ public interface ReadReturnRequestPositionMapper
     OMSReadReturnRequestPosition fromApiReadReturnRequestPosition(ReadReturnRequestPosition readReturnRequestPosition);
 
     @InheritInverseConfiguration
-    public abstract ReadReturnRequestPosition toApiReadReturnRequestPosition(OMSReadReturnRequestPosition omsReadReturnRequestPosition);
+    ReadReturnRequestPosition toApiReadReturnRequestPosition(OMSReadReturnRequestPosition omsReadReturnRequestPosition);
 
     @AfterMapping
-    public default void fromApiReadReturnRequestPositionList(final List<ReadReturnRequestPosition> readReturnRequestPositions, @MappingTarget final List<OMSReadReturnRequestPosition> omsReadReturnRequestPositions)
+    default void fromApiReadReturnRequestPositionList(final List<ReadReturnRequestPosition> readReturnRequestPositions, @MappingTarget final List<OMSReadReturnRequestPosition> omsReadReturnRequestPositions)
     {
         readReturnRequestPositions.stream().forEach(readReturnRequestPosition -> omsReadReturnRequestPositions.add(fromApiReadReturnRequestPosition(readReturnRequestPosition)));
     }
