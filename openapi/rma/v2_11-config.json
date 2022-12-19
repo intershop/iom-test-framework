@@ -1,0 +1,13 @@
+{    
+    "groupId":"com.intershop.oms.rest",
+    "artifactId":"RMAServiceClient",
+    "artifactVersion":"2.11",
+
+    "apiPackage":"com.intershop.oms.rest.rma.v2_11.api",
+    "modelPackage":"com.intershop.oms.rest.rma.v2_11.model",
+    "invokerPackage":"com.intershop.oms.rest.shared",
+
+    "dateLibrary": "legacy",
+    "java8": true,
+    "hideGenerationTimestamp": true
+}

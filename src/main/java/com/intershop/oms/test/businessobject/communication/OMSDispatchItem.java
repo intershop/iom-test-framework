@@ -2,6 +2,7 @@ package com.intershop.oms.test.businessobject.communication;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 import com.intershop.oms.test.businessobject.OMSPropertyGroupOwner;
@@ -21,6 +22,7 @@ import lombok.experimental.Accessors;
 public class OMSDispatchItem extends OMSBusinessObject implements OMSPropertyGroupOwner
 {
     private String serialNumber;
+    private static final AtomicInteger cnt = new AtomicInteger(1);
 
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
@@ -28,8 +30,8 @@ public class OMSDispatchItem extends OMSBusinessObject implements OMSPropertyGro
 
     public OMSDispatchItem()
     {
-        //FIXME should be empty
-        setSerialNumber("DEMO-Serial-Number");
+        // FIXME should be empty
+        setSerialNumber(String.valueOf(cnt.getAndIncrement()));
     }
 
     @Override

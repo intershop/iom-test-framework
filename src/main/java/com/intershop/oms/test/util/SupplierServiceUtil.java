@@ -1,5 +1,15 @@
 package com.intershop.oms.test.util;
 
+import java.text.SimpleDateFormat;
+import java.time.OffsetDateTime;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import com.intershop.oms.test.businessobject.OMSShop;
 import com.intershop.oms.test.businessobject.OMSSupplier;
 import com.intershop.oms.test.businessobject.communication.OMSCarrier;
@@ -10,17 +20,11 @@ import com.intershop.oms.test.businessobject.communication.OMSOrderResponsePosit
 import com.intershop.oms.test.businessobject.communication.OMSReturn;
 import com.intershop.oms.test.businessobject.communication.OMSReturnPosition;
 import com.intershop.oms.test.businessobject.order.OMSOrder;
+import com.intershop.oms.test.businessobject.rma.OMSReturnRequest;
+import com.intershop.oms.test.businessobject.rma.OMSReturnRequest.TypeEnum;
+import com.intershop.oms.test.businessobject.rma.OMSReturnRequestPosition;
 import com.intershop.oms.test.servicehandler.ServiceHandlerFactory;
 import com.intershop.oms.test.servicehandler.omsdb.OMSDbHandler;
-
-import java.text.SimpleDateFormat;
-import java.time.OffsetDateTime;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class SupplierServiceUtil
 {
@@ -93,6 +97,21 @@ public class SupplierServiceUtil
         omsResponse.getPositions().addAll(omsResponsePositions);
         omsResponse.getPositions().forEach(pos -> pos.addProperty("DEMO-GROUP", "Test Key", "Test Value"));
         return omsResponse;
+    }
+
+    /**
+     * creates a full RMA request of type RETURN for the given dispatches /
+     * dispatch positions.
+     */
+    public static OMSReturnRequest prepareFullReturnRequest(OMSOrder order, List<OMSDispatch> dispatches)
+    {
+        // map dispatch positions
+        List<OMSReturnRequestPosition> rReqPos = dispatches.stream().flatMap(disp -> disp.getPositions().stream())
+                        .map(OMSReturnRequestPosition::fromDispatchPosition).collect(Collectors.toList());
+
+        return new OMSReturnRequest().setShopName(order.getShopName()).setShopOrderNumber(order.getShopOrderNumber())
+                        .setCreationDate(new Date(System.currentTimeMillis())).setPositions(rReqPos)
+                        .setType(TypeEnum.RETURN);
     }
 
     public static String createMessageId()

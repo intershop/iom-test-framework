@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import com.intershop.oms.test.businessobject.rma.OMSReturnRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -110,6 +111,18 @@ public class OMSReturnRequestServiceHandlerV2 extends RESTServiceHandler
     {
         throw new ApiException(
                         "getShop2ReturnReasons(String shopName, List<String> returnTypes) not implemented before v2.10");
+    }
+
+    @Override
+    public OMSReturnRequest createReturnRequest(OMSReturnRequest returnRequest, Integer targetState)
+    {
+        throw new RuntimeException("not implemented before V2_11");
+    }
+
+    @Override
+    public OMSReturnRequest getReturnRequest(Long id) throws ApiException
+    {
+        throw new RuntimeException("not implemented before V2_11");
     }
 
     @Override

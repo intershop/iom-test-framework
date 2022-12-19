@@ -4,6 +4,7 @@ import com.intershop.oms.rest.shared.ApiException;
 import com.intershop.oms.test.businessobject.order.OMSOrder;
 import com.intershop.oms.test.businessobject.rma.OMSReadReturnRequest;
 import com.intershop.oms.test.businessobject.rma.OMSReadReturnRequestPosition;
+import com.intershop.oms.test.businessobject.rma.OMSReturnRequest;
 import com.intershop.oms.test.businessobject.rma.OMSReturnableData;
 import com.intershop.oms.test.businessobject.rma.OMSShopReturnReason;
 import com.intershop.oms.test.businessobject.rma.OMSWriteReturnRequestPosition;
@@ -69,4 +70,17 @@ public interface OMSReturnRequestServiceHandler extends OMSServiceHandler
     List<OMSShopReturnReason> getShop2ReturnReasons(String shopName, List<String> returnTypes)
                     throws ApiException;
 
+    /**
+     * Send a return request to IOM, optionally waiting for it to reach a specific targetState
+     *
+     * @param returnRequest the prepared return request
+     * @param targetState an optional targetState (ReturnStatesDefDO.id) that has to be reached
+     *                   before returning the ReturnRequest
+     */
+    OMSReturnRequest createReturnRequest(OMSReturnRequest returnRequest, Integer targetState) throws ApiException;
+
+    /**
+     * retrieve a ReturnRequest by id
+     */
+    OMSReturnRequest getReturnRequest(Long id) throws ApiException;
 }
