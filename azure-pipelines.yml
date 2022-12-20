@@ -70,7 +70,7 @@ jobs:
         IFS="-" read -ra VERSION_SPLIT <<< "$BUILD_SOURCEBRANCHNAME"
         POM_VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout | tail -1)
         FEATURE_BRANCH_NUMBER=${VERSION_SPLIT[0]}
-        if (! echo $FEATURE_BRANCH_NUMBER | grep -E -q '^[0-9]+$') || (! echo $POM_VERSION | grep -q '-SNAPSHOT$') ; then
+        if (! echo $FEATURE_BRANCH_NUMBER | grep -E -q '^[0-9]+$') || (! echo $POM_VERSION | grep -q -e '-SNAPSHOT$') ; then
           echo "##vso[task.setvariable variable=SKIP_PUBLICATION;]true"
           echo "##vso[task.logissue type=warning] publication skipped - encountered unparseable branch name"
         else
