@@ -83,6 +83,12 @@ jobs:
     #enabled: false
 
   - script: |
+      ./mvnw versions:set -DnewVersion=$VERSION_OVERRIDE
+    timeoutInMinutes: 10
+    displayName: "Set branch specific version"
+    condition: ne(variables.VERSION_OVERRIDE, '')
+
+  - script: |
       ./mvnw clean verify
     timeoutInMinutes: 10
     displayName: "Build test-framework"
@@ -92,8 +98,7 @@ jobs:
       PGP_SECRETKEY: "keyfile:$(pgpPrivateKey.secureFilePath)"
 
   - script: |
-      printenv
-      # ./mvnw clean deploy $VERSION_OVERRIDE
+      ./mvnw clean deploy
     timeoutInMinutes: 10
     displayName: "Publish test-framework"
     #enabled: false
