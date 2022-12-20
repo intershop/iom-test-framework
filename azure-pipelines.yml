@@ -92,7 +92,8 @@ jobs:
       PGP_SECRETKEY: "keyfile:$(pgpPrivateKey.secureFilePath)"
 
   - script: |
-      ./mvnw clean deploy $VERSION_OVERRIDE
+      printenv
+      # ./mvnw clean deploy $VERSION_OVERRIDE
     timeoutInMinutes: 10
     displayName: "Publish test-framework"
     #enabled: false
