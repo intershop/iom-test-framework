@@ -575,6 +575,13 @@ public interface OMSDbHandler
      * @return list of return ids
      */
     List<Long> getAllReturnIdsForOrder(OMSOrder order);
+    
+    /**
+     * Wait for expectedCount returnIds for a given order and returns them
+     *
+     * @return list of return ids
+     */
+    public List<Long> waitForAllReturnIdsForOrder(OMSOrder order, int expectedCount);
 
     /**
      * Get all dispatchPositionIds for the given dispatchId
