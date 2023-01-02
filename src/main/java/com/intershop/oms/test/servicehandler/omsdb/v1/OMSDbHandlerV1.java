@@ -2814,8 +2814,8 @@ DELETE  FROM "StockReservationDO" r2
     @Override
     public List<Long> waitForAllReturnIdsForOrder(OMSOrder order, int expectedCount)
     {
-        String query = "SELECT id FROM oms.\"ReturnDO\" WHERE \"orderRef\" = " + order.getId();
-        doDBWaitForResult("Waiting for n ReturnDOs" , query, Optional.empty(), Optional.empty(), expectedCount);
+        String query = "SELECT id FROM oms.\"ReturnDO\" WHERE \"orderRef\" = ? ";
+        doDBWaitForResult("Waiting for n ReturnDOs" , query, Optional.empty(), Optional.of(order.getId()), expectedCount);
         
         List<Long> allReturnPositionItemIds = runDBStmtLongListById(query, order.getId(), "id");
         log.info("Got all returnIds: " + allReturnPositionItemIds + " for order '" + order.getId() + "'!");
