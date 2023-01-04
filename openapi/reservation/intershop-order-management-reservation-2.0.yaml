@@ -1,0 +1,150 @@
+openapi: 3.0.1
+info:
+  title: IOM Reservation Service REST API
+  description: Reservation of products.
+  contact:
+    name: Intershop Communications AG
+    url: http://intershop.com
+  version: "2.0"
+servers:
+- url: '{protocol}://{domain}:{port}/servlets/services'
+  variables:
+    protocol:
+      default: http
+      enum:
+      - http
+      - https
+    domain:
+      default: localhost
+    port:
+      default: "8080"
+security:
+- basicAuth: []
+paths:
+  /reservation/{shopId}:
+    post:
+      tags:
+      - Reservation
+      description: Create a reservation for a specific lifetime and different quantities of products.
+      operationId: createReservation
+      parameters:
+      - name: shopId
+        in: path
+        description: The id of the shop.
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 1000
+      - name: type
+        in: query
+        description: TBD
+        required: true
+        schema:
+          type: string
+        example: COMPLETE
+      - name: lifetime
+        in: query
+        description: The life time of the reservation in seconds.
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 600
+      - name: items
+        in: query
+        description: The items to be reserved
+        schema:
+          type: array
+          format: ReservationItem
+          items: 
+              $ref: '#/components/schemas/ReservationItem'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpResponseReservation'
+        "400":
+          description: Bad Request
+        "401":
+          description: Authentication information is missing or invalid
+        "403":
+          description: Forbidden
+        "415":
+          description: Unsupported Media Type
+        "500":
+          description: An unexpected error occured
+components:
+  schemas:
+    ReservationItem:
+      type: object
+      properties:
+        articleRef:
+          type: integer
+          format: int64
+          description: Id of the product.
+          example: 1234567890
+        quantity:
+          type: integer
+          format: int64
+          description: the number of product items to be reserved for this product
+          example: 12345
+      description: A reservation item containing the article reference for the shop and the required quantity of a product.
+    CodedException:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+      description: Exceptions.
+    FieldError:
+      type: object
+      properties:
+        message:
+          type: string
+        sourceField:
+          type: string
+      description: Errors at parameters.
+    Reservation:
+      type: object
+      properties:
+          validUntil:
+            type: string
+          resvId:
+            type: integer
+            format: int64
+            description: Id of the reservation.
+            example: 1234567890
+          items:
+            type: array
+            description: The list of reservation-objects.
+            items:
+              $ref: '#/components/schemas/ReservationItem'
+    HttpResponseReservation:
+      type: object
+      properties:
+        data:
+          type: object
+          $ref: '#/components/schemas/Reservation'
+        statusCode:
+          type: integer
+          description: The status code of the response.
+          format: int32
+        errors:
+          type: array
+          description: Errors at parameters.
+          items:
+            $ref: '#/components/schemas/FieldError'
+        exceptions:
+          type: array
+          description: Exceptions.
+          items:
+            $ref: '#/components/schemas/CodedException'
+  securitySchemes:
+    basicAuth:
+      type: http
+      description: Basic Authentication
+      scheme: basic

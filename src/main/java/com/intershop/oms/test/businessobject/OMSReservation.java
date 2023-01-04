@@ -2,23 +2,34 @@ package com.intershop.oms.test.businessobject;
 
 import java.util.Collection;
 
+import lombok.Data;
+
+@Data
 public class OMSReservation
 {
-    static enum RESERVATION_TYPE { COMPLETE, PARTLY };
+    static public enum RESERVATION_TYPE { COMPLETE, PARTLY };
 
-    static enum RESERVATION_STATE { reserved, expired };
+    static public enum RESERVATION_STATE { reserved, expired };
 
-    int lifetime;
-//    String type // filled via metaclass as type is optional
+    long id;
+
+    long lifetime;
+
     Collection<OMSReservationItem> items;
-    
+
     public Collection<OMSReservationItem> getItems()
     {
         return items;
     }
 
-    public int getLifetime()
+    public long getLifetime()
     {
         return lifetime;
+    }
+
+    public String getReservationType()
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 }
