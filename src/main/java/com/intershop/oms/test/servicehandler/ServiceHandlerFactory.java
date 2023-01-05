@@ -1,5 +1,12 @@
 package com.intershop.oms.test.servicehandler;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.intershop.oms.test.configuration.ConfigBuilder;
 import com.intershop.oms.test.configuration.Configuration;
 import com.intershop.oms.test.configuration.ServiceConfiguration;
@@ -13,6 +20,7 @@ import com.intershop.oms.test.servicehandler.orderstateservice.OMSOrderStateServ
 import com.intershop.oms.test.servicehandler.orderstateservice.v1.OMSOrderStateServiceHandlerProviderV1;
 import com.intershop.oms.test.servicehandler.orderstateservice.v2_0.OMSOrderStateServiceHandlerProviderV2_0;
 import com.intershop.oms.test.servicehandler.reservationservice.OMSReservationServiceHandler;
+import com.intershop.oms.test.servicehandler.reservationservice.v2_0.OMSReservationServiceHandlerProviderV2_0;
 import com.intershop.oms.test.servicehandler.rmaservice.OMSReturnRequestServiceHandler;
 import com.intershop.oms.test.servicehandler.rmaservice.v2.OMSReturnRequestServiceHandlerProviderV2;
 import com.intershop.oms.test.servicehandler.rmaservice.v2_10.OMSReturnRequestServiceHandlerProviderV2_10;
@@ -25,13 +33,6 @@ import com.intershop.oms.test.servicehandler.supplierservice.v2_10.OMSSupplierSe
 import com.intershop.oms.test.servicehandler.supplierservice.v2_11.OMSSupplierServiceHandlerProviderV2_11;
 import com.intershop.oms.test.servicehandler.transmissionservice.OMSTransmissionServiceHandler;
 import com.intershop.oms.test.servicehandler.transmissionservice.v2_0.OMSTransmissionServiceHandlerProviderV2;
-
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 
 @SuppressWarnings("rawtypes")
 public class ServiceHandlerFactory
@@ -71,6 +72,8 @@ public class ServiceHandlerFactory
         // transmission service
         registerServiceHandler(OMSTransmissionServiceHandler.class, new OMSTransmissionServiceHandlerProviderV2());
 
+        // reservation service
+        registerServiceHandler(OMSReservationServiceHandler.class, new OMSReservationServiceHandlerProviderV2_0());
     }
 
     @SuppressWarnings("unchecked")
