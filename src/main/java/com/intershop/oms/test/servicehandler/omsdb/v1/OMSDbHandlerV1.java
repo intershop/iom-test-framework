@@ -222,12 +222,55 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
     }
 
     @Override
-    public ArrayList<String> runDBStmtString(String query, String resultColumnName)
+    public List<Long> runDBStmtLongListById(String query, Long id, String resultColumnName)
     {
-        ArrayList<String> result = new ArrayList<>();
+        List<Long> result = new ArrayList<>();
+        ResultSet resultSet = null;
         try (Connection connection = getConnection();
-                        PreparedStatement sqlStatement = connection.prepareStatement(query);
-                        ResultSet resultSet = sqlStatement.executeQuery())
+             PreparedStatement sqlStatement = connection.prepareStatement(query))
+        {
+            if (null != id)
+            {
+                sqlStatement.setLong(1, id);
+            }
+
+            log.info("Calling '" + sqlStatement.toString() + "'.");
+            resultSet = sqlStatement.executeQuery();
+
+            while (resultSet.next())
+            {
+                result.add(resultSet.getLong(resultColumnName));
+            }
+        }
+        catch (SQLException sqlEx)
+        {
+            log.error("SQLException getting integer result '" + resultColumnName + "' from '" + query + "':" + sqlEx.getMessage());
+            throw new RuntimeException(sqlEx);
+        }
+        finally
+        {
+            if (null != resultSet)
+            {
+                try
+                {
+                    resultSet.close();
+                }
+                catch(SQLException e) { }
+            }
+        }
+
+        log.info("Got {} Long results for column '{}' from '{}' using id '{}'.", result.size(), resultColumnName, query, id);
+
+        return result;
+    }
+
+    @Override
+    public List<String> runDBStmtString(String query, String resultColumnName)
+    {
+        List<String> result = new ArrayList<>();
+        try (Connection connection = getConnection();
+             PreparedStatement sqlStatement = connection.prepareStatement(query);
+             ResultSet resultSet = sqlStatement.executeQuery())
         {
             while(resultSet.next())
             {
@@ -256,7 +299,7 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
         String result = null;
         ResultSet resultSet = null;
         try (Connection connection = getConnection();
-                        PreparedStatement sqlStatement = connection.prepareStatement(query))
+             PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             if (null != id)
             {
@@ -280,10 +323,9 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
                 throw new RuntimeException("Query '" + query + "' returned more than one result!");
             }
         }
-        catch(SQLException sqlEx)
+        catch (SQLException sqlEx)
         {
-            log.error("SQLException getting string result '" + resultColumnName + "' from '" + query + "':"
-                            + sqlEx.getMessage());
+            log.error("SQLException getting string result '" + resultColumnName + "' from '" + query + "':" + sqlEx.getMessage());
             throw new RuntimeException(sqlEx);
         }
         finally
@@ -300,15 +342,13 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
             }
         }
 
-        log.info("Got String result for column '" + resultColumnName + "' from '" + query + "' using id '" + id + "': "
-                        + result + ".");
+        log.info("Got String result for column '" + resultColumnName + "' from '" + query + "' using id '" + id + "': " + result + ".");
 
         return result;
     }
 
     @Override
-    public Map<Integer, String> runDBStmtStringById(String query, Long id, String resultColumnNameKey,
-                    String resultColumnNameValue)
+    public Map<Integer, String> runDBStmtStringById(String query, Long id, String resultColumnNameKey, String resultColumnNameValue)
     {
         Map<Integer, String> result = new LinkedHashMap<>();
         ResultSet resultSet = null;
@@ -1642,7 +1682,7 @@ DELETE  FROM "StockReservationDO" r2
     @Override
     public List<String> getReturnPositionsErrors(Long returnRef)
     {
-        String sqlStatement = "SELECT \"errorText\" FROM \"ReturnPosDO\" WHERE \"id\" = (?)";
+        String sqlStatement = "SELECT \"errorText\" FROM \"ReturnPosDO\" WHERE \"id\" = ?";
 
         List<Long> positions = getAllReturnsPositionIds(returnRef);
         List<String> positionsErrors = new ArrayList<>(positions.size());
@@ -1666,7 +1706,7 @@ DELETE  FROM "StockReservationDO" r2
     @Override
     public String getReturnError(Long returnRef)
     {
-        String error = runDBStmtStringById("SELECT \"errorText\" FROM \"ReturnDO\" WHERE \"id\" = (?)", returnRef,
+        String error = runDBStmtStringById("SELECT \"errorText\" FROM \"ReturnDO\" WHERE \"id\" = ?", returnRef,
                         "errorText");
         log.info("getDispatchError: got error messages for return: " + returnRef + ": " + error);
         return error;
@@ -2160,8 +2200,7 @@ DELETE  FROM "StockReservationDO" r2
     }
 
     @Override
-    public Map<OMSSupplier, Collection<OMSReturnPosition>> getReturnPositionsForOrder(OMSOrder order,
-                    boolean useSupplierData)
+    public Map<OMSSupplier, Collection<OMSReturnPosition>> getReturnPositionsForOrder(OMSOrder order, boolean useSupplierData)
     {
         Map<OMSSupplier, Collection<OMSReturnPosition>> supplierReturns = new LinkedHashMap<>();
 
@@ -2724,7 +2763,7 @@ DELETE  FROM "StockReservationDO" r2
     @Override
     public List<String> getDispatchPositionsErrors(Long dispatchRef)
     {
-        String sqlStatement = "SELECT \"errorText\" FROM \"DispatchPosDO\" WHERE \"id\" = (?)";
+        String sqlStatement = "SELECT \"errorText\" FROM \"DispatchPosDO\" WHERE \"id\" = ?";
 
         List<Long> positions = getAllDispatchesPositionIds(dispatchRef);
         List<String> positionsErrors = new ArrayList<>(positions.size());
@@ -2734,8 +2773,7 @@ DELETE  FROM "StockReservationDO" r2
             positionsErrors.add(runDBStmtStringById(sqlStatement, positionId, "errorText"));
         }
 
-        StringBuilder output = new StringBuilder(
-                        "getDispatchPositionsErrors: got error messages for dispatch positions:\n");
+        StringBuilder output = new StringBuilder("getDispatchPositionsErrors: got error messages for dispatch positions:\n");
         int i = 0;
         for (String err : positionsErrors)
         {
@@ -2748,8 +2786,7 @@ DELETE  FROM "StockReservationDO" r2
     @Override
     public String getDispatchError(Long dispatchRef)
     {
-        String error = runDBStmtStringById("SELECT \"errorText\" FROM \"DispatchDO\" WHERE \"id\" = (?)", dispatchRef,
-                        "errorText");
+        String error = runDBStmtStringById("SELECT \"errorText\" FROM \"DispatchDO\" WHERE \"id\" = ?", dispatchRef, "errorText");
         log.info("getDispatchError: got error messages for dispatch: " + dispatchRef + ": " + error);
         return error;
     }
@@ -2762,8 +2799,16 @@ DELETE  FROM "StockReservationDO" r2
     @Override
     public boolean getPlatformConfigShowgMaxReturnQty()
     {
-        return runDBStmtBoolean("SELECT \"showMaxReturnQuantity\" FROM \"PlatformConfigDO\"", "showMaxReturnQuantity",
-                        true);
+        return runDBStmtBoolean("SELECT \"showMaxReturnQuantity\" FROM \"PlatformConfigDO\"", "showMaxReturnQuantity", true);
+    }
+
+    @Override
+    public List<Long> getAllReturnIdsForOrder(OMSOrder order)
+    {
+        String query = "SELECT id FROM oms.\"ReturnDO\" WHERE \"orderRef\" = ? ORDER BY id";
+        List<Long> allReturnPositionItemIds = runDBStmtLongListById(query, order.getId(), "id");
+        log.info("Got all returnIds: " + allReturnPositionItemIds + " for order '" + order.getId() + "'!");
+        return allReturnPositionItemIds;
     }
 
     /*
@@ -2774,42 +2819,9 @@ DELETE  FROM "StockReservationDO" r2
     @Override
     public List<Long> getAllReturnPositionItemIds(Long returnPosRef)
     {
-        List<Long> allReturnPositionItemIds = new ArrayList<>();
-
-        String query = "SELECT id FROM oms.\"ReturnItemDO\" WHERE \"returnPosRef\" in (?)";
-        ResultSet resultSet = null;
-        try (Connection connection = getConnection();
-                        PreparedStatement sqlStatement = connection.prepareStatement(query))
-        {
-            sqlStatement.setLong(1, returnPosRef);
-            resultSet = sqlStatement.executeQuery();
-            while(resultSet.next())
-            {
-                allReturnPositionItemIds.add(resultSet.getLong("id"));
-            }
-        }
-        catch(SQLException sqlEx)
-        {
-            log.error("SQLException getting allReturnPositionItemIds: " + sqlEx.getMessage());
-            throw new RuntimeException(sqlEx);
-        }
-        finally
-        {
-            if (null != resultSet)
-            {
-                try
-                {
-                    resultSet.close();
-                }
-                catch(SQLException e)
-                {
-                }
-            }
-        }
-
-        log.info("Got allReturnPositionItemIds: " + allReturnPositionItemIds + " from returnPosId '" + returnPosRef
-                        + "'!");
-
+        String query = "SELECT id FROM oms.\"ReturnItemDO\" WHERE \"returnPosRef\" = ? ORDER BY id";
+        List<Long> allReturnPositionItemIds = runDBStmtLongListById(query, returnPosRef, "id");
+        log.info("Got allReturnPositionItemIds: " + allReturnPositionItemIds + " from returnPosId '" + returnPosRef + "'!");
         return allReturnPositionItemIds;
     }
 
@@ -2823,10 +2835,10 @@ DELETE  FROM "StockReservationDO" r2
     {
         long quantityReturned = 0L;
 
-        String query = "SELECT \"quantityReturned\" FROM oms.\"ReturnPosDO\" WHERE \"id\" in (?)";
+        String query = "SELECT \"quantityReturned\" FROM oms.\"ReturnPosDO\" WHERE \"id\" = ?";
         ResultSet resultSet = null;
         try (Connection connection = getConnection();
-                        PreparedStatement sqlStatement = connection.prepareStatement(query))
+             PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.setLong(1, returnPosRef);
             resultSet = sqlStatement.executeQuery();
@@ -2836,10 +2848,8 @@ DELETE  FROM "StockReservationDO" r2
             }
             if (resultSet.next())
             {
-                log.error("More than one quantityReturned found for the return position with the id '" + returnPosRef
-                                + "'!");
-                throw new RuntimeException("More than one quantityReturned found for the return position with the id '"
-                                + returnPosRef + "'!");
+                log.error("More than one quantityReturned found for the return position with the id '" + returnPosRef + "'!");
+                throw new RuntimeException("More than one quantityReturned found for the return position with the id '" + returnPosRef + "'!");
             }
         }
         catch(SQLException sqlEx)
@@ -2895,8 +2905,7 @@ DELETE  FROM "StockReservationDO" r2
      * getAllReturnsPositionIds(java.lang.Long)
      */
     @Override
-    public List<Boolean> hasSupplierSinglePositionArticle(
-                    Map<OMSSupplier, Collection<OMSReturnPosition>> supplierReturnPositions)
+    public List<Boolean> hasSupplierSinglePositionArticle(Map<OMSSupplier, Collection<OMSReturnPosition>> supplierReturnPositions)
     {
         List<Boolean> singlePositionArticles = new ArrayList<>();
         String query = "SELECT \"singlePositionArticle\" FROM oms.\"SupplierDO\" WHERE \"id\" in (?)";
@@ -2962,16 +2971,12 @@ DELETE  FROM "StockReservationDO" r2
             else
             {
                 log.error("No aggregated invoice found for orders '" + orderId1 + "' and '" + orderId2 + "'!");
-                throw new RuntimeException(
-                                "No aggregated invoice found for orders '" + orderId1 + "' and '" + orderId2 + "'!");
+                throw new RuntimeException("No aggregated invoice found for orders '" + orderId1 + "' and '" + orderId2 + "'!");
             }
             if (resultSet.next())
             {
-                log.error("More than one aggregated invoice found for orders '" + orderId1 + "' and '" + orderId2
-                                + "'!");
-                throw new RuntimeException(
-                                "More than one aggregated invoice found for orders '" + orderId1 + "' and '" + orderId2
-                                                + "'!");
+                log.error("More than one aggregated invoice found for orders '" + orderId1 + "' and '" + orderId2 + "'!");
+                throw new RuntimeException("More than one aggregated invoice found for orders '" + orderId1 + "' and '" + orderId2 + "'!");
             }
         }
         catch(SQLException sqlEx)
@@ -3001,87 +3006,87 @@ DELETE  FROM "StockReservationDO" r2
     @Override
     public boolean waitForDispatchStateOfOrder(long orderId, int expectedState)
     {
-        String sqlStatement = "SELECT \"stateRef\" FROM \"DispatchDO\" WHERE \"orderRef\" = (?)";
+        String sqlStatement = "SELECT \"stateRef\" FROM \"DispatchDO\" WHERE \"orderRef\" = ?";
         return doDBWaitForStateCheck("order dispatch", sqlStatement, orderId, expectedState);
     }
 
     @Override
     public boolean waitForDispatchState(long dispatchId, int expectedState)
     {
-        String sqlStatement = "SELECT \"stateRef\" FROM \"DispatchDO\" WHERE \"id\" = (?)";
+        String sqlStatement = "SELECT \"stateRef\" FROM \"DispatchDO\" WHERE \"id\" = ?";
         return doDBWaitForStateCheck("dispatch", sqlStatement, dispatchId, expectedState);
     }
 
     @Override
     public boolean waitForReturnState(long returnId, int expectedState)
     {
-        String sqlStatement = "SELECT \"stateRef\" FROM \"ReturnDO\" WHERE \"id\" = (?)";
+        String sqlStatement = "SELECT \"stateRef\" FROM \"ReturnDO\" WHERE \"id\" = ?";
         return doDBWaitForStateCheck("return", sqlStatement, returnId, expectedState);
     }
 
     @Override
     public boolean waitForReturnStateOfOrder(long orderId, int expectedState, int returnCount)
     {
-        String sqlStatement = "SELECT \"stateRef\" FROM \"ReturnDO\" WHERE \"orderRef\" = (?)";
+        String sqlStatement = "SELECT \"stateRef\" FROM \"ReturnDO\" WHERE \"orderRef\" = ?";
         return doDBWaitForStatesCheck("order return", sqlStatement, orderId, expectedState, returnCount);
     }
 
     @Override
     public boolean waitForOrderState(long orderId, int expectedState)
     {
-        String sqlStatement = "SELECT \"stateRef\" FROM \"OrderDO\" WHERE \"id\" = (?)";
+        String sqlStatement = "SELECT \"stateRef\" FROM \"OrderDO\" WHERE \"id\" = ?";
         return doDBWaitForStateCheck("order", sqlStatement, orderId, expectedState);
     }
 
     @Override
     public boolean waitForOrderChangeRequestState(long orderChangeRequestId, int expectedState)
     {
-        String sqlStatement = "SELECT \"stateRef\" FROM \"OrderChangeRequestDO\" WHERE \"id\" = (?)";
+        String sqlStatement = "SELECT \"stateRef\" FROM \"OrderChangeRequestDO\" WHERE \"id\" = ?";
         return doDBWaitForStateCheck("order", sqlStatement, orderChangeRequestId, expectedState);
     }
 
     @Override
     public int getOrderResponseState(Long responseId)
     {
-        String sqlStatement = "SELECT \"stateRef\" FROM \"ResponseDO\" WHERE \"id\" = (?)";
+        String sqlStatement = "SELECT \"stateRef\" FROM \"ResponseDO\" WHERE \"id\" = ?";
         return runDBStmtIntById(sqlStatement, responseId, "stateRef");
     }
 
     @Override
     public boolean waitForOrderResponseState(long responseId, int expectedState)
     {
-        String sqlStatement = "SELECT \"stateRef\" FROM \"ResponseDO\" WHERE \"id\" = (?)";
+        String sqlStatement = "SELECT \"stateRef\" FROM \"ResponseDO\" WHERE \"id\" = ?";
         return doDBWaitForStateCheck("order response", sqlStatement, responseId, expectedState);
     }
 
     @Override
     public boolean waitForOrderConfirmationMailState(long orderId, int expectedState)
     {
-        //String sqlStatement = "SELECT \"stateRef\" FROM \"ShopCustomerMailTransmissionDO\" WHERE \"orderRef\" = (?) AND \"responseRef\" is null AND \"dispatchRef\" is null AND \"returnRef\" is null";
-        String sqlStatement = "SELECT \"stateRef\" FROM \"ShopCustomerMailTransmissionDO\" WHERE \"orderRef\" = (?) AND \"transmissionTypeDefRef\" BETWEEN 500 AND 799"; //500 = SEND_CUSTOMER_MAIL_ORDER
+        //String sqlStatement = "SELECT \"stateRef\" FROM \"ShopCustomerMailTransmissionDO\" WHERE \"orderRef\" = ? AND \"responseRef\" is null AND \"dispatchRef\" is null AND \"returnRef\" is null";
+        String sqlStatement = "SELECT \"stateRef\" FROM \"ShopCustomerMailTransmissionDO\" WHERE \"orderRef\" = ? AND \"transmissionTypeDefRef\" BETWEEN 500 AND 799"; //500 = SEND_CUSTOMER_MAIL_ORDER
         return doDBWaitForStateCheck("order confirmation mail", sqlStatement, orderId, expectedState, true);
     }
 
     @Override
     public boolean waitForReturnAnnouncementState(long rmaId, int expectedState)
     {
-        String sqlStatement = "SELECT \"stateRef\" FROM \"ReturnAnnouncementDO\" WHERE \"id\" = (?)";
+        String sqlStatement = "SELECT \"stateRef\" FROM \"ReturnAnnouncementDO\" WHERE \"id\" = ?";
         return doDBWaitForStateCheck("return announcement", sqlStatement, rmaId, expectedState);
     }
 
     @Override
     public boolean waitForInvoiceState(long invoiceId, int expectedState)
     {
-        String sqlStatement = "SELECT \"stateRef\" FROM \"InvoicingDO\" WHERE \"id\" = (?)";
+        String sqlStatement = "SELECT \"stateRef\" FROM \"InvoicingDO\" WHERE \"id\" = ?";
         return doDBWaitForStateCheck("invoice", sqlStatement, invoiceId, expectedState);
     }
 
     @Override
     public boolean waitForPaymentState(long invoiceId, int expectedState)
     {
-        String invoiceNo = runDBStmtStringById("SELECT \"invoiceNo\" FROM \"InvoicingDO\" WHERE \"id\" = (?)", invoiceId, "invoiceNo");
+        String invoiceNo = runDBStmtStringById("SELECT \"invoiceNo\" FROM \"InvoicingDO\" WHERE \"id\" = ?", invoiceId, "invoiceNo");
         long paymentNofificationId = runDBStmtLongById("SELECT \"id\" FROM \"PaymentNotificationDO\" WHERE \"invoiceNo\" = '"+invoiceNo+"'", (Long)null, "id");
-        return doDBWaitForStateCheck("payment notification", "SELECT \"stateRef\" FROM \"PaymentNotificationDO\" WHERE \"id\" = (?)", paymentNofificationId, expectedState);
+        return doDBWaitForStateCheck("payment notification", "SELECT \"stateRef\" FROM \"PaymentNotificationDO\" WHERE \"id\" = ?", paymentNofificationId, expectedState);
     }
 
     @Override
@@ -3091,7 +3096,7 @@ DELETE  FROM "StockReservationDO" r2
         log.info("Got invoicing id " + invoiceId + " for order " + orderId + ".");
         long documentId = getFirstDocumentIDForInvoice(invoiceId);
         log.info("Got document id " + invoiceId + " for invoice " + invoiceId + ".");
-        String sqlStatement = "SELECT \"stateRef\" FROM \"DocumentDO\" WHERE \"id\" = (?) AND \"documentTypeDefRef\" = 18";
+        String sqlStatement = "SELECT \"stateRef\" FROM \"DocumentDO\" WHERE \"id\" = ? AND \"documentTypeDefRef\" = 18";
         return doDBWaitForStateCheck("invoice document", sqlStatement, documentId, expectedState);
     }
 
@@ -3420,7 +3425,7 @@ DELETE  FROM "StockReservationDO" r2
     {
         String sqlStatement = "UPDATE oms.\"DispatchDO\"\n"
                         + "SET \"modificationDate\" = \"modificationDate\" - interval '10 minutes'\n" + "WHERE id = ?"
-                        + "AND now() at time zone 'UTC' - \"modificationDate\" < interval '10 minutes';";
+                        + " AND now() at time zone 'UTC' - \"modificationDate\" < interval '10 minutes';";
 
         return runDBUpdate(sqlStatement, Optional.empty(), Optional.of(dispatchId));
     }
@@ -3430,7 +3435,7 @@ DELETE  FROM "StockReservationDO" r2
     {
         String sqlStatement = "UPDATE oms.\"ReturnDO\"\n"
                         + "SET \"modificationDate\" = \"modificationDate\" - interval '10 minutes'\n" + "WHERE id = ?"
-                        + "AND now() at time zone 'UTC' - \"modificationDate\" < interval '10 minutes';";
+                        + " AND now() at time zone 'UTC' - \"modificationDate\" < interval '10 minutes';";
 
         return runDBUpdate(sqlStatement, Optional.empty(), Optional.of(returnId));
     }

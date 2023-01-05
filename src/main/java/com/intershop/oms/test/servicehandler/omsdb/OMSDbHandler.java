@@ -429,12 +429,13 @@ public interface OMSDbHandler
      */
     int runDBStmtIntById(String query, Long id, String resultColumnName);
     Long runDBStmtLongById(String query, Long id, String resultColumnName);
+    List<Long> runDBStmtLongListById(String query, Long id, String resultColumnName);
 
     Map<Integer, Integer> runDBStmtInt(String query, String resultColumnNameKey, String resultColumnNameValue);
     Map<Integer, Integer> runDBStmtIntById(String query, Long id, String resultColumnNameKey, String resultColumnNameValue);
 
     String runDBStmtStringById(String query, Long id, String resultColumnName);
-    ArrayList<String> runDBStmtString(String query, String resultColumnName);
+    List<String> runDBStmtString(String query, String resultColumnName);
     Map<Integer, String> runDBStmtString(String query, String resultColumnNameKey, String resultColumnNameValue);
     Map<Integer, String> runDBStmtStringById(String query, Long id, String resultColumnNameKey, String resultColumnNameValue);
 
@@ -567,6 +568,13 @@ public interface OMSDbHandler
      * @return a map &lt;Supplier--&gt;returnPositions&gt; for the given order
      */
     Map<OMSSupplier, Collection<OMSReturnPosition>> getReturnPositionsForOrder(OMSOrder order, boolean useSupplierData);
+
+    /**
+     * Get all returnIds for a given order
+     *
+     * @return list of return ids
+     */
+    List<Long> getAllReturnIdsForOrder(OMSOrder order);
 
     /**
      * Get all dispatchPositionIds for the given dispatchId
