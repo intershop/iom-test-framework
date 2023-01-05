@@ -6,7 +6,7 @@
 
     <groupId>com.intershop.oms</groupId>
     <artifactId>iom-test-framework</artifactId>
-    <version>4.3.1-SNAPSHOT</version>
+    <version>4.3.1</version>
     <packaging>jar</packaging>
 
     <name>IOM Test Framework</name>
