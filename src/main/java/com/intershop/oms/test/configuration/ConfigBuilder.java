@@ -45,7 +45,7 @@ public class ConfigBuilder
 
     private static Configuration load(URL url)
     {
-        log.info("loading config from: " + url);
+        log.info("loading config from: {}", url);
         SmallRyeConfigBuilder cb = new SmallRyeConfigBuilder();
         SmallRyeConfig cfg;
         try
@@ -63,8 +63,9 @@ public class ConfigBuilder
             }
             if (log.isDebugEnabled())
             {
-                cb.getSourceProviders()
-                                .forEach(sp -> log.debug("active config source provider: " + sp.getClass().getName()));
+                cb.getSourceProviders().forEach(
+                                sp ->
+                                log.debug("active config source provider: {} from '{}'", sp.getClass().getSimpleName(), sp.getConfigSources(null).iterator().hasNext() ? sp.getConfigSources(null).iterator().next().getName() : ""));
             }
             cfg = cb.build();
 

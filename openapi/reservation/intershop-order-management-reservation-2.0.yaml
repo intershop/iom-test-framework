@@ -36,29 +36,12 @@ paths:
           type: integer
           format: int64
         example: 1000
-      - name: type
-        in: query
-        description: TBD
+      requestBody:
+        content:
+          application/vnd.intershop.reservation.v2+json:
+            schema:
+              $ref: '#/components/schemas/ReservationRequest'
         required: true
-        schema:
-          type: string
-        example: COMPLETE
-      - name: lifetime
-        in: query
-        description: The life time of the reservation in seconds.
-        required: true
-        schema:
-          type: integer
-          format: int64
-        example: 600
-      - name: items
-        in: query
-        description: The items to be reserved
-        schema:
-          type: array
-          format: ReservationItem
-          items: 
-              $ref: '#/components/schemas/ReservationItem'
       responses:
         "200":
           description: OK
@@ -81,17 +64,30 @@ components:
     ReservationItem:
       type: object
       properties:
-        articleRef:
-          type: integer
-          format: int64
-          description: Id of the product.
-          example: 1234567890
-        quantity:
+        id:
+          type: string
+          description: a reference to an article.
+          example: "testProduct100"
+        qty:
           type: integer
           format: int64
           description: the number of product items to be reserved for this product
           example: 12345
+        state:
+            $ref: '#/components/schemas/ReservationState'
       description: A reservation item containing the article reference for the shop and the required quantity of a product.
+    ReservationType:
+      type: string
+      enum:
+          - COMPLETE
+          - PARTLY
+      default: COMPLETE
+    ReservationState:
+      type: string
+      enum:
+          - reserved
+          - expired
+      default: reserved
     CodedException:
       type: object
       properties:
@@ -108,7 +104,20 @@ components:
         sourceField:
           type: string
       description: Errors at parameters.
-    Reservation:
+    ReservationRequest:
+      type: object
+      properties:
+          lifetime:
+            type: integer
+            format: int64
+          type:
+              $ref: '#/components/schemas/ReservationType'
+          items:
+            type: array
+            description: The list of reservation-objects.
+            items:
+              $ref: '#/components/schemas/ReservationItem'
+    ReservationResponse:
       type: object
       properties:
           validUntil:
@@ -127,8 +136,7 @@ components:
       type: object
       properties:
         data:
-          type: object
-          $ref: '#/components/schemas/Reservation'
+          $ref: '#/components/schemas/ReservationResponse'
         statusCode:
           type: integer
           description: The status code of the response.

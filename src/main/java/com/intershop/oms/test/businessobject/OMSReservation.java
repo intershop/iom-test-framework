@@ -1,35 +1,49 @@
 package com.intershop.oms.test.businessobject;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
+
+import com.intershop.oms.rest.reservation.v2_0.model.ReservationType;
 
 import lombok.Data;
 
 @Data
 public class OMSReservation
 {
-    static public enum RESERVATION_TYPE { COMPLETE, PARTLY };
+    /**
+     * @deprecated use generated model.ReservationType
+     */
+    @Deprecated(forRemoval = true, since = "4.4.0")
+    enum RESERVATION_TYPE { COMPLETE, PARTLY };
 
-    static public enum RESERVATION_STATE { reserved, expired };
+    /**
+     * @deprecated use generated model.ReservationState
+     */
+    @Deprecated(forRemoval = true, since = "4.4.0")
+    enum RESERVATION_STATE { reserved, expired };
 
-    long id;
+    /**
+     * @deprecated use resvId
+     */
+    @Deprecated(forRemoval = true, since = "4.4.0")
+    int id;
 
+    // request parameters
+    ReservationType type = ReservationType.COMPLETE;
     long lifetime;
 
-    Collection<OMSReservationItem> items;
+    // response values
+    long resvId;
+    Date validUntil;
 
-    public Collection<OMSReservationItem> getItems()
-    {
-        return items;
-    }
+    Collection<OMSReservationItem> items = new ArrayList<>();
 
-    public long getLifetime()
-    {
-        return lifetime;
-    }
+    public OMSReservation() {}
 
-    public String getReservationType()
+    public OMSReservation(long lifetime, ReservationType reservationType)
     {
-        // TODO Auto-generated method stub
-        return null;
+        this.lifetime = lifetime;
+        type = reservationType;
     }
 }

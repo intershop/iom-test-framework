@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.intershop.oms.rest.reservation.v2_0.api.ReservationApi;
 import com.intershop.oms.rest.reservation.v2_0.model.HttpResponseReservation;
-import com.intershop.oms.rest.reservation.v2_0.model.Reservation;
+import com.intershop.oms.rest.reservation.v2_0.model.ReservationRequest;
 import com.intershop.oms.rest.shared.ApiException;
 import com.intershop.oms.test.businessobject.OMSReservation;
 import com.intershop.oms.test.configuration.ServiceConfiguration;
@@ -25,7 +25,7 @@ class OMSReservationServiceHandlerV2_0 extends RESTServiceHandler implements OMS
 
     public OMSReservationServiceHandlerV2_0(OMSDbHandler dbHandler, ServiceConfiguration serviceConfig)
     {
-        super(serviceConfig, "/servlets/services/reservation", log);
+        super(serviceConfig, "/servlets/services", log);
         this.dbHandler = dbHandler;
         reservationApi = new ReservationApi(apiClient);
     }
@@ -33,8 +33,16 @@ class OMSReservationServiceHandlerV2_0 extends RESTServiceHandler implements OMS
     @Override
     public OMSReservation createReservation(Long shopId, OMSReservation omsReservation) throws ApiException
     {
-        Reservation reservation = ReservationMapper.INSTANCE.toApiReservation(omsReservation);
-        HttpResponseReservation reservationResponse = reservationApi.createReservation(shopId, omsReservation.getReservationType(), omsReservation.getLifetime(), reservation.getItems());
+        ReservationRequest reservation = ReservationMapper.INSTANCE.toApiReservation(omsReservation);
+        HttpResponseReservation reservationResponse = reservationApi.createReservation(shopId, reservation);
+
+        if (reservationResponse.getStatusCode() > 201)
+        {
+            StringBuilder out = new StringBuilder("Received unexpected response code " + reservationResponse.getStatusCode() + " in:");
+            out.append("\n" + reservationResponse);
+            log.error(out.toString());
+            throw new ApiException(out.toString());
+        }
         OMSReservation omsReservationResponse = ReservationMapper.INSTANCE.fromApiReservation(reservationResponse.getData());
         return omsReservationResponse;
     }
