@@ -1482,8 +1482,8 @@ DELETE  FROM "StockReservationDO" r2
     }
 
     /**
-     * beware: use this methold only to check the content of ShopAtpAO.
-     * Complex cases like a product avaibility from a parent shop is not verified!
+     * beware: use this method only to check the content of ShopAtpAO.
+     * Complex cases like a product availability from a parent shop is not verified!
      */
     private AtpStock getAtpStock(long shopId, String shopArticleNo, String supplierName)
     {
@@ -1512,17 +1512,13 @@ DELETE  FROM "StockReservationDO" r2
             }
             if (resultSet.next())
             {
-                log.error("More than one atp stock found for '" + shopId + "', '" + shopArticleNo + "', '"
-                                + supplierName + "'!");
-                throw new RuntimeException(
-                                "More than one atp stock found for '" + shopId + "', '" + shopArticleNo + "', '"
-                                                + supplierName + "'!");
+                log.error("More than one atp stock found for '" + shopId + "', '" + shopArticleNo + "', '" + supplierName + "'!");
+                throw new RuntimeException("More than one atp stock found for '" + shopId + "', '" + shopArticleNo + "', '" + supplierName + "'!");
             }
         }
         catch(SQLException sqlEx)
         {
-            log.error("SQLException getting atp stock for '" + shopId + "', '" + shopArticleNo + "', '" + supplierName
-                            + "': " + sqlEx.getMessage());
+            log.error("SQLException getting atp stock for '" + shopId + "', '" + shopArticleNo + "', '" + supplierName + "': " + sqlEx.getMessage());
             throw new RuntimeException(sqlEx);
         }
         finally
@@ -1542,24 +1538,20 @@ DELETE  FROM "StockReservationDO" r2
         if (null == atpStock)
         {
             log.error("No atp stock found for '" + shopId + "', '" + shopArticleNo + "', '" + supplierName + "'!");
-            throw new RuntimeException(
-                            "No atp stock found for '" + shopId + "', '" + shopArticleNo + "', '" + supplierName
-                                            + "'!");
+            throw new RuntimeException("No atp stock found for '" + shopId + "', '" + shopArticleNo + "', '" + supplierName + "'!");
         }
 
-        log.info("Got atpStock: for '" + shopId + "', '" + shopArticleNo + "', '" + supplierName + "': atp.stockLevel:"
-                        + atpStock.stockLevel + " atp.blockedStock:" + atpStock.blockedStock);
+        log.info("Got atpStock: for '" + shopId + "', '" + shopArticleNo + "', '" + supplierName + "': atp.stockLevel:" + atpStock.stockLevel + " atp.blockedStock:" + atpStock.blockedStock);
 
         return atpStock;
     }
 
     @Override
-    public Map<OMSSupplier, Collection<OMSDispatchPosition>> getDispatchPositionsForOrder(OMSOrder order,
-                    boolean useSupplierData)
+    public Map<OMSSupplier, Collection<OMSDispatchPosition>> getDispatchPositionsForOrder(OMSOrder order, boolean useSupplierData)
     {
         Map<OMSSupplier, Collection<OMSDispatchPosition>> supplierDispatches = new LinkedHashMap<>();
 
-        log.info("getDispatchPositionsForOrder: calling getOrderPositionsBySupplier for order: " + order.toString());
+        log.info("getDispatchPositionsForOrder: calling getOrderPositionsBySupplier for order: {}", order);
         Map<OMSSupplier, Collection<OMSOrderPosition>> supplierOrderPositions = getOrderPositionsBySupplier(order);
 
         // fill article names from the given Ids
@@ -1571,8 +1563,7 @@ DELETE  FROM "StockReservationDO" r2
             for (OMSOrderPosition orderPos : supplierOrderPos.getValue())
             {
                 // a dispatch should use the article information used by the supplier? But then it fails "Not found"
-                log.info("getDispatchPositionsForOrder: preparing orderPos '" + orderPos.toString() + "' for supplier: "
-                                + supplierOrderPos.getKey().toString() + ":");
+                log.info("getDispatchPositionsForOrder: preparing orderPos '" + orderPos.toString() + "' for supplier: " + supplierOrderPos.getKey().toString() + ":");
 
                 OMSProduct product;
                 if (useSupplierData)
@@ -1748,7 +1739,7 @@ DELETE  FROM "StockReservationDO" r2
         {
             sqlStatement.setString(1, article.getShopArticleNo());
             sqlStatement.setLong(2, reservationId);
-            log.info("Calling '" + sqlStatement + "'.");
+            log.info("Calling '{}'.", sqlStatement);
             resultSet = sqlStatement.executeQuery();
             if (resultSet.next())
             {
@@ -1761,8 +1752,7 @@ DELETE  FROM "StockReservationDO" r2
         }
         catch(SQLException sqlEx)
         {
-            log.error("SQLException getting reserved stock for reservationId '" + reservationId + "' and article '"
-                            + article.getShopArticleNo() + "'!" + sqlEx.getMessage());
+            log.error("SQLException getting reserved stock for reservationId '{}' and article '{}'! {}", reservationId, article.getShopArticleNo(), sqlEx.getMessage());
             throw new RuntimeException(sqlEx);
         }
         finally
@@ -1773,9 +1763,7 @@ DELETE  FROM "StockReservationDO" r2
                 {
                     resultSet.close();
                 }
-                catch(SQLException e)
-                {
-                }
+                catch(SQLException e) {}
             }
         }
         return reservedStock;
@@ -1785,15 +1773,14 @@ DELETE  FROM "StockReservationDO" r2
     public boolean checkMinimumReservationLifeTime(long reservationId, long lifeTime)
     {
         boolean ret = false;
-        String query = "SELECT \"validUntil\" FROM oms.\"StockReservationDO\" WHERE \"id\" = ? AND \"validUntil\" >= current_timestamp + interval '"
-                        + lifeTime + " milliseconds'";
+        String query = "SELECT \"validUntil\" FROM oms.\"StockReservationDO\" WHERE \"id\" = ? AND \"validUntil\" >= current_timestamp + interval '" + lifeTime + " milliseconds'";
         ResultSet resultSet = null;
 
         try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.setLong(1, reservationId);
-            log.info("Calling '" + sqlStatement + "'.");
+            log.info("Calling '{}'.", sqlStatement);
             resultSet = sqlStatement.executeQuery();
             if (resultSet.next())
             {
@@ -1812,9 +1799,7 @@ DELETE  FROM "StockReservationDO" r2
                 {
                     resultSet.close();
                 }
-                catch(SQLException e)
-                {
-                }
+                catch(SQLException e) {}
             }
         }
         return ret;
@@ -1833,7 +1818,7 @@ DELETE  FROM "StockReservationDO" r2
         {
             sqlStatement.setString(1, article.getShopArticleNo());
             sqlStatement.setLong(2, reservationId);
-            log.info("Calling '" + sqlStatement + "'.");
+            log.info("Calling '{}'.", sqlStatement);
             resultSet = sqlStatement.executeQuery();
             if (resultSet.next())
             {
@@ -1890,7 +1875,7 @@ DELETE  FROM "StockReservationDO" r2
         {
             sqlStatement.setLong(1, orderPos.getProduct().getProductId());
             sqlStatement.setLong(2, supplier.getId());
-            log.info("Calling '" + sqlStatement + "'.");
+            log.info("Calling '{}'.", sqlStatement);
             resultSet = sqlStatement.executeQuery();
             if (resultSet.next())
             {
@@ -1944,9 +1929,7 @@ DELETE  FROM "StockReservationDO" r2
                 {
                     resultSet.close();
                 }
-                catch(SQLException e)
-                {
-                }
+                catch(SQLException e) {}
             }
         }
         return product;
@@ -2816,7 +2799,7 @@ DELETE  FROM "StockReservationDO" r2
     {
         String query = "SELECT id FROM oms.\"ReturnDO\" WHERE \"orderRef\" = ? ";
         doDBWaitForResult("Waiting for n ReturnDOs" , query, Optional.empty(), Optional.of(order.getId()), expectedCount);
-        
+
         List<Long> allReturnPositionItemIds = runDBStmtLongListById(query, order.getId(), "id");
         log.info("Got all returnIds: " + allReturnPositionItemIds + " for order '" + order.getId() + "'!");
         return allReturnPositionItemIds;

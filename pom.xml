@@ -321,6 +321,23 @@
                         </configuration>
                     </execution>
                     <execution>
+                        <id>Inventory v2.0</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/openapi/atp/intershop-order-management-atp-2.0.yaml</inputSpec>
+                            <ignoreFileOverride>${project.basedir}/.openapi-generator-ignore</ignoreFileOverride>
+                            <generatorName>java</generatorName>
+                            <library>jersey3</library>
+                            <configurationFile>${project.basedir}/openapi/atp/v2-config.json</configurationFile>
+                            <configOptions>
+                                <useOneOfDiscriminatorLookup>true</useOneOfDiscriminatorLookup>
+                                <caseInsensitiveResponseHeaders>true</caseInsensitiveResponseHeaders>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>RMA v2.11</id>
                         <goals>
                             <goal>generate</goal>

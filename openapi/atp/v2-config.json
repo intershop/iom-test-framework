@@ -1,10 +1,10 @@
 {    
     "groupId":"com.intershop.oms.rest",
-    "artifactId":"AtpServiceClient",
+    "artifactId":"InventoryServiceClient",
     "artifactVersion":"2.0",
 
-    "apiPackage":"com.intershop.oms.rest.atp.v2.api",
-    "modelPackage":"com.intershop.oms.rest.atp.v2.model",
+    "apiPackage":"com.intershop.oms.rest.inventory.v2_0.api",
+    "modelPackage":"com.intershop.oms.rest.inventory.v2_0.model",
     "invokerPackage":"com.intershop.oms.rest.shared",
 
     "dateLibrary": "legacy",

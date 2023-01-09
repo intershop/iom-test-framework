@@ -10,6 +10,8 @@ import org.apache.commons.lang3.StringUtils;
 import com.intershop.oms.test.configuration.ConfigBuilder;
 import com.intershop.oms.test.configuration.Configuration;
 import com.intershop.oms.test.configuration.ServiceConfiguration;
+import com.intershop.oms.test.servicehandler.inventoryservice.OMSInventoryServiceHandler;
+import com.intershop.oms.test.servicehandler.inventoryservice.v2_0.OMSInventoryServiceHandlerProviderV2_0;
 import com.intershop.oms.test.servicehandler.omsdb.OMSDbHandler;
 import com.intershop.oms.test.servicehandler.omsdb.v1.OMSDbHandlerProviderV1;
 import com.intershop.oms.test.servicehandler.orderservice.OMSOrderServiceHandler;
@@ -74,6 +76,9 @@ public class ServiceHandlerFactory
 
         // reservation service
         registerServiceHandler(OMSReservationServiceHandler.class, new OMSReservationServiceHandlerProviderV2_0());
+
+        // inventory service
+        registerServiceHandler(OMSInventoryServiceHandler.class, new OMSInventoryServiceHandlerProviderV2_0());
     }
 
     @SuppressWarnings("unchecked")
@@ -103,6 +108,11 @@ public class ServiceHandlerFactory
     public static OMSReservationServiceHandler getReservationServiceHandler(String id)
     {
         return getServiceHandler(OMSReservationServiceHandler.class, id, defaultConfig::getReservationServiceById);
+    }
+
+    public static OMSInventoryServiceHandler getInventoryServiceHandler(String id)
+    {
+        return getServiceHandler(OMSInventoryServiceHandler.class, id, defaultConfig::getInventoryServiceById);
     }
 
     public static OMSReturnRequestServiceHandler getReturnRequestServiceHandler(String id)
