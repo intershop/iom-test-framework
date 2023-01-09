@@ -4,10 +4,19 @@ import java.util.List;
 
 import com.intershop.oms.rest.shared.ApiException;
 import com.intershop.oms.test.businessobject.OMSInventory;
+import com.intershop.oms.test.businessobject.OMSReservation;
 import com.intershop.oms.test.servicehandler.OMSServiceHandler;
 
 public interface OMSInventoryServiceHandler extends OMSServiceHandler
 {
+    /**
+     * creates a reservation
+     *
+     * @return the newly created reservation extended by the orderId
+     * @throws ApiException
+     */
+    OMSReservation createReservation(Long shopId, OMSReservation omsReservation) throws ApiException;
+
     /**
      * retrieve information about the availability of products
      *

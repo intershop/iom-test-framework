@@ -21,8 +21,6 @@ import com.intershop.oms.test.servicehandler.orderservice.v2_2.OMSOrderServiceHa
 import com.intershop.oms.test.servicehandler.orderstateservice.OMSOrderStateServiceHandler;
 import com.intershop.oms.test.servicehandler.orderstateservice.v1.OMSOrderStateServiceHandlerProviderV1;
 import com.intershop.oms.test.servicehandler.orderstateservice.v2_0.OMSOrderStateServiceHandlerProviderV2_0;
-import com.intershop.oms.test.servicehandler.reservationservice.OMSReservationServiceHandler;
-import com.intershop.oms.test.servicehandler.reservationservice.v2_0.OMSReservationServiceHandlerProviderV2_0;
 import com.intershop.oms.test.servicehandler.rmaservice.OMSReturnRequestServiceHandler;
 import com.intershop.oms.test.servicehandler.rmaservice.v2.OMSReturnRequestServiceHandlerProviderV2;
 import com.intershop.oms.test.servicehandler.rmaservice.v2_10.OMSReturnRequestServiceHandlerProviderV2_10;
@@ -74,9 +72,6 @@ public class ServiceHandlerFactory
         // transmission service
         registerServiceHandler(OMSTransmissionServiceHandler.class, new OMSTransmissionServiceHandlerProviderV2());
 
-        // reservation service
-        registerServiceHandler(OMSReservationServiceHandler.class, new OMSReservationServiceHandlerProviderV2_0());
-
         // inventory service
         registerServiceHandler(OMSInventoryServiceHandler.class, new OMSInventoryServiceHandlerProviderV2_0());
     }
@@ -103,11 +98,6 @@ public class ServiceHandlerFactory
     public static OMSOrderServiceHandler getOrderServiceHandler(String id)
     {
         return getServiceHandler(OMSOrderServiceHandler.class, id, defaultConfig::getOrderServiceById);
-    }
-
-    public static OMSReservationServiceHandler getReservationServiceHandler(String id)
-    {
-        return getServiceHandler(OMSReservationServiceHandler.class, id, defaultConfig::getReservationServiceById);
     }
 
     public static OMSInventoryServiceHandler getInventoryServiceHandler(String id)

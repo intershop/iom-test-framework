@@ -1,4 +1,4 @@
-package com.intershop.oms.test.servicehandler.reservationservice.v2_0.mapping;
+package com.intershop.oms.test.servicehandler.inventoryservice.v2_0.mapping;
 
 import org.mapstruct.BeanMapping;
 import org.mapstruct.InheritInverseConfiguration;

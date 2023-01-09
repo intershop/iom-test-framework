@@ -22,9 +22,6 @@ public interface Configuration {
     @WithName("order-state-service")
     Map<String, ServiceConfiguration> orderStateServiceConfigs();
 
-    @WithName("reservation-service")
-    Map<String, ServiceConfiguration> reservationServiceConfigs();
-
     @WithName("inventory-service")
     Map<String, ServiceConfiguration> inventoryServiceConfigs();
 
@@ -53,10 +50,6 @@ public interface Configuration {
 
     default ServiceConfiguration getOrderServiceById(String id) {
         return Optional.ofNullable(orderServiceConfigs().get(id)).orElseThrow(() -> new IllegalArgumentException("order service config with name " + id + " not found!"));
-    }
-
-    default ServiceConfiguration getReservationServiceById(String id) {
-        return Optional.ofNullable(reservationServiceConfigs().get(id)).orElseThrow(() -> new IllegalArgumentException("reservation service config with name " + id + " not found!"));
     }
 
     default ServiceConfiguration getInventoryServiceById(String id) {
