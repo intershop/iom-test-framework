@@ -59,6 +59,31 @@ paths:
           description: Unsupported Media Type
         "500":
           description: An unexpected error occured
+  /reservation/{reservationId}:
+    delete:
+      tags:
+      - Reservation
+      description: Remove a stock reservation.
+      operationId: deleteReservation
+      parameters:
+      - name: reservationId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 115
+      responses:
+        "204":
+          description: Stock reservation successfully removed
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: An unexpected error occured
 components:
   schemas:
     ReservationItem:

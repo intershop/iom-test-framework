@@ -13,6 +13,7 @@ import com.intershop.oms.rest.reservation.v2_0.api.ReservationApi;
 import com.intershop.oms.rest.reservation.v2_0.model.HttpResponseReservation;
 import com.intershop.oms.rest.reservation.v2_0.model.ReservationRequest;
 import com.intershop.oms.rest.shared.ApiException;
+import com.intershop.oms.rest.shared.ApiResponse;
 import com.intershop.oms.test.businessobject.OMSInventory;
 import com.intershop.oms.test.businessobject.OMSReservation;
 import com.intershop.oms.test.configuration.ServiceConfiguration;
@@ -52,6 +53,20 @@ class OMSInventoryServiceHandlerV2_0 extends RESTServiceHandler implements OMSIn
         }
         OMSReservation omsReservationResponse = ReservationMapper.INSTANCE.fromApiReservation(reservationResponse.getData());
         return omsReservationResponse;
+    }
+
+    @Override
+    public void deleteReservation(Long reservationId) throws ApiException
+    {
+        ApiResponse<Void> response = reservationApi.deleteReservationWithHttpInfo(reservationId);
+
+        if (response.getStatusCode() > 204)
+        {
+            StringBuilder out = new StringBuilder("Received unexpected response code " + response.getStatusCode() + " in:");
+            out.append("\n" + response);
+            log.error(out.toString());
+            throw new ApiException(out.toString());
+        }
     }
 
     @Override

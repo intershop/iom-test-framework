@@ -18,6 +18,14 @@ public interface OMSInventoryServiceHandler extends OMSServiceHandler
     OMSReservation createReservation(Long shopId, OMSReservation omsReservation) throws ApiException;
 
     /**
+     * release the reservation
+     *
+     * @param reservationId
+     * @throws ApiException
+     */
+    void deleteReservation(Long reservationId) throws ApiException;
+
+    /**
      * retrieve information about the availability of products
      *
      * @return information about the availability of the given products
