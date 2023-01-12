@@ -22,6 +22,7 @@ import com.intershop.oms.test.servicehandler.inventoryservice.OMSInventoryServic
 import com.intershop.oms.test.servicehandler.inventoryservice.v2_0.mapping.InventoryMapper;
 import com.intershop.oms.test.servicehandler.inventoryservice.v2_0.mapping.ReservationMapper;
 import com.intershop.oms.test.servicehandler.omsdb.OMSDbHandler;
+import com.intershop.oms.test.util.CommaSeparatedList;
 
 class OMSInventoryServiceHandlerV2_0 extends RESTServiceHandler implements OMSInventoryServiceHandler
 {
@@ -100,7 +101,7 @@ class OMSInventoryServiceHandlerV2_0 extends RESTServiceHandler implements OMSIn
     }
 
     @Override
-    public List<OMSInventory> getInventories(Long shopId, List<String> productIds, Long reservationId) throws ApiException
+    public List<OMSInventory> getInventories(Long shopId, CommaSeparatedList<String> productIds, Long reservationId) throws ApiException
     {
         HttpResponseListAtp inventoryResponse  = inventoryApi.getAvailableQuantity(shopId, productIds, reservationId);
 

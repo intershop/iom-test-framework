@@ -6,6 +6,7 @@ import com.intershop.oms.rest.shared.ApiException;
 import com.intershop.oms.test.businessobject.OMSInventory;
 import com.intershop.oms.test.businessobject.OMSReservation;
 import com.intershop.oms.test.servicehandler.OMSServiceHandler;
+import com.intershop.oms.test.util.CommaSeparatedList;
 
 public interface OMSInventoryServiceHandler extends OMSServiceHandler
 {
@@ -51,7 +52,7 @@ public interface OMSInventoryServiceHandler extends OMSServiceHandler
      * @return information about the availability of the given products
      * @throws ApiException
      */
-    default List<OMSInventory> getInventories(Long shopId, List<String> productIds) throws ApiException
+    default List<OMSInventory> getInventories(Long shopId, CommaSeparatedList<String> productIds) throws ApiException
     {
         return getInventories(shopId, productIds, null);
     }
@@ -60,12 +61,11 @@ public interface OMSInventoryServiceHandler extends OMSServiceHandler
      * retrieve information about the availability of products
      *
      * @param shopId
-     * @param productIds - for the given shop
+     * @param productIds - for the given shop - must use CommaSeparatedList for correct parameter handling
      * @param reservationId - optional
      *
      * @return information about the availability of the given products
      * @throws ApiException
      */
-    List<OMSInventory> getInventories(Long shopId, List<String> productIds, Long reservationId) throws ApiException;
-
+    List<OMSInventory> getInventories(Long shopId, CommaSeparatedList<String> productIds, Long reservationId) throws ApiException;
 }
