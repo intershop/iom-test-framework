@@ -25,7 +25,13 @@ paths:
     post:
       tags:
       - Reservation
-      description: Create a reservation for a specific lifetime and different quantities of products.
+      description: Create a stock reservation.<p>
+      
+        This service creates stock reservations for a given OMS shop instance. A stock reservation is a list of reserved products with the appropriate amount. Each stock reservation has a validity which can be set by the field lifetime at the request payload.<p>
+
+        The response provides a status code 201 on success with the reserved products, the state of the reservation and a unique reservation reference ID.<p>
+
+        This service only supports and accepts requests with content-type application/json.
       operationId: createReservation
       parameters:
       - name: shopId
@@ -60,10 +66,80 @@ paths:
         "500":
           description: An unexpected error occured
   /reservation/{reservationId}:
+    get:
+      tags:
+      - Reservation
+      description: Used to get a stock reservation. Usually called to check the validity of a stock reservation.
+      operationId: getReservation
+      parameters:
+      - name: reservationId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 115
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpResponseReservation'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: An unexpected error occured
+    put:
+      tags:
+      - Reservation
+      description: Update a stock reservation.<p> 
+        This PUT method updates an existing stock reservation. Unlike the POST method to create a new reservation, this method updates specific information of an existing stock reservation. You can update the validity of a reservation. You can remove already reserved products from a reservation or add other products (reservation items). Furthermore, the reserved quantity of an already reserved product can be changed.<p>
+
+        If the reservation is already expired  each product reservations will be removed and the OMS perform the creation of new reservation items like the POST method it does. At the response appears an exception with code 21004 and message " The reservation with id <resvId> has already expired".<p>
+
+        This service only supports and accepts requests with content-type application/json.
+      operationId: updateReservation
+      parameters:
+      - name: reservationId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 115
+      requestBody:
+        content:
+          application/vnd.intershop.reservation.v2+json:
+            schema:
+              $ref: '#/components/schemas/ReservationRequest'
+        required: true
+      responses:
+        "201":
+          description: Created
+            Stock reservation updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HttpResponseReservation'
+        "400":
+          description: Bad Request
+            There is no reservation in the OMS system for parameter resvId or in the case of a semantic or syntactic error.
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: An unexpected error occured
     delete:
       tags:
       - Reservation
-      description: Remove a stock reservation.
+      description: Remove a stock reservation.<p>
+        Used by shop systems to delete an existing stock reservation from the IOM system. 
       operationId: deleteReservation
       parameters:
       - name: reservationId

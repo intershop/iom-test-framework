@@ -51,8 +51,38 @@ class OMSInventoryServiceHandlerV2_0 extends RESTServiceHandler implements OMSIn
             log.error(out.toString());
             throw new ApiException(out.toString());
         }
-        OMSReservation omsReservationResponse = ReservationMapper.INSTANCE.fromApiReservation(reservationResponse.getData());
-        return omsReservationResponse;
+         return ReservationMapper.INSTANCE.fromApiReservation(reservationResponse.getData());
+    }
+
+    @Override
+    public OMSReservation updateReservation(OMSReservation omsReservation) throws ApiException
+    {
+        ReservationRequest reservation = ReservationMapper.INSTANCE.toApiReservation(omsReservation);
+        HttpResponseReservation reservationResponse = reservationApi.updateReservation(omsReservation.getResvId(), reservation);
+
+        if (reservationResponse.getStatusCode() > 201)
+        {
+            StringBuilder out = new StringBuilder("Received unexpected response code " + reservationResponse.getStatusCode() + " in:");
+            out.append("\n" + reservationResponse);
+            log.error(out.toString());
+            throw new ApiException(out.toString());
+        }
+         return ReservationMapper.INSTANCE.fromApiReservation(reservationResponse.getData());
+    }
+
+    @Override
+    public OMSReservation getReservation(Long reservationId) throws ApiException
+    {
+        HttpResponseReservation reservationResponse = reservationApi.getReservation(reservationId);
+
+        if (reservationResponse.getStatusCode() > 200)
+        {
+            StringBuilder out = new StringBuilder("Received unexpected response code " + reservationResponse.getStatusCode() + " in:");
+            out.append("\n" + reservationResponse);
+            log.error(out.toString());
+            throw new ApiException(out.toString());
+        }
+        return ReservationMapper.INSTANCE.fromApiReservation(reservationResponse.getData());
     }
 
     @Override
