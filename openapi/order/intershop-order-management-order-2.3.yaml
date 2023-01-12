@@ -1,0 +1,2132 @@
+openapi: 3.0.1
+info:
+  title: IOM Order API
+  description: "The IOM Order API allows to create orders, view orders, create change\
+    \ requests and view change requests for an order. \nFurthermore, it is possible\
+    \ to search for order states. \n \n  CHANGELOG \n ---------- \n Version 2.3 \n\
+    * Added optional search filter `emails` to retrieve `order-states`. \n ----------\
+    \ \n Version 2.2 \n* Added operation `getOrder`. \n * Added operations `createChangeRequest`,\
+    \ `getChangeRequest` and `getChangeRequestViewList`. \n * Added undocumented constraints\
+    \ to `Price`, `ListPrice`, `UnitPrice`. `net` must not be greater than `gross`,\
+    \ `amountDiscounted` must not be greater than `amount`. \n* Added undocumented\
+    \ constraint to `OrderPosition`. Optional `number` must not be negative. \n* Added\
+    \ undocumented attributes to `OrderPositionReturned`. Added `OrderPositionReturnedQuantities`\
+    \ and `OrderPositionReturnedUnits`. \n ---------- \n Version 2.1 \n* Extened `Tax`.\
+    \ An unknown `type` can be submitted when adding `rate` and `location`. \n* Added\
+    \ undocumented constraint to `Tax`. `type` has max length of 512 characters. \n\
+    * Added undocumented constraint. In a list of `Tax` (taxes) each type is allowed\
+    \ once only. \n* Exceeded length of attributes in `Promotion`. `id` has max length\
+    \ of 512 `characters`. `name`, `descriptorId`, `code` and `budgetSourceId` have\
+    \ max length of characters. \n \n "
+  contact:
+    name: Intershop Communications AG
+    url: http://intershop.com
+  version: "2.2"
+servers:
+- url: "{protocol}://{domain}:{port}/rest/order-service"
+  variables:
+    protocol:
+      default: http
+      enum:
+      - http
+      - https
+    domain:
+      default: localhost
+    port:
+      default: "8080"
+security:
+- basicAuth: []
+- bearerAuth: []
+paths:
+  /shops/{shopId}/orders/{shopOrderNumber}/change-requests:
+    get:
+      tags:
+      - Order
+      summary: View all change request of an order
+      description: This operation returns all change requests for an order.
+      operationId: getChangeRequestViewList
+      parameters:
+      - name: shopId
+        in: path
+        description: The ID of the shop
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 1000
+      - name: shopOrderNumber
+        in: path
+        description: The order number as used by the shop
+        required: true
+        schema:
+          type: string
+        example: ORDNB-000001
+      - name: excludes
+        in: query
+        description: Excludes attributes from the return
+        schema:
+          type: array
+          items:
+            type: string
+        example: changeRequest
+      responses:
+        "200":
+          description: OK
+          content:
+            application/vnd.intershop.order.v2+json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChangeRequestView'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorReport'
+        "401":
+          description: Authentication information is missing or invalid
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "415":
+          description: Unsupported Media Type
+        "500":
+          description: An unexpected error occured
+    post:
+      tags:
+      - Order
+      summary: Create change request for an order
+      description: This operation creates a change request for an order and starts
+        processing.
+      operationId: createChangeRequest
+      parameters:
+      - name: shopId
+        in: path
+        description: The ID of the shop
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 1000
+      - name: shopOrderNumber
+        in: path
+        description: The order number as used by the shop
+        required: true
+        schema:
+          type: string
+        example: ORDNB-000001
+      requestBody:
+        content:
+          application/vnd.intershop.order.v2+json:
+            schema:
+              $ref: '#/components/schemas/ChangeRequestCreate'
+        required: true
+      responses:
+        "201":
+          description: Created
+          headers:
+            Location:
+              description: The path to the newly created resource
+              style: simple
+              schema:
+                type: string
+                format: url
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorReport'
+        "401":
+          description: Authentication information is missing or invalid
+        "403":
+          description: Forbidden
+        "415":
+          description: Unsupported Media Type
+        "500":
+          description: An unexpected error occured
+  /shops/{shopId}/orders:
+    post:
+      tags:
+      - Order
+      summary: Create an order
+      description: This operation creates an order and starts order processing.
+      operationId: createOrder
+      parameters:
+      - name: shopId
+        in: path
+        description: The ID of the shop
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 1000
+      requestBody:
+        content:
+          application/vnd.intershop.order.v2+json:
+            schema:
+              $ref: '#/components/schemas/Order'
+        required: true
+      responses:
+        "201":
+          description: Created
+          headers:
+            Location:
+              description: The path to the newly created resource
+              style: simple
+              schema:
+                type: string
+                format: url
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorReport'
+        "401":
+          description: Authentication information is missing or invalid
+        "403":
+          description: Forbidden
+        "415":
+          description: Unsupported Media Type
+        "500":
+          description: An unexpected error occured
+  /shops/{shopId}/orders/{shopOrderNumber}/change-requests/{changeRequestId}:
+    get:
+      tags:
+      - Order
+      summary: View a change request of an order
+      description: This operation returns a change requests for an order.
+      operationId: getChangeRequest
+      parameters:
+      - name: shopId
+        in: path
+        description: The ID of the shop
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 1000
+      - name: shopOrderNumber
+        in: path
+        description: The order number as used by the shop
+        required: true
+        schema:
+          type: string
+        example: ORDNB-000001
+      - name: changeRequestId
+        in: path
+        description: The ID of a change request
+        required: true
+        schema:
+          type: string
+        example: 1573
+      - name: excludes
+        in: query
+        description: Excludes attributes from the return
+        schema:
+          type: array
+          items:
+            type: string
+        example: changeRequest
+      responses:
+        "200":
+          description: OK
+          content:
+            application/vnd.intershop.order.v2+json:
+              schema:
+                $ref: '#/components/schemas/ChangeRequestView'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorReport'
+        "401":
+          description: Authentication information is missing or invalid
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "415":
+          description: Unsupported Media Type
+        "500":
+          description: An unexpected error occured
+  /shops/{shopId}/orders/{shopOrderNumber}:
+    get:
+      tags:
+      - Order
+      summary: Returns an order
+      description: This operations returns details for an order based on the order
+        number.
+      operationId: getOrder
+      parameters:
+      - name: shopId
+        in: path
+        description: The ID of the shop
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 1000
+      - name: shopOrderNumber
+        in: path
+        description: The order number as used by the shop
+        required: true
+        schema:
+          type: string
+        example: ORDNB-000001
+      responses:
+        "200":
+          description: OK
+          content:
+            application/vnd.intershop.order.v2+json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorReport'
+        "401":
+          description: Authentication information is missing or invalid
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "415":
+          description: Unsupported Media Type
+        "500":
+          description: An unexpected error occured
+  /shops/{shopId}/order-states:
+    get:
+      tags:
+      - Order State
+      summary: Returns order states by search criteria
+      description: This operation returns the order states of orders that match the
+        given search criterias.
+      operationId: getOrderStatesBySortCriterias
+      parameters:
+      - name: shopId
+        in: path
+        description: The ID of the shop
+        required: true
+        schema:
+          type: integer
+          format: int64
+        example: 1000
+      - name: shopOrderNumbers
+        in: query
+        description: Order numbers as used by the shop
+        schema:
+          type: array
+          items:
+            type: string
+        example:
+        - 2019-17891
+        - 2019-21432
+      - name: shopCustomerNumbers
+        in: query
+        description: Customer numbers as used by the shop
+        schema:
+          type: array
+          items:
+            type: string
+        example:
+        - CUST-930293
+        - "283102"
+      - name: productNumbers
+        in: query
+        description: Product numbers as used by the shop
+        schema:
+          type: array
+          items:
+            type: string
+        example: "[\"100120\", \"200230]\""
+      - name: statuses
+        in: query
+        description: Order statuses as used by the shop
+        schema:
+          type: array
+          items:
+            type: string
+        example: "[\"STATE_COMMISSIONED\", \"STATE_DISPATCHED]\""
+      - name: emails
+        in: query
+        description: Emails defined in the order address(es)
+        schema:
+          type: array
+          items:
+            type: string
+        example: "[\"buyer@mycompany.com\", \"purchase@mycompany.com]\""
+      - name: "shopOrderCreationDate[gte]"
+        in: query
+        description: The earliest date the shop created an order
+        schema:
+          type: string
+          format: date
+        example: 2019-01-31
+      - name: "shopOrderCreationDate[lte]"
+        in: query
+        description: The latest date the shop created an order
+        schema:
+          type: string
+          format: date
+        example: 2019-10-31
+      - name: orderBy
+        in: query
+        description: "The attribute on which should be sorted. If unset, `shopOrderCreationDate`\
+          \ is used."
+        schema:
+          type: string
+          description: |-
+            The attribute on which should be sorted.
+            'shopOrderNumber' - Sort by the order number as used by the shop
+            'shopCustomerNumber' - Sort by the customer number as used by the shop
+            'shopOrderCreationDate' - Sort by the order creation date of the shop
+          example: shopOrderCreationDate
+          default: shopOrderCreationDate
+          enum:
+          - shopOrderNumber
+          - shopCustomerNumber
+          - shopOrderCreationDate
+        example: shopOrderCreationDate
+      - name: sortDirection
+        in: query
+        description: "The sort direction the attribute should be sorted with. If unset,\
+          \ `ASC` is used."
+        schema:
+          type: string
+          description: |-
+            The sort direction the attribute should be sorted with.
+            'ASC' - Sort by the attribute ascending.
+            'DESC' - Sort by the attribute descending.
+          example: ASC
+          default: ASC
+          enum:
+          - ASC
+          - DESC
+        example: ASC
+      - name: offset
+        in: query
+        description: The starting row (index) of the first element to return
+        schema:
+          minimum: 0
+          type: integer
+          format: int32
+          default: 0
+        example: 50
+      - name: limit
+        in: query
+        description: The number of items to return
+        schema:
+          minimum: 1
+          type: integer
+          format: int32
+          default: 50
+        example: 25
+      responses:
+        "200":
+          description: OK
+          content:
+            application/vnd.intershop.order.v2+json:
+              schema:
+                $ref: '#/components/schemas/OrderStateCollectionContainer'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorReport'
+        "401":
+          description: Authentication information is missing or invalid
+        "403":
+          description: Forbidden
+        "406":
+          description: Not Acceptable
+        "500":
+          description: An unexpected error occured
+components:
+  schemas:
+    Error:
+      required:
+      - code
+      - message
+      type: object
+      properties:
+        code:
+          type: string
+          description: The code of the error
+          example: VALIDATION_EXCEPTION
+        message:
+          type: string
+          description: The message of the error
+          example: Attribute XYZ is mandatory
+        value:
+          type: object
+          description: The value which caused the error
+    ErrorReport:
+      type: object
+      properties:
+        status:
+          type: integer
+          description: "The HTTP-status code applicable to this problem, expressed\
+            \ as a string value"
+          format: int32
+          example: 400
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+      description: Detailed information about errors.
+    AddressInvoice:
+      required:
+      - location
+      - receiver
+      type: object
+      properties:
+        location:
+          $ref: '#/components/schemas/AddressLocation'
+        contact:
+          $ref: '#/components/schemas/Contact'
+        receiver:
+          $ref: '#/components/schemas/AddressReceiver'
+      description: Details about the invoice address
+    AddressLocation:
+      required:
+      - city
+      - countryCode
+      - postCode
+      - type
+      type: object
+      properties:
+        city:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: The city of the address
+          example: Jena
+        postCode:
+          maxLength: 25
+          minLength: 1
+          type: string
+          description: The postcode of the address
+          example: "07740"
+        district:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The district of the address
+        countryCode:
+          type: string
+          description: The country code of the address (ISO-3166 alpha-3)
+          example: DEU
+        additions:
+          maxItems: 3
+          minItems: 0
+          type: array
+          description: Additions to the address. `Note that at max 2 additions are
+            allowed for packstation addresses.`
+          items:
+            type: string
+            description: Additions to the address. `Note that at max 2 additions are
+              allowed for packstation addresses.`
+        type:
+          type: string
+      description: "The location of the address. For type set  one of `AddressLocationStreet`,\
+        \ `AddressLocationPOBox` or `AddressLocationPackstation`. The latter is not\
+        \ allowed for invoicing addresses."
+      discriminator:
+        propertyName: type
+    AddressLocationPOBox:
+      required:
+      - city
+      - countryCode
+      - postBox
+      - postCode
+      type: object
+      description: The location is a POBox.
+      allOf:
+      - $ref: '#/components/schemas/AddressLocation'
+      - type: object
+        properties:
+          postBox:
+            maxLength: 25
+            minLength: 1
+            type: string
+            description: The number of a post office box (commonly referred as a POBox
+              or a postal box)
+            example: "142"
+    AddressLocationPackstation:
+      required:
+      - city
+      - countryCode
+      - postCode
+      - stationNumber
+      - userId
+      type: object
+      description: The location is a packstation.
+      allOf:
+      - $ref: '#/components/schemas/AddressLocation'
+      - type: object
+        properties:
+          userId:
+            maxLength: 100
+            minLength: 1
+            type: string
+            description: The user id at `packstation` provider
+          stationNumber:
+            maxLength: 100
+            minLength: 1
+            type: string
+            description: The number of the packstation
+    AddressLocationStreet:
+      required:
+      - city
+      - countryCode
+      - postCode
+      - street
+      type: object
+      description: The location is a street.
+      allOf:
+      - $ref: '#/components/schemas/AddressLocation'
+      - type: object
+        properties:
+          street:
+            maxLength: 100
+            minLength: 0
+            type: string
+            description: The name of the street
+            example: Intershop Tower
+          streetNumber:
+            maxLength: 20
+            minLength: 0
+            type: string
+            description: The number of the street
+            example: 1A
+    AddressReceiver:
+      required:
+      - addressReceiverType
+      type: object
+      properties:
+        addressReceiverType:
+          type: string
+          description: Type of the receiver.<br><br>`PERSON` - The receiver is a person.
+            `person` is required.<br>`COMPANY` - The receiver is a company. `companyName`
+            is required.
+          example: COMPANY
+          enum:
+          - PERSON
+          - COMPANY
+        person:
+          $ref: '#/components/schemas/Person'
+        companyName:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: Name of the company (required if COMPANY)
+          example: Intershop Communications AG
+      description: "The receiver of the address, which can be a person or a company.\
+        \ At least one of it must be given."
+    AddressShipping:
+      required:
+      - location
+      - receiver
+      type: object
+      properties:
+        location:
+          $ref: '#/components/schemas/AddressLocation'
+        contact:
+          $ref: '#/components/schemas/Contact'
+        receiver:
+          $ref: '#/components/schemas/AddressReceiver'
+      description: Details about the shipping address
+    ChangeRequestCreate:
+      required:
+      - changeRequest
+      - changeRequestId
+      type: object
+      properties:
+        changeRequest:
+          $ref: '#/components/schemas/Order'
+        changeRequestId:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The identifier of the change request
+          example: 2510-19
+      description: Describes a change request to create
+    Charge:
+      required:
+      - gross
+      - net
+      - taxes
+      - type
+      type: object
+      properties:
+        number:
+          type: integer
+          description: "The number of the charge. If set, it has to be unique within\
+            \ the order."
+          format: int64
+          example: 10
+        type:
+          type: string
+          description: The type of the charge
+          example: DELIVERYCHARGE
+        net:
+          $ref: '#/components/schemas/Price'
+        gross:
+          $ref: '#/components/schemas/Price'
+        taxes:
+          maxItems: 2147483647
+          minItems: 1
+          type: array
+          description: Taxes of the charge. `Note that each type of tax is allowed
+            once only.` When returned taxes are sorted by type in ascending order.
+          items:
+            $ref: '#/components/schemas/Tax'
+        promotions:
+          type: array
+          description: Promotions for the charge. When returned promotions are sorted
+            by id in ascending order.
+          items:
+            $ref: '#/components/schemas/Promotion'
+      description: A charge. `Note that gross must be greater than or equal to net.`
+    CompanyData:
+      required:
+      - companyName
+      type: object
+      properties:
+        companyName:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Name of the company
+          example: Intershop Communications AG
+        department:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: Order by department
+          example: Engineering
+        lineOfBusiness:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: Line of business
+          example: E-Commerce
+        costCenterNumber:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: Cost center number
+          example: CC-1207
+        commercialRegisterNumber:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: Commercial register number
+          example: HRB 209419
+        commercialRegisterLocation:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: Location of Commercial register
+          example: Amtsgericht Jena
+        companyType:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: Corporate type
+          example: Joint-stock company
+        vatNumber:
+          maxLength: 25
+          minLength: 0
+          type: string
+      description: Detailed company data.
+    Contact:
+      required:
+      - email
+      type: object
+      properties:
+        email:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: An e-mail address
+          format: email
+          example: peter.sampleman@intershop.de
+        phone:
+          maxLength: 25
+          minLength: 0
+          type: string
+          description: A phone number
+          example: +49 (3641) 123456
+        mobile:
+          maxLength: 25
+          minLength: 0
+          type: string
+          description: A mobile phone number
+          example: +49 (165) 5673123
+        fax:
+          maxLength: 25
+          minLength: 0
+          type: string
+          description: A fax number
+          example: +49 (3641) 50-1344
+      description: Contact information
+    CustomerData:
+      required:
+      - customerDataType
+      type: object
+      properties:
+        customerDataType:
+          type: string
+          description: Type of the customer.<br><br>`PERSON` - The customer is a person.<br>`COMPANY`
+            - The customer is a company. `companyData` is required.
+          example: COMPANY
+          enum:
+          - PERSON
+          - COMPANY
+        orderNumber:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: Order number as used by the shop customer
+          example: BST-8911.2
+        shopCustomerNumber:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: Customer number as used by the shop
+          example: CUST-7028A
+        companyData:
+          $ref: '#/components/schemas/CompanyData'
+      description: Details of the customer of the order.
+    DeliveryDate:
+      required:
+      - deliveryDateType
+      type: object
+      properties:
+        deliveryDateType:
+          type: string
+          description: Type of the desired delivery date.<br><br>`STANDARD` - The
+            standard as configured by the shop.<br>`EXPRESS` - An express method of
+            the shop. `name` is required.<br>`EARLIEST` - Delivery not before this
+            date. `desiredDeliveryDate` is required.<br>`FIXED` - Delivery at that
+            day. `desiredDeliveryDate` is required.
+          example: STANDARD
+          enum:
+          - STANDARD
+          - EXPRESS
+          - EARLIEST
+          - FIXED
+        name:
+          type: string
+          description: "The name of the delivery type for express delivery (required\
+            \ if EXPRESS, otherwise ignored)"
+          example: Go-Express
+        desiredDeliveryDate:
+          type: string
+          description: "The desired date in relation to the type (required if EARLIEST\
+            \ or FIXED, otherwise ignored)"
+          format: date-time
+      description: "The type of expected delivery, which can be standard, express,\
+        \ earliest or a desired date."
+    ListPrice:
+      required:
+      - amount
+      type: object
+      properties:
+        amount:
+          type: number
+          description: The amount of the price
+          example: 100.0
+        amountDiscounted:
+          type: number
+          description: The discounted price. `If given it must not be greater than
+            the amount`.
+          example: 90.0
+        listPrice:
+          type: number
+          description: The list price/ recommended retail price
+      description: A list price
+    Order:
+      required:
+      - customerData
+      - invoiceAddress
+      - payment
+      - sales
+      - shippingBuckets
+      - shopOrderCreationDate
+      - shopOrderNumber
+      type: object
+      properties:
+        shopOrderNumber:
+          maxLength: 50
+          minLength: 1
+          type: string
+          description: "Order number as used by the shop (required for order creation).\
+            \ `If change request, it must be equal to the origin order.`"
+          example: 2019-089013
+        shopOrderCreationDate:
+          type: string
+          description: Creation date at the shop (ISO-8601)
+          format: date-time
+          example: 2019-09-14T16:22:32.123+02:00
+        shopOrderUpdateDate:
+          type: string
+          description: "Update date at the shop (ISO-8601). `Required if order change\
+            \ request, otherwise ignored.`"
+          format: date-time
+          example: 2019-09-14T16:22:32.123+02:00
+        reservationId:
+          type: integer
+          description: ID of the stock reservation that was provided by the IOM reservation
+            service
+          format: int64
+          example: 907041
+        costCenter:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name/ identifier of the related cost center
+          example: 2510-19
+        project:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name / identifier of the related project
+          example: PR-911 CR7
+        customerData:
+          $ref: '#/components/schemas/CustomerData'
+        invoiceAddress:
+          $ref: '#/components/schemas/AddressInvoice'
+        sales:
+          $ref: '#/components/schemas/Sales'
+        payment:
+          $ref: '#/components/schemas/Payment'
+        optimizationRule:
+          type: string
+          description: "The rule to optimize the order. If not set, the default rule\
+            \ of the shop will be used."
+        splitShipmentAllowed:
+          type: boolean
+          description: Specifies whether the order is allowed to be splitted for the
+            shipment
+        additionalAttributes:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              type: string
+              description: Additional attributes of the order that can be grouped
+                by a name
+            description: Additional attributes of the order that can be grouped by
+              a name
+          description: Additional attributes of the order that can be grouped by a
+            name
+        shippingBuckets:
+          type: array
+          description: The shipping buckets of the order. When returned shipping buckets
+            are sorted by number in ascending order.
+          items:
+            $ref: '#/components/schemas/ShippingBucket'
+      description: An order
+    OrderPosition:
+      required:
+      - product
+      - quantity
+      - shipping
+      - sum
+      type: object
+      properties:
+        number:
+          minimum: 0
+          type: integer
+          description: "The number of the order position. If set, it has to be unique\
+            \ within the order."
+          format: int32
+          example: 3
+        productUnit:
+          type: string
+          description: Unit of the ordered quantity. Note that the unit is only used
+            for invoice printing.
+          example: liter
+        product:
+          $ref: '#/components/schemas/Product'
+        costCenter:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name or identifier of the related cost center
+          example: 2510-19
+        project:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name or identifier of the related project
+          example: PR-911 CR7
+        additionalAttributes:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              type: string
+              description: Additional attributes of the position that can be grouped
+                by a name
+            description: Additional attributes of the position that can be grouped
+              by a name
+          description: Additional attributes of the position that can be grouped by
+            a name
+        quantity:
+          minimum: 1
+          type: integer
+          description: The ordered quantity
+          format: int32
+          example: 5
+        sum:
+          $ref: '#/components/schemas/SumPrice'
+        unitPrice:
+          $ref: '#/components/schemas/UnitPrice'
+        shipping:
+          $ref: '#/components/schemas/Shipping'
+      description: An order position of the shipping bucket
+    Payment:
+      required:
+      - paymentMethod
+      type: object
+      properties:
+        paymentMethod:
+          type: string
+          description: The payment method of the order
+          example: PAYPAL
+        paymentProviderOrderNo:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: Order number as used by the payment service provider
+          example: PSP-ORD-0000123
+        paymentProviderRefNo:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: Order reference as used by the payment service provider
+          example: PSP-RN-0000123
+        paymentProviderMerchantAccount:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: Merchant account used for the payment transaction
+          example: BANKX-PSP-ABC
+      description: Payment information at order creation
+    Person:
+      required:
+      - lastName
+      type: object
+      properties:
+        salutation:
+          maxLength: 25
+          minLength: 0
+          type: string
+          description: Salutation
+          example: Mr.
+        title:
+          maxLength: 25
+          minLength: 0
+          type: string
+          description: Title
+          example: C.P.A.
+        firstName:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: First name
+          example: John
+        lastName:
+          maxLength: 50
+          minLength: 1
+          type: string
+          description: Last name
+          example: Doe
+      description: Name of a person
+    Price:
+      required:
+      - amount
+      type: object
+      properties:
+        amount:
+          type: number
+          description: The amount of the price
+          example: 100.0
+        amountDiscounted:
+          type: number
+          description: The discounted price. `If given it must not be greater than
+            the amount`.
+          example: 90.0
+      description: A price
+    Product:
+      required:
+      - name
+      - number
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the product
+          example: A Philosophy of Software Design
+        number:
+          type: string
+          description: "The product number or ID, e.g. the stock keeping unit (SKU)"
+          example: BLK-MED-G123-GUC
+        isbn:
+          type: string
+          description: The International Standard Book Number (ISBN)
+          example: 978-1732102200
+        ean:
+          type: integer
+          description: The International Article number (EAN)
+          format: int64
+          example: 47119910
+      description: A product
+    Promotion:
+      required:
+      - descriptorId
+      - grossValue
+      - id
+      - name
+      - netValue
+      - promotionValue
+      - promotionValueType
+      type: object
+      properties:
+        promotionValueType:
+          type: string
+          description: Type of the promotion value.<br><br>`PERCENTAGE` - The promotion
+            value is a percentage. <br>`FIXED` - The promotion value is a fixed amount.
+          example: FIXED
+          enum:
+          - PERCENTAGE
+          - FIXED
+        promotionValue:
+          minimum: 0.0
+          exclusiveMinimum: false
+          type: number
+          description: "The value of the promotion, which can be a percentage or a\
+            \ fixed amount"
+          example: 10.0
+        id:
+          maxLength: 512
+          minLength: 0
+          type: string
+          description: Identifier of the promotion
+          example: Promo-2020-12-123
+        name:
+          maxLength: 1024
+          minLength: 0
+          type: string
+          description: Name of the promotion
+          example: Silvester 2020 - extra
+        descriptorId:
+          maxLength: 1024
+          minLength: 0
+          type: string
+          description: Descriptor of the promotion
+          example: SILVESTER
+        code:
+          maxLength: 1024
+          minLength: 0
+          type: string
+          description: Code of the promotion
+          example: SILVESTER2020
+        budgetSourceId:
+          maxLength: 1024
+          minLength: 0
+          type: string
+          description: Budget source of the promotion
+          example: Marketing 2020-12
+        netValue:
+          type: number
+          description: The net amount given with the promotion. `Note that grossValue
+            must be greater than or equal to netValue.`
+          example: 10.0
+        grossValue:
+          type: number
+          description: The gross amount given with the promotion. `Note that grossValue
+            must be greater than or equal to netValue.`
+          example: 12.0
+      description: A promotion.
+    Sales:
+      required:
+      - currencyCode
+      - subTotal
+      - total
+      type: object
+      properties:
+        currencyCode:
+          type: string
+          description: The currency of the sales prices (ISO 4217)
+          example: EUR
+        subTotal:
+          $ref: '#/components/schemas/SumPrice'
+        total:
+          $ref: '#/components/schemas/TotalPrice'
+        charges:
+          type: array
+          description: Charges on order level. When returned charges are sorted by
+            number in ascending order.
+          items:
+            $ref: '#/components/schemas/Charge'
+      description: Sales prices of the order
+    Shipping:
+      required:
+      - deliveryDate
+      - expectedDeliveryDays
+      type: object
+      properties:
+        freightClass:
+          type: string
+          description: The shipping freight class
+        deliveryOptions:
+          type: array
+          description: The selected delivery options
+          example: DELIVERY_ON_ISLAND
+          items:
+            type: string
+            description: The selected delivery options
+            example: DELIVERY_ON_ISLAND
+        deliveryDate:
+          $ref: '#/components/schemas/DeliveryDate'
+        expectedDeliveryDays:
+          minimum: -1
+          type: integer
+          description: Expected delivery in days
+          format: int32
+          example: 3
+        selectedSupplier:
+          type: string
+          description: The `preferred` supplier for the delivery of the position.
+            `Note that the delivering supplier can be another one.`
+          example: Warehouse Hamburg
+      description: Shipping information
+    ShippingBucket:
+      required:
+      - positions
+      - shippingAddress
+      type: object
+      properties:
+        number:
+          type: string
+          description: "The number of the shipping bucket (blank values will be ignored).\
+            \ If set, it has to be unique within the order."
+          example: "1"
+        shippingAddress:
+          $ref: '#/components/schemas/AddressShipping'
+        shippingMethod:
+          type: string
+          description: The desired shipping method
+          example: DHL
+        charges:
+          type: array
+          description: "Charges of the shipping bucket, e.g. a shipping charge. When\
+            \ returned charges are sorted by number in ascending order."
+          items:
+            $ref: '#/components/schemas/Charge'
+        additionalAttributes:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              type: string
+              description: Additional attributes of the shipping bucket that can be
+                grouped by a name
+            description: Additional attributes of the shipping bucket that can be
+              grouped by a name
+          description: Additional attributes of the shipping bucket that can be grouped
+            by a name
+        positions:
+          type: array
+          description: Positions of the shipping bucket. When returned positions are
+            sorted by number in ascending order.
+          items:
+            $ref: '#/components/schemas/OrderPosition'
+      description: A shipping bucket of an order
+    SumPrice:
+      required:
+      - taxes
+      type: object
+      properties:
+        net:
+          $ref: '#/components/schemas/Price'
+        gross:
+          $ref: '#/components/schemas/Price'
+        taxes:
+          maxItems: 2147483647
+          minItems: 1
+          type: array
+          description: Taxes related to the prices. `Note that each type of tax is
+            allowed once only.` When returned taxes are sorted by the type in ascending
+            order.
+          items:
+            $ref: '#/components/schemas/Tax'
+        promotions:
+          type: array
+          description: Promotions related to the prices. When returned promotions
+            are sorted by id in ascending order.
+          items:
+            $ref: '#/components/schemas/Promotion'
+      description: "Sum of prices including taxes and promotions. `Note that at least\
+        \ net or gross price must be given. If both given, gross must be greater than\
+        \ or equal to net.`"
+    Tax:
+      required:
+      - amount
+      - type
+      type: object
+      properties:
+        type:
+          maxLength: 512
+          minLength: 0
+          type: string
+          description: The type of tax
+          example: SolidarityTax
+        amount:
+          type: number
+          description: Amount of the tax
+          example: 1.7
+        rate:
+          type: number
+          description: Rate of the tax type in percentages. E.g. 5.3 for 5.3 %<BR>
+            `Required` if the tax type is unknown yet for order time.<BR> Max precision
+            is 5 decimals.
+          example: 5.3
+        location:
+          maxLength: 512
+          minLength: 0
+          type: string
+          description: Location of the tax.<BR> Recommended to use ISO-3166 alpha-3
+            in case of countries.<BR> Will be set to the country of the shop if not
+            provided.
+          example: DEU
+      description: 'A tax including type and amount and optionally a rate and location.
+        `Note that rate must be given if tax type is unknown yet for order time.` '
+    TotalPrice:
+      required:
+      - taxes
+      type: object
+      properties:
+        net:
+          $ref: '#/components/schemas/Price'
+        gross:
+          $ref: '#/components/schemas/Price'
+        taxes:
+          maxItems: 2147483647
+          minItems: 1
+          type: array
+          description: Taxes related to the prices. `Note that each type of tax is
+            allowed once only.` When returned taxes are sorted by type in ascending
+            order.
+          items:
+            $ref: '#/components/schemas/Tax'
+      description: "Total price including taxes. `Note that at least net or gross\
+        \ price must be given. If both given, gross must be greater than or equal\
+        \ to net.`"
+    UnitPrice:
+      type: object
+      properties:
+        net:
+          $ref: '#/components/schemas/ListPrice'
+        gross:
+          $ref: '#/components/schemas/ListPrice'
+      description: "Price per product unit. `Note that at least net or gross price\
+        \ must be given. If both given, gross must be greater than or equal to net.`"
+    ChangeRequestView:
+      required:
+      - changeRequest
+      - changeRequestId
+      - creationDate
+      - creator
+      - status
+      type: object
+      properties:
+        changeRequest:
+          $ref: '#/components/schemas/Order'
+        changeRequestId:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: The identifier of the change request
+          example: 2510-19
+        creator:
+          type: string
+          description: Name of the creator of the change request
+        creationDate:
+          type: string
+          description: Date of creation
+          format: date-time
+        updateDate:
+          type: string
+          description: Date of the last update
+          format: date-time
+        status:
+          type: string
+          description: The status of the change request
+          example: ACCEPTED
+          enum:
+          - OPEN
+          - ACCEPTED
+          - APPLIED
+          - FAILED_TO_APPLY
+      description: Describes a change request to view
+    CollectionMetaData:
+      type: object
+      properties:
+        totalCount:
+          type: integer
+          description: The total number of objects in the collection (without offset
+            and limit)
+          format: int64
+          example: 10000
+      description: The meta data of the collection
+    OrderDocument:
+      required:
+      - downloadLink
+      - type
+      type: object
+      properties:
+        type:
+          type: string
+          description: The type of the document
+          example: invoiceNote
+        downloadLink:
+          type: string
+          description: The URI to get the document
+          format: uri
+          example: https://localhost:8080/servlets/DocumentServlet/v1.0/invoiceNote/InvoiceNote.pdf?k=10218224f70ffdbdfd5d18603ce53424788fe859425056b7e9e058bd94c2410e2e05c43f847fa2dc9cb1fabbc5ae1a899e1f5ec9c93422aa529ecfda79171ed92626c&i=10218&s=200"
+        creationDate:
+          type: string
+          description: The creation date of the document (ISO-8601)
+          format: date-time
+          example: 2018-12-24T16:22:32.123+02:00
+        mimeType:
+          type: string
+          description: The MIME-type of the document
+          example: application/pdf
+      description: An order-related document given as link
+    OrderNote:
+      required:
+      - message
+      type: object
+      properties:
+        message:
+          type: string
+          description: The content of the note
+          example: The customer has a complaint about the delivery.
+        type:
+          type: string
+          description: The type of the note
+          example: COMPLAINT
+        creationDate:
+          type: string
+          description: The creation date of the note
+          format: date-time
+          example: 2020-12-28T09:22:44.838+02:00
+      description: A note regarding the order
+    OrderPositionConfirmed:
+      required:
+      - confirmationDate
+      - type
+      type: object
+      properties:
+        type:
+          type: string
+          description: Type of confirmation of the supplier
+        confirmationDate:
+          type: string
+          description: Date of confirmation of the supplier
+          format: date-time
+        quantities:
+          type: array
+          description: Confirmed quantities
+          items:
+            $ref: '#/components/schemas/OrderPositionConfirmedQuantity'
+        cancelled:
+          type: array
+          description: At least one product is not available (already cancelled or
+            recalled)
+          items:
+            $ref: '#/components/schemas/OrderPositionConfirmedCancelled'
+      description: Confirmed products of the order position
+    OrderPositionConfirmedCancelled:
+      required:
+      - quantity
+      type: object
+      properties:
+        quantity:
+          type: integer
+          description: Cancelled quantity
+          format: int32
+          example: 1
+        cancelDate:
+          type: string
+          description: Date of cancellation or recall
+          format: date-time
+        reason:
+          $ref: '#/components/schemas/OrderPositionConfirmedCancelledReason'
+      description: Confirmed cancelled products
+    OrderPositionConfirmedCancelledReason:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          type: string
+          description: Code of reason of the cancellation or recall
+          example: RCL021
+        value:
+          type: string
+          description: Reason of cancellation or recall (free text)
+          example: Cancellation due to missing stock
+      description: Cancellation reason
+    OrderPositionConfirmedQuantity:
+      required:
+      - value
+      type: object
+      properties:
+        value:
+          type: integer
+          description: The quantity to be delivered at the planned delivery date
+          format: int32
+          example: 1
+        plannedDeliveryDate:
+          type: string
+          description: The planned delivery date
+          format: date
+      description: Confirmed quantity for a planned delivery date
+    OrderPositionDispatched:
+      required:
+      - dispatchDate
+      - quantity
+      type: object
+      properties:
+        quantity:
+          type: integer
+          description: Dispatched quantity
+          format: int32
+          example: 1
+        deliveryNoteNumber:
+          type: string
+          description: Delivery note number
+          example: 980392-481
+        dispatchDate:
+          type: string
+          description: Timestamp of the handover of the package to the carrier
+          format: date-time
+        carrier:
+          $ref: '#/components/schemas/OrderStateOrderPositionDispatchedCarrier'
+        units:
+          type: array
+          description: Further information for a single product/ item
+          items:
+            $ref: '#/components/schemas/OrderPositionDispatchedUnit'
+      description: Dispatched positions
+    OrderPositionDispatchedCarrierTracking:
+      required:
+      - number
+      type: object
+      properties:
+        number:
+          type: string
+          description: Tracking number of the package
+          example: 929-912-03013
+        url:
+          type: string
+          description: Tracking URL
+          format: uri
+      description: Tracking information of the shipment
+    OrderPositionDispatchedUnit:
+      required:
+      - serialNumber
+      type: object
+      properties:
+        serialNumber:
+          type: string
+          description: Serial number of the product
+          example: "89712007"
+      description: Further information for a single product/ item
+    OrderPositionOrdered:
+      required:
+      - quantity
+      - shipping
+      - sum
+      type: object
+      properties:
+        shipping:
+          $ref: '#/components/schemas/OrderStateShipping'
+        quantity:
+          minimum: 1
+          type: integer
+          description: The ordered quantity
+          format: int32
+          example: 1
+        sum:
+          $ref: '#/components/schemas/SumPrice'
+        unitPrice:
+          $ref: '#/components/schemas/UnitPrice'
+      description: Details of an ordered position
+    OrderPositionReturned:
+      required:
+      - status
+      type: object
+      properties:
+        status:
+          type: string
+          description: Status of the return
+          example: CLOSED
+        supplierEntryDate:
+          type: string
+          description: Timestamp of the entry of the return at the supplier
+          format: date-time
+      description: Details of a returned position
+      oneOf:
+      - $ref: '#/components/schemas/OrderPositionReturnedQuantities'
+      - $ref: '#/components/schemas/OrderPositionReturnedUnits'
+    OrderPositionReturnedQuantities:
+      required:
+      - quantity
+      - status
+      type: object
+      properties:
+        status:
+          type: string
+          description: Status of the return
+          example: CLOSED
+        supplierEntryDate:
+          type: string
+          description: Timestamp of the entry of the return at the supplier
+          format: date-time
+        quantity:
+          type: integer
+          description: Number of returned products of the position
+          format: int32
+          example: 2
+        returnReason:
+          $ref: '#/components/schemas/OrderPositionReturnedReason'
+        payment:
+          $ref: '#/components/schemas/OrderPositionReturnedReturnPayment'
+      description: Quantity based return informationen of an order position
+    OrderPositionReturnedReason:
+      required:
+      - type
+      - value
+      type: object
+      properties:
+        value:
+          type: string
+          description: The return reason
+          example: RET990
+        type:
+          type: string
+          description: The return type of the return reason
+          example: RET
+      description: Details about the return reason
+    OrderPositionReturnedReturnPayment:
+      required:
+      - reduction
+      - refundNet
+      type: object
+      properties:
+        reduction:
+          $ref: '#/components/schemas/OrderPositionReturnedReturnPaymentReduction'
+        refundNet:
+          type: number
+          description: Net amount of the refund
+          example: 12.87
+      description: Return payment
+    OrderPositionReturnedReturnPaymentReduction:
+      required:
+      - reduceReason
+      - reduceText
+      type: object
+      properties:
+        reduceText:
+          type: string
+          description: Reduction reason of the supplier
+          example: The original packaging was badly damaged by the customer.
+        reduceReason:
+          type: string
+          description: Name of reduction as used by the shop
+          example: AK-0
+      description: Reason for price reduction
+    OrderPositionReturnedUnits:
+      required:
+      - status
+      - units
+      type: object
+      properties:
+        status:
+          type: string
+          description: Status of the return
+          example: CLOSED
+        supplierEntryDate:
+          type: string
+          description: Timestamp of the entry of the return at the supplier
+          format: date-time
+        units:
+          type: array
+          description: Information about return of individual products
+          items:
+            $ref: '#/components/schemas/OrderPositionReturnedUnitsUnit'
+      description: Unit/ item based return informationen of an order position
+    OrderPositionReturnedUnitsUnit:
+      required:
+      - serialNumber
+      type: object
+      properties:
+        serialNumber:
+          type: string
+          description: The serial number of the product/ item
+          example: 9834JJ-43
+        returnReason:
+          $ref: '#/components/schemas/OrderPositionReturnedReason'
+        payment:
+          $ref: '#/components/schemas/OrderPositionReturnedReturnPayment'
+      description: Return information for a single product/ unit/ item
+    OrderPositionSupplier:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the supplier as used by the shop
+          example: Supplier X
+        commissionDate:
+          type: string
+          description: Timestamp indicating when the order position was commissioned
+            to the supplier
+          format: date-time
+          example: 2019-05-28T14:36:17.158+02:00
+      description: Supplier specific information
+    OrderState:
+      required:
+      - customerData
+      - invoiceAddress
+      - payment
+      - sales
+      - shippingBuckets
+      - shopOrderCreationDate
+      - shopOrderNumber
+      - status
+      type: object
+      properties:
+        shopOrderNumber:
+          maxLength: 50
+          minLength: 1
+          type: string
+          description: "Order number as used by the shop (required for order creation).\
+            \ `If change request, it must be equal to the origin order.`"
+          example: 2019-089013
+        shopOrderCreationDate:
+          type: string
+          description: Creation date at the shop (ISO-8601)
+          format: date-time
+          example: 2019-09-14T16:22:32.123+02:00
+        shopOrderUpdateDate:
+          type: string
+          description: "Update date at the shop (ISO-8601). `Required if order change\
+            \ request, otherwise ignored.`"
+          format: date-time
+          example: 2019-09-14T16:22:32.123+02:00
+        reservationId:
+          type: integer
+          description: ID of the stock reservation that was provided by the IOM reservation
+            service
+          format: int64
+          example: 907041
+        costCenter:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name/ identifier of the related cost center
+          example: 2510-19
+        project:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name / identifier of the related project
+          example: PR-911 CR7
+        customerData:
+          $ref: '#/components/schemas/CustomerData'
+        invoiceAddress:
+          $ref: '#/components/schemas/AddressInvoice'
+        sales:
+          $ref: '#/components/schemas/Sales'
+        payment:
+          $ref: '#/components/schemas/Payment'
+        optimizationRule:
+          type: string
+          description: "The rule to optimize the order. If not set, the default rule\
+            \ of the shop will be used."
+        splitShipmentAllowed:
+          type: boolean
+          description: Specifies whether the order is allowed to be splitted for the
+            shipment
+        additionalAttributes:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              type: string
+              description: Additional attributes of the order that can be grouped
+                by a name
+            description: Additional attributes of the order that can be grouped by
+              a name
+          description: Additional attributes of the order that can be grouped by a
+            name
+        shippingBuckets:
+          type: array
+          description: The shipping buckets of the order
+          items:
+            $ref: '#/components/schemas/ShippingBucketOrderState'
+        status:
+          type: string
+          description: The status of the order
+          example: STATE_DISPATCHED
+        notes:
+          type: array
+          description: Notes regarding the order
+          items:
+            $ref: '#/components/schemas/OrderNote'
+        paymentState:
+          $ref: '#/components/schemas/PaymentState'
+        documents:
+          type: array
+          description: "Order-related documents given as links, e.g. invoices"
+          items:
+            $ref: '#/components/schemas/OrderDocument'
+      description: Information about the state of the order
+    OrderStateCollectionContainer:
+      type: object
+      properties:
+        data:
+          type: array
+          description: The returned list of order states
+          items:
+            $ref: '#/components/schemas/OrderState'
+        meta:
+          $ref: '#/components/schemas/CollectionMetaData'
+        links:
+          type: object
+          additionalProperties:
+            type: string
+            description: Link section
+            format: uri
+          description: Link section
+      description: Order state collection
+    OrderStateOrderPositionDispatchedCarrier:
+      required:
+      - name
+      - packages
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the carrier
+          example: DHL
+        packages:
+          type: integer
+          description: Number of packages
+          format: int32
+          example: 1
+        shipmentTracking:
+          $ref: '#/components/schemas/OrderPositionDispatchedCarrierTracking'
+      description: Carrier of the shipment
+    OrderStatePosition:
+      required:
+      - product
+      - status
+      type: object
+      properties:
+        number:
+          minimum: 0
+          type: integer
+          description: "The number of the order position. If set, it has to be unique\
+            \ within the order."
+          format: int32
+          example: 3
+        productUnit:
+          type: string
+          description: Unit of the ordered quantity. Note that the unit is only used
+            for invoice printing.
+          example: liter
+        product:
+          $ref: '#/components/schemas/Product'
+        costCenter:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name or identifier of the related cost center
+          example: 2510-19
+        project:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The name or identifier of the related project
+          example: PR-911 CR7
+        additionalAttributes:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              type: string
+              description: Additional attributes of the position that can be grouped
+                by a name
+            description: Additional attributes of the position that can be grouped
+              by a name
+          description: Additional attributes of the position that can be grouped by
+            a name
+        status:
+          type: string
+          description: The status of the order position
+          example: STATE_DO_APPROVE
+        ordered:
+          $ref: '#/components/schemas/OrderPositionOrdered'
+        commissioned:
+          $ref: '#/components/schemas/OrderPositionSupplier'
+        confirmed:
+          $ref: '#/components/schemas/OrderPositionConfirmed'
+        dispatched:
+          type: array
+          description: Information about dispatched products
+          items:
+            $ref: '#/components/schemas/OrderPositionDispatched'
+        returned:
+          type: array
+          description: Information about returned products
+          items:
+            $ref: '#/components/schemas/OrderPositionReturned'
+      description: A position of the order state shipping bucket
+    OrderStateShipping:
+      required:
+      - deliveryDate
+      - expectedDeliveryDays
+      type: object
+      properties:
+        freightClass:
+          type: string
+          description: The shipping freight class
+        deliveryOptions:
+          type: array
+          description: The selected delivery options
+          example: DELIVERY_ON_ISLAND
+          items:
+            type: string
+            description: The selected delivery options
+            example: DELIVERY_ON_ISLAND
+        deliveryDate:
+          $ref: '#/components/schemas/DeliveryDate'
+        expectedDeliveryDays:
+          minimum: -1
+          type: integer
+          description: Expected delivery in days
+          format: int32
+          example: 3
+        supplierExpectedDeliveryDays:
+          type: integer
+          description: Supplier expected delivery in days
+          format: int32
+          example: 3
+        confirmedDeliveryDate:
+          type: string
+          description: "The delivey date, as confirmed by the supplier"
+          format: date-time
+        selectedSupplier:
+          type: string
+          description: The selected supplier for delivery
+          example: Warehouse Hamburg
+      description: Shipping information
+    PaymentState:
+      required:
+      - bookedCreditAmount
+      - bookedDebitAmount
+      - bookedOpenAmount
+      - chargedCreditAmount
+      - chargedDebitAmount
+      - chargedOpenAmount
+      - creationDate
+      - currencyCode
+      - invoicingCreditAmount
+      - invoicingDebitAmount
+      - lastCalculationDate
+      type: object
+      properties:
+        invoicingDebitAmount:
+          type: number
+          description: Amount of all invoices for this order
+          example: 1000.0
+        invoicingCreditAmount:
+          type: number
+          description: Amount of all credit notes for this order
+          example: 5.0
+        chargedDebitAmount:
+          type: number
+          description: Amount of all captured amounts for this order
+          example: 45.0
+        chargedCreditAmount:
+          type: number
+          description: Amount of all refunded amounts for this order
+          example: 5.0
+        chargedOpenAmount:
+          type: number
+          description: Positive amount (amount of open refunds) - Negative amount
+            (amount of open captures)
+          example: 0.0
+        bookedDebitAmount:
+          type: number
+          description: Amount of all inbound payments for this order
+          example: 0.0
+        bookedCreditAmount:
+          type: number
+          description: Amount of all outbound payments for this order
+          example: 45.0
+        bookedOpenAmount:
+          type: number
+          description: Positive amount (amount of open outbound payments) - Negative
+            amount (amount of open inbound payments)
+          example: 0.0
+        creationDate:
+          type: string
+          description: Creation date of the payment status
+          format: date-time
+          example: 2020-12-28T19:46:49.838+02:00
+        lastCaptureDate:
+          type: string
+          description: Date of the last payment capture
+          format: date-time
+          example: 2020-12-10T22:16:23.838+02:00
+        lastRefundDate:
+          type: string
+          description: Date of the last refund
+          format: date-time
+          example: 2020-12-28T19:46:49.838+02:00
+        lastCalculationDate:
+          type: string
+          description: Date of last calculation of the payment status
+          format: date-time
+          example: 2020-11-28T19:46:49.838+02:00
+        currencyCode:
+          type: string
+          description: Currency code of the balance amounts (ISO 4217)
+          example: EUR
+        paymentHistory:
+          type: array
+          description: Payment history of the order
+          items:
+            $ref: '#/components/schemas/PaymentStateHistoryItem'
+      description: The payment state of the order including payment history
+    PaymentStateHistoryItem:
+      required:
+      - action
+      - amount
+      - creationDate
+      - currencyCode
+      - modificationDate
+      - paymentMethod
+      - type
+      type: object
+      properties:
+        amount:
+          type: number
+          description: Amount of the payment
+          example: 109.78
+        currencyCode:
+          type: string
+          description: Currency code of the payment (ISO 4217)
+          example: EUR
+        type:
+          type: string
+          description: "The type of the payment notification. Possible values are\
+            \ `INBOUND`, `OUTBOUND`, `ACTION`."
+          example: INBOUND
+        action:
+          type: string
+          description: "The payment action. Possible values are `AUTHORIZATION`, `REVERSE`,\
+            \ `CAPTURE`, `REFUND`."
+          example: CAPTURE
+        paymentMethod:
+          type: string
+          description: The payment method of the payment
+          example: CREDITCARD
+        creationDate:
+          type: string
+          description: Creation date of the payment notification
+          format: date-time
+          example: 2020-12-28T19:46:49.838+02:00
+        modificationDate:
+          type: string
+          description: Modification date of the payment notification
+          format: date-time
+          example: 2020-12-28T19:46:49.838+02:00
+        comment:
+          type: string
+          description: Comment of the item
+        invoiceNumber:
+          type: string
+          description: "Invoice number, if the payment relates to an invoice"
+      description: Payment history entry of an order
+    ShippingBucketOrderState:
+      required:
+      - positions
+      - shippingAddress
+      type: object
+      properties:
+        number:
+          type: string
+          description: "The number of the shipping bucket (blank values will be ignored).\
+            \ If set, it has to be unique within the order."
+          example: "1"
+        shippingAddress:
+          $ref: '#/components/schemas/AddressShipping'
+        shippingMethod:
+          type: string
+          description: The desired shipping method
+          example: DHL
+        charges:
+          type: array
+          description: "Charges of the shipping bucket, e.g. a shipping charge. When\
+            \ returned charges are sorted by number in ascending order."
+          items:
+            $ref: '#/components/schemas/Charge'
+        additionalAttributes:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              type: string
+              description: Additional attributes of the shipping bucket that can be
+                grouped by a name
+            description: Additional attributes of the shipping bucket that can be
+              grouped by a name
+          description: Additional attributes of the shipping bucket that can be grouped
+            by a name
+        positions:
+          type: array
+          description: Positions of the shipping bucket
+          items:
+            $ref: '#/components/schemas/OrderStatePosition'
+      description: A shipping bucket of an order state
+  securitySchemes:
+    basicAuth:
+      type: http
+      description: Basic Authentication
+      scheme: basic
+    bearerAuth:
+      type: http
+      description: JWT Bearer token
+      scheme: bearer
+      bearerFormat: JWT
