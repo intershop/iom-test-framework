@@ -1,7 +1,5 @@
 package com.intershop.oms.test.businessobject;
 
-import com.intershop.oms.rest.reservation.v2_0.model.ReservationState;
-
 import lombok.Data;
 
 @Data
@@ -11,7 +9,7 @@ public class OMSReservationItem
 
     String id;
 
-    ReservationState state;
+    OMSReservation.RESERVATION_STATE state;
 
     public OMSReservationItem() {}
 

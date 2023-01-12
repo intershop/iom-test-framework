@@ -9,9 +9,9 @@ import lombok.Data;
 @Data
 public class OMSReservation
 {
-    public enum RESERVATION_TYPE { COMPLETE, PARTLY };
+    public enum RESERVATION_TYPE { COMPLETE, PARTLY }
 
-    public enum RESERVATION_STATE { reserved, expired };
+    public enum RESERVATION_STATE { RESERVED, EXPIRED }
 
     /**
      * @deprecated use resvId
