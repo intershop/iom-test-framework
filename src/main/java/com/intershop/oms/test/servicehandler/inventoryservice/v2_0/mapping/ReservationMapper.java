@@ -10,7 +10,7 @@ import com.intershop.oms.rest.reservation.v2_0.model.ReservationRequest;
 import com.intershop.oms.rest.reservation.v2_0.model.ReservationResponse;
 import com.intershop.oms.test.businessobject.OMSReservation;
 
-@Mapper(uses= {ReservationItemMapper.class})
+@Mapper(uses= {ReservationItemMapper.class, ReservationTypeMapper.class, ReservationStateMapper.class})
 public interface ReservationMapper
 {
     ReservationMapper INSTANCE = Mappers.getMapper(ReservationMapper.class);

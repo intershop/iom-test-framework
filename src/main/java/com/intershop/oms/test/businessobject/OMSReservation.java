@@ -4,24 +4,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
-import com.intershop.oms.rest.reservation.v2_0.model.ReservationType;
-
 import lombok.Data;
 
 @Data
 public class OMSReservation
 {
-    /**
-     * @deprecated use generated model.ReservationType
-     */
-    @Deprecated(forRemoval = true, since = "4.4.0")
-    enum RESERVATION_TYPE { COMPLETE, PARTLY };
+    public enum RESERVATION_TYPE { COMPLETE, PARTLY };
 
-    /**
-     * @deprecated use generated model.ReservationState
-     */
-    @Deprecated(forRemoval = true, since = "4.4.0")
-    enum RESERVATION_STATE { reserved, expired };
+    public enum RESERVATION_STATE { reserved, expired };
 
     /**
      * @deprecated use resvId
@@ -30,7 +20,7 @@ public class OMSReservation
     int id;
 
     // request parameters
-    ReservationType type = ReservationType.COMPLETE;
+    RESERVATION_TYPE type = RESERVATION_TYPE.COMPLETE;
     long lifetime;
 
     // response values
@@ -41,7 +31,7 @@ public class OMSReservation
 
     public OMSReservation() {}
 
-    public OMSReservation(long lifetime, ReservationType reservationType)
+    public OMSReservation(long lifetime, RESERVATION_TYPE reservationType)
     {
         this.lifetime = lifetime;
         type = reservationType;
