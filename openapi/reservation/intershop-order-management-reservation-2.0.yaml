@@ -44,7 +44,7 @@ paths:
         example: 1000
       requestBody:
         content:
-          application/vnd.intershop.reservation.v2+json:
+          application/json:
             schema:
               $ref: '#/components/schemas/ReservationRequest'
         required: true
@@ -114,7 +114,7 @@ paths:
         example: 115
       requestBody:
         content:
-          application/vnd.intershop.reservation.v2+json:
+          application/json:
             schema:
               $ref: '#/components/schemas/ReservationRequest'
         required: true
