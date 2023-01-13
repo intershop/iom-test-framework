@@ -7,7 +7,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
+import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,12 +66,14 @@ public class ConfigBuilder
             }
             if (log.isDebugEnabled())
             {
-                cb.getSourceProviders().forEach(
-                                sp ->
-                                log.debug("active config source provider: {} from '{}'", sp.getClass().getSimpleName(), sp.getConfigSources(null).iterator().hasNext() ? sp.getConfigSources(null).iterator().next().getName() : ""));
+                cb.getSourceProviders().forEach(sp ->
+                    log.debug("active config source provider: {} from '{}'",
+                                sp.getClass().getSimpleName(),
+                                StreamSupport.stream(sp.getConfigSources(sp.getClass().getClassLoader()).spliterator(), false)
+                                    .map(ConfigSource::getName)
+                                    .collect(Collectors.joining(", "))));
             }
             cfg = cb.build();
-
         }
         catch(IOException e)
         {

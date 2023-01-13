@@ -1,21 +1,21 @@
 package com.intershop.oms.test.businessobject;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
+@Accessors(chain = true)
 public class OMSReservationItem
 {
-    int qty;
+    private int qty;
 
-    String id;
+    private String id;
 
-    OMSReservationState state;
-
-    public OMSReservationItem() {}
-
-    public OMSReservationItem(String articleRef, int quantity)
-    {
-        id = articleRef;
-        qty = quantity;
-    }
+    private OMSReservationState state;
 }

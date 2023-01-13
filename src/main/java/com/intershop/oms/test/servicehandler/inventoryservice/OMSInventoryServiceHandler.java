@@ -16,7 +16,7 @@ public interface OMSInventoryServiceHandler extends OMSServiceHandler
      * @return the newly created reservation extended by the reservationId
      * @throws ApiException
      */
-    OMSReservation createReservation(Long shopId, OMSReservation omsReservation) throws ApiException;
+    OMSReservation createReservation(OMSReservation omsReservation) throws ApiException;
 
     /**
      * retrieve information for a given reservation
@@ -52,20 +52,20 @@ public interface OMSInventoryServiceHandler extends OMSServiceHandler
      * @return information about the availability of the given products
      * @throws ApiException
      */
-    default List<OMSInventory> getInventories(Long shopId, CommaSeparatedList<String> productIds) throws ApiException
+    default List<OMSInventory> getInventory(Long shopId, List<String> productIds) throws ApiException
     {
-        return getInventories(shopId, productIds, null);
+        return getInventory(shopId, productIds, null);
     }
 
     /**
      * retrieve information about the availability of products
      *
      * @param shopId
-     * @param productIds - for the given shop - must use CommaSeparatedList for correct parameter handling
+     * @param productIds - for the given shop
      * @param reservationId - optional
      *
      * @return information about the availability of the given products
      * @throws ApiException
      */
-    List<OMSInventory> getInventories(Long shopId, CommaSeparatedList<String> productIds, Long reservationId) throws ApiException;
+    List<OMSInventory> getInventory(Long shopId, List<String> productIds, Long reservationId) throws ApiException;
 }

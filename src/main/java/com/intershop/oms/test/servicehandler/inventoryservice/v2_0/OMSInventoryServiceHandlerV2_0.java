@@ -40,19 +40,11 @@ class OMSInventoryServiceHandlerV2_0 extends RESTServiceHandler implements OMSIn
     }
 
     @Override
-    public OMSReservation createReservation(Long shopId, OMSReservation omsReservation) throws ApiException
+    public OMSReservation createReservation(OMSReservation omsReservation) throws ApiException
     {
         ReservationRequest reservation = ReservationMapper.INSTANCE.toApiReservation(omsReservation);
-        HttpResponseReservation reservationResponse = reservationApi.createReservation(shopId, reservation);
-
-        if (reservationResponse.getStatusCode() > 201)
-        {
-            StringBuilder out = new StringBuilder("Received unexpected response code " + reservationResponse.getStatusCode() + " in:");
-            out.append("\n" + reservationResponse);
-            log.error(out.toString());
-            throw new ApiException(out.toString());
-        }
-         return ReservationMapper.INSTANCE.fromApiReservation(reservationResponse.getData());
+        HttpResponseReservation reservationResponse = reservationApi.createReservation(omsReservation.getShop().getId(), reservation);
+        return ReservationMapper.INSTANCE.fromApiReservation(reservationResponse.getData());
     }
 
     @Override
@@ -60,60 +52,29 @@ class OMSInventoryServiceHandlerV2_0 extends RESTServiceHandler implements OMSIn
     {
         ReservationRequest reservation = ReservationMapper.INSTANCE.toApiReservation(omsReservation);
         HttpResponseReservation reservationResponse = reservationApi.updateReservation(omsReservation.getResvId(), reservation);
-
-        if (reservationResponse.getStatusCode() > 201)
-        {
-            StringBuilder out = new StringBuilder("Received unexpected response code " + reservationResponse.getStatusCode() + " in:");
-            out.append("\n" + reservationResponse);
-            log.error(out.toString());
-            throw new ApiException(out.toString());
-        }
-         return ReservationMapper.INSTANCE.fromApiReservation(reservationResponse.getData());
+        return ReservationMapper.INSTANCE.fromApiReservation(reservationResponse.getData());
     }
 
     @Override
     public OMSReservation getReservation(Long reservationId) throws ApiException
     {
         HttpResponseReservation reservationResponse = reservationApi.getReservation(reservationId);
-
-        if (reservationResponse.getStatusCode() > 200)
-        {
-            StringBuilder out = new StringBuilder("Received unexpected response code " + reservationResponse.getStatusCode() + " in:");
-            out.append("\n" + reservationResponse);
-            log.error(out.toString());
-            throw new ApiException(out.toString());
-        }
         return ReservationMapper.INSTANCE.fromApiReservation(reservationResponse.getData());
     }
 
     @Override
     public void deleteReservation(Long reservationId) throws ApiException
     {
-        ApiResponse<Void> response = reservationApi.deleteReservationWithHttpInfo(reservationId);
-
-        if (response.getStatusCode() > 204)
-        {
-            StringBuilder out = new StringBuilder("Received unexpected response code " + response.getStatusCode() + " in:");
-            out.append("\n" + response);
-            log.error(out.toString());
-            throw new ApiException(out.toString());
-        }
+        reservationApi.deleteReservationWithHttpInfo(reservationId);
     }
 
     @Override
-    public List<OMSInventory> getInventories(Long shopId, CommaSeparatedList<String> productIds, Long reservationId) throws ApiException
+    public List<OMSInventory> getInventory(Long shopId, List<String> productIds, Long reservationId) throws ApiException
     {
-        HttpResponseListAtp inventoryResponse  = inventoryApi.getAvailableQuantity(shopId, productIds, reservationId);
-
-        if (inventoryResponse.getStatusCode() > 201)
-        {
-            StringBuilder out = new StringBuilder("Received unexpected response code " + inventoryResponse.getStatusCode() + " in:");
-            out.append("\n" + inventoryResponse);
-            log.error(out.toString());
-            throw new ApiException(out.toString());
-        }
-        List<OMSInventory> omsInventories = InventoryMapper.INSTANCE.fromApiInventory(inventoryResponse.getData());
-        return omsInventories;
+        CommaSeparatedList<String> myCommaSepraratedProductIds = new CommaSeparatedList<>();
+        myCommaSepraratedProductIds.addAll(productIds);
+        HttpResponseListAtp inventoryResponse  = inventoryApi.getAvailableQuantity(shopId, myCommaSepraratedProductIds, reservationId);
+        return InventoryMapper.INSTANCE.fromApiInventory(inventoryResponse.getData());
     }
 
     @Override

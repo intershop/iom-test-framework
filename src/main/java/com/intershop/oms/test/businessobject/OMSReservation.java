@@ -4,44 +4,28 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
+@Accessors(chain = true)
 public class OMSReservation
 {
-    /**
-     * @deprecated use generated OMSReservationType
-     */
-    @Deprecated(forRemoval = true, since = "4.5.0")
-    enum RESERVATION_TYPE { COMPLETE, PARTLY };
-
-    /**
-     * @deprecated use generated OMSReservationState
-     */
-    @Deprecated(forRemoval = true, since = "4.5.0")
-    enum RESERVATION_STATE { reserved, expired };
-
-    /**
-     * @deprecated use resvId
-     */
-    @Deprecated(forRemoval = true, since = "4.5.0")
-    int id;
+    private OMSShop shop;
 
     // request parameters
-    OMSReservationType type = OMSReservationType.COMPLETE;
-    long lifetime;
+    private OMSReservationType type = OMSReservationType.COMPLETE;
+    private long lifetime;
 
     // response values
-    long resvId;
-    Date validUntil;
+    private long resvId;
+    private Date validUntil;
 
-    Collection<OMSReservationItem> items = new ArrayList<>();
-
-    public OMSReservation() {}
-
-    public OMSReservation(long lifetime, OMSReservationType reservationType)
-    {
-        this.lifetime = lifetime;
-        type = reservationType;
-    }
+    private Collection<OMSReservationItem> items = new ArrayList<>();
 }

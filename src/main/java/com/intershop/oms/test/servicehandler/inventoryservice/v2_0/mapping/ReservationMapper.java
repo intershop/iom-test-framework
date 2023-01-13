@@ -15,13 +15,15 @@ public interface ReservationMapper
 {
     ReservationMapper INSTANCE = Mappers.getMapper(ReservationMapper.class);
 
-    @Mapping(target = "id", ignore = true)
+    // ignore request parameters
     @Mapping(target = "lifetime", ignore = true)
     @Mapping(target = "type", ignore = true)
+    @Mapping(target = "shop", ignore = true)
     @Mapping(target = "validUntil", dateFormat = "yyyy-MM-dd HH:mm:ss")
     OMSReservation fromApiReservation(ReservationResponse reservation);
 
+    // ignore response values
+    @BeanMapping(ignoreUnmappedSourceProperties = { "validUntil", "lifetime", "resvId", "shop" } )
     @InheritInverseConfiguration
-    @BeanMapping(ignoreUnmappedSourceProperties = { "validUntil", "lifetime", "id", "resvId" } )
     ReservationRequest toApiReservation(OMSReservation omsReservation);
 }
