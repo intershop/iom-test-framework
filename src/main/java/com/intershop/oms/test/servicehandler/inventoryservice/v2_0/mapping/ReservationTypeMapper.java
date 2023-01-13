@@ -5,21 +5,15 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 import com.intershop.oms.rest.reservation.v2_0.model.ReservationType;
-import com.intershop.oms.test.businessobject.OMSReservation;
+import com.intershop.oms.test.businessobject.OMSReservationType;
 
 @Mapper
-public  class ReservationTypeMapper
+public interface ReservationTypeMapper
 {
     ReservationTypeMapper INSTANCE = Mappers.getMapper(ReservationTypeMapper.class);
 
-    OMSReservation.RESERVATION_TYPE fromApiReservationType(ReservationType reservationType)
-    {
-        return OMSReservation.RESERVATION_TYPE.valueOf(reservationType.getValue());
-    }
+    OMSReservationType fromApiReservationType(ReservationType reservationType);
 
     @InheritInverseConfiguration
-    ReservationType toApiReservation(OMSReservation.RESERVATION_TYPE omsReservationType)
-    {
-        return ReservationType.valueOf(omsReservationType.toString());
-    }
+    ReservationType toApiReservation(OMSReservationType omsReservationType);
 }

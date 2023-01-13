@@ -9,18 +9,26 @@ import lombok.Data;
 @Data
 public class OMSReservation
 {
-    public enum RESERVATION_TYPE { COMPLETE, PARTLY }
+    /**
+     * @deprecated use generated OMSReservationType
+     */
+    @Deprecated(forRemoval = true, since = "4.5.0")
+    enum RESERVATION_TYPE { COMPLETE, PARTLY };
 
-    public enum RESERVATION_STATE { RESERVED, EXPIRED }
+    /**
+     * @deprecated use generated OMSReservationState
+     */
+    @Deprecated(forRemoval = true, since = "4.5.0")
+    enum RESERVATION_STATE { reserved, expired };
 
     /**
      * @deprecated use resvId
      */
-    @Deprecated(forRemoval = true, since = "4.4.0")
+    @Deprecated(forRemoval = true, since = "4.5.0")
     int id;
 
     // request parameters
-    RESERVATION_TYPE type = RESERVATION_TYPE.COMPLETE;
+    OMSReservationType type = OMSReservationType.COMPLETE;
     long lifetime;
 
     // response values
@@ -31,7 +39,7 @@ public class OMSReservation
 
     public OMSReservation() {}
 
-    public OMSReservation(long lifetime, RESERVATION_TYPE reservationType)
+    public OMSReservation(long lifetime, OMSReservationType reservationType)
     {
         this.lifetime = lifetime;
         type = reservationType;

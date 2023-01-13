@@ -9,7 +9,7 @@ public class OMSReservationItem
 
     String id;
 
-    OMSReservation.RESERVATION_STATE state;
+    OMSReservationState state;
 
     public OMSReservationItem() {}
 
