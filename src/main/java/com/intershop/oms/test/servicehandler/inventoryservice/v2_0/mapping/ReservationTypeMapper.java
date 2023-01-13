@@ -4,7 +4,7 @@ import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-import com.intershop.oms.rest.order.v2_0.model.ReservationType;
+import com.intershop.oms.rest.reservation.v2_0.model.ReservationType;
 import com.intershop.oms.test.businessobject.OMSReservation;
 
 @Mapper
