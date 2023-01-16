@@ -489,7 +489,9 @@ components:
       type: object
       properties:
         location:
-          $ref: '#/components/schemas/AddressLocation'
+          oneOf:
+            - $ref: '#/components/schemas/AddressLocationStreet'
+            - $ref: '#/components/schemas/AddressLocationPOBox'
         contact:
           $ref: '#/components/schemas/Contact'
         receiver:
@@ -638,7 +640,10 @@ components:
       type: object
       properties:
         location:
-          $ref: '#/components/schemas/AddressLocation'
+          oneOf:
+            - $ref: '#/components/schemas/AddressLocationStreet'
+            - $ref: '#/components/schemas/AddressLocationPOBox'
+            - $ref: '#/components/schemas/AddressLocationPackstation'
         contact:
           $ref: '#/components/schemas/Contact'
         receiver:
