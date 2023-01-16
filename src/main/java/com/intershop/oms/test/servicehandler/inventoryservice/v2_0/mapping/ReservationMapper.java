@@ -23,7 +23,7 @@ public interface ReservationMapper
     OMSReservation fromApiReservation(ReservationResponse reservation);
 
     // ignore response values
-    @BeanMapping(ignoreUnmappedSourceProperties = { "validUntil", "lifetime", "resvId", "shop" } )
+    @BeanMapping(ignoreUnmappedSourceProperties = { "validUntil", "resvId", "shop" } )
     @InheritInverseConfiguration
     ReservationRequest toApiReservation(OMSReservation omsReservation);
 }
