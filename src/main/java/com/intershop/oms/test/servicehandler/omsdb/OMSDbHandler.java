@@ -577,7 +577,7 @@ public interface OMSDbHandler
     List<Long> getAllReturnIdsForOrder(OMSOrder order);
     
     /**
-     * Wait for expectedCount returnIds for a given order and returns them
+     * Wait for expectedCount returnIds for a given order and returns them, sorted by their creation date (ascending)
      *
      * @return list of return ids
      */
