@@ -223,6 +223,8 @@ components:
       properties:
           validUntil:
             type: string
+            description: The validity of the stock reservation
+            example: 2016-01-07 14:29:32
           resvId:
             type: integer
             format: int64

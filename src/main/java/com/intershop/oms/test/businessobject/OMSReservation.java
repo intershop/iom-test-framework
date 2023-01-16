@@ -1,8 +1,8 @@
 package com.intershop.oms.test.businessobject;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -25,7 +25,7 @@ public class OMSReservation
 
     // response values
     private long resvId;
-    private Date validUntil;
+    private OffsetDateTime validUntil;
 
     private Collection<OMSReservationItem> items = new ArrayList<>();
 }

@@ -1,6 +1,6 @@
 package com.intershop.oms.test.businessobject;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -27,7 +27,7 @@ public class OMSInventory
 
     private Integer atp;
 
-    private Date modificationDate;
+    private OffsetDateTime modificationDate;
 
     private String state;
 }
