@@ -2,9 +2,17 @@ package com.intershop.oms.test.businessobject;
 
 import java.util.Date;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
+@Accessors(chain = true)
 public class OMSInventory
 {
     private String id;
@@ -22,6 +30,4 @@ public class OMSInventory
     private Date modificationDate;
 
     private String state;
-
-    public OMSInventory() {}
 }
