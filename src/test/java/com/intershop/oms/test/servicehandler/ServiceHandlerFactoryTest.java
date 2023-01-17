@@ -19,7 +19,7 @@ class ServiceHandlerFactoryTest
         // register a service provider that has been registered statically
         Assertions.assertThrows(IllegalArgumentException.class,
                         () -> ServiceHandlerFactory.registerServiceHandler(OMSOrderServiceHandler.class,
-                                        new OMSOrderServiceHandlerProviderV2_2()));
+                                        new OMSOrderServiceHandlerProviderV2_3()));
     }
 
     @Test
