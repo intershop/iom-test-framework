@@ -1,5 +1,7 @@
 package com.intershop.oms.test.businessobject;
 
+import java.time.OffsetDateTime;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,11 +13,21 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode
 @ToString
 @Accessors(chain = true)
-public class OMSReservationItem
+public class OMSInventory
 {
-    private int qty;
-
     private String id;
 
-    private OMSReservationState state;
+    private String location;
+
+    private Integer stock;
+
+    private Integer reserved;
+
+    private Integer blocked;
+
+    private Integer atp;
+
+    private OffsetDateTime modificationDate;
+
+    private String state;
 }

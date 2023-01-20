@@ -1,24 +1,31 @@
 package com.intershop.oms.test.businessobject;
 
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
+
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
+@Accessors(chain = true)
 public class OMSReservation
 {
-    static enum RESERVATION_TYPE { COMPLETE, PARTLY };
+    private OMSShop shop;
 
-    static enum RESERVATION_STATE { reserved, expired };
+    // request parameters
+    private OMSReservationType type = OMSReservationType.COMPLETE;
+    private long lifetime;
 
-    int lifetime;
-//    String type // filled via metaclass as type is optional
-    Collection<OMSReservationItem> items;
-    
-    public Collection<OMSReservationItem> getItems()
-    {
-        return items;
-    }
+    // response values
+    private long resvId;
+    private OffsetDateTime validUntil;
 
-    public int getLifetime()
-    {
-        return lifetime;
-    }
+    private Collection<OMSReservationItem> items = new ArrayList<>();
 }

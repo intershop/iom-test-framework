@@ -58,3 +58,4 @@ target/
 .vscode
 .idea
 build
+/.apt_generated/
