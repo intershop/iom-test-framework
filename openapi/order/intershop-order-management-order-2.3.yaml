@@ -21,7 +21,7 @@ info:
   contact:
     name: Intershop Communications AG
     url: http://intershop.com
-  version: "2.2"
+  version: "2.3"
 servers:
 - url: "{protocol}://{domain}:{port}/rest/order-service"
   variables:
