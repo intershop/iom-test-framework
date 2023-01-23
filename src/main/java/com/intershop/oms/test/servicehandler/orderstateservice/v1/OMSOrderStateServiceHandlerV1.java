@@ -36,8 +36,18 @@ class OMSOrderStateServiceHandlerV1 extends RESTServiceHandler
     }
 
     @Override
+    public OMSOrderStateCollectionContainer getOrderStatesBySortCriterias(Long shopId, List<String> shopOrderNumbers,
+                    List<String> shopCustomerNumbers, List<String> productNumbers, List<String> statuses,
+                    List<String> emails, LocalDate shopOrderCreationDateGte, LocalDate shopOrderCreationDateLte,
+                    String orderBy, String sortDirection, Integer offset, Integer limit) throws ApiException
+    {
+        throw new UnsupportedOperationException("Not implemented for service version v1. Call ");
+    }
+
+    @Override
     protected Collection<Object> unwrapApiClient()
     {
         return Set.of(orderStateApi);
     }
+
 }
