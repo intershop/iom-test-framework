@@ -1,8 +1,17 @@
 package com.intershop.oms.test.servicehandler;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.intershop.oms.test.configuration.ConfigBuilder;
 import com.intershop.oms.test.configuration.Configuration;
 import com.intershop.oms.test.configuration.ServiceConfiguration;
+import com.intershop.oms.test.servicehandler.inventoryservice.OMSInventoryServiceHandler;
+import com.intershop.oms.test.servicehandler.inventoryservice.v2_0.OMSInventoryServiceHandlerProviderV2_0;
 import com.intershop.oms.test.servicehandler.omsdb.OMSDbHandler;
 import com.intershop.oms.test.servicehandler.omsdb.v1.OMSDbHandlerProviderV1;
 import com.intershop.oms.test.servicehandler.orderservice.OMSOrderServiceHandler;
@@ -25,13 +34,6 @@ import com.intershop.oms.test.servicehandler.supplierservice.v2_10.OMSSupplierSe
 import com.intershop.oms.test.servicehandler.supplierservice.v2_11.OMSSupplierServiceHandlerProviderV2_11;
 import com.intershop.oms.test.servicehandler.transmissionservice.OMSTransmissionServiceHandler;
 import com.intershop.oms.test.servicehandler.transmissionservice.v2_0.OMSTransmissionServiceHandlerProviderV2;
-
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 
 @SuppressWarnings("rawtypes")
 public class ServiceHandlerFactory
@@ -72,6 +74,8 @@ public class ServiceHandlerFactory
         // transmission service
         registerServiceHandler(OMSTransmissionServiceHandler.class, new OMSTransmissionServiceHandlerProviderV2());
 
+        // inventory service
+        registerServiceHandler(OMSInventoryServiceHandler.class, new OMSInventoryServiceHandlerProviderV2_0());
     }
 
     @SuppressWarnings("unchecked")
@@ -96,6 +100,11 @@ public class ServiceHandlerFactory
     public static OMSOrderServiceHandler getOrderServiceHandler(String id)
     {
         return getServiceHandler(OMSOrderServiceHandler.class, id, defaultConfig::getOrderServiceById);
+    }
+
+    public static OMSInventoryServiceHandler getInventoryServiceHandler(String id)
+    {
+        return getServiceHandler(OMSInventoryServiceHandler.class, id, defaultConfig::getInventoryServiceById);
     }
 
     public static OMSReturnRequestServiceHandler getReturnRequestServiceHandler(String id)
