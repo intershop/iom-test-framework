@@ -1,7 +1,7 @@
 package com.intershop.oms.test.servicehandler;
 
 import com.intershop.oms.test.servicehandler.orderservice.OMSOrderServiceHandler;
-import com.intershop.oms.test.servicehandler.orderservice.v2_2.OMSOrderServiceHandlerProviderV2_2;
+import com.intershop.oms.test.servicehandler.orderservice.v2_3.OMSOrderServiceHandlerProviderV2_3;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
