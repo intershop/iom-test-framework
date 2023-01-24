@@ -22,6 +22,7 @@ import com.intershop.oms.test.servicehandler.orderservice.v2_3.OMSOrderServiceHa
 import com.intershop.oms.test.servicehandler.orderstateservice.OMSOrderStateServiceHandler;
 import com.intershop.oms.test.servicehandler.orderstateservice.v1.OMSOrderStateServiceHandlerProviderV1;
 import com.intershop.oms.test.servicehandler.orderstateservice.v2_0.OMSOrderStateServiceHandlerProviderV2_0;
+import com.intershop.oms.test.servicehandler.orderstateservice.v2_3.OMSOrderStateServiceHandlerProviderV2_3;
 import com.intershop.oms.test.servicehandler.rmaservice.OMSReturnRequestServiceHandler;
 import com.intershop.oms.test.servicehandler.rmaservice.v2.OMSReturnRequestServiceHandlerProviderV2;
 import com.intershop.oms.test.servicehandler.rmaservice.v2_10.OMSReturnRequestServiceHandlerProviderV2_10;
@@ -57,6 +58,7 @@ public class ServiceHandlerFactory
         // order state service
         registerServiceHandler(OMSOrderStateServiceHandler.class, new OMSOrderStateServiceHandlerProviderV1());
         registerServiceHandler(OMSOrderStateServiceHandler.class, new OMSOrderStateServiceHandlerProviderV2_0());
+        registerServiceHandler(OMSOrderStateServiceHandler.class, new OMSOrderStateServiceHandlerProviderV2_3());
 
         // RMA
         registerServiceHandler(OMSReturnRequestServiceHandler.class, new OMSReturnRequestServiceHandlerProviderV2());
