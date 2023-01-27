@@ -15,6 +15,8 @@ import java.util.Optional;
 
 import com.intershop.oms.test.businessobject.order.OMSOrder;
 import com.intershop.oms.test.businessobject.order.OMSOrderPosition;
+import com.intershop.oms.test.businessobject.prices.OMSTax;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -456,6 +458,14 @@ public interface OMSDbHandler
     List<OMSSupplier> getSuppliersForShop(OMSShop shop);
 
     /**
+     * returns a map: TaxType => Tax that is currently persistent within the DB for the given shop
+     *
+     * @param shop
+     * @return a map TaxType => Tax for the given shop
+     */
+    Map<String, OMSTax> getShopTaxes(OMSShop shop);
+
+    /**
      * returns the id corresponding to a Supplier.name
      */
     long getSupplierId(String supplierName);
@@ -575,7 +585,7 @@ public interface OMSDbHandler
      * @return list of return ids
      */
     List<Long> getAllReturnIdsForOrder(OMSOrder order);
-    
+
     /**
      * Wait for expectedCount returnIds for a given order and returns them, sorted by their creation date (ascending)
      *

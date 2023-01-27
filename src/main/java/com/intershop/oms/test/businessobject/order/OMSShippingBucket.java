@@ -9,6 +9,7 @@ import java.util.Objects;
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 import com.intershop.oms.test.businessobject.address.OMSAddressShipping;
 import com.intershop.oms.test.businessobject.prices.OMSCharge;
+import com.intershop.oms.test.businessobject.prices.OMSTax;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -88,6 +89,23 @@ public class OMSShippingBucket extends OMSBusinessObject
     {
         positions.add(positionsItem);
         return this;
+    }
+
+    /**
+     * @return a list of all the used taxes within these sales
+     */
+    public List<OMSTax> getUsedTaxes()
+    {
+        List<OMSTax> taxes = new ArrayList<>();
+        if (positions != null)
+        {
+            positions.forEach(p -> taxes.addAll(p.getSum().getTaxes()));
+        }
+        if (charges != null)
+        {
+            charges.forEach(ch -> taxes.addAll(ch.getTaxes()));
+        }
+        return taxes;
     }
 
     @Override

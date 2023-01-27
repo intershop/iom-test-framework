@@ -18,5 +18,6 @@ public interface OrderStatePositionMapper
     @Mapping(target = "shipping", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "product.productId", ignore = true)
+    @Mapping(target = "usedTaxes", ignore = true)
     OMSOrderPosition fromApiOrderStatePosition(OrderStatePosition orderStatePosition);
 }

@@ -87,4 +87,25 @@ public class OMSSales extends OMSBusinessObject
         sb.append("}");
         return sb.toString();
     }
+
+    /**
+     * @return a list of all the used taxes within these sales
+     */
+    public List<OMSTax> getUsedTaxes()
+    {
+        List<OMSTax> taxes = new ArrayList<>();
+        if (total != null)
+        {
+            taxes.addAll(total.getTaxes());
+        }
+        if (subTotal != null)
+        {
+            taxes.addAll(subTotal.getTaxes());
+        }
+        if (charges != null)
+        {
+            charges.forEach(ch -> taxes.addAll(ch.getTaxes()));
+        }
+        return taxes;
+    }
 }

@@ -33,6 +33,7 @@ import com.intershop.oms.test.businessobject.communication.OMSProduct;
 import com.intershop.oms.test.businessobject.communication.OMSReturnPosition;
 import com.intershop.oms.test.businessobject.order.OMSOrder;
 import com.intershop.oms.test.businessobject.order.OMSOrderPosition;
+import com.intershop.oms.test.businessobject.prices.OMSTax;
 import com.intershop.oms.test.businessobject.rma.OMSWriteReturnRequestPosition;
 import com.intershop.oms.test.configuration.ServiceConfiguration;
 import com.intershop.oms.test.util.InvoiceAggregationInterval;
@@ -675,6 +676,53 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
     }
 
     @Override
+    public Map<String, OMSTax> getShopTaxes(OMSShop shop)
+    {
+        Map<String, OMSTax> taxes = new LinkedHashMap<>();
+        String query = "SELECT t.\"tax\", st.\"shopTaxTypeName\" FROM oms.\"TaxDO\" as t "
+                        + "JOIN oms.\"Shop2TaxTypeDefDO\" AS st ON t.\"taxTypeDefRef\" = st.\"taxTypeDefRef\" "
+                        + "WHERE st.\"shopRef\" = ? and t.\"countryDefRef\" = (select \"countryDefRef\" from oms.\"ShopDO\" where id = ? )";
+        ResultSet resultSet = null;
+
+        try (Connection connection = getConnection();
+             PreparedStatement sqlStatement = connection.prepareStatement(query))
+        {
+            sqlStatement.setLong(1, shop.getId());
+            sqlStatement.setLong(2, shop.getId());
+            log.info("Calling '{}'.", sqlStatement);
+            resultSet = sqlStatement.executeQuery();
+            while (resultSet.next())
+            {
+                Double taxRate = resultSet.getDouble("tax");
+                String shopTaxTypeName = resultSet.getString("shopTaxTypeName");
+                taxes.put(shopTaxTypeName, new OMSTax().rate(BigDecimal.valueOf(taxRate)).type(shopTaxTypeName));
+            }
+        }
+        catch (SQLException sqlEx)
+        {
+            log.error("SQLException getting taxes for shop '{}' ({}): {}", shop.getName(), shop.getId(), sqlEx.getMessage());
+            throw new RuntimeException(sqlEx);
+        }
+        finally
+        {
+            if (null != resultSet)
+            {
+                try
+                {
+                    resultSet.close();
+                }
+                catch(SQLException e)
+                {
+                }
+            }
+        }
+
+        taxes.values().forEach( tax -> log.info("Tax '{}' ({}) found for shop '{}' ({}).", tax.getType(), tax.getRate(), shop.getName(), shop.getId()));
+
+        return taxes;
+    }
+
+    @Override
     public List<OMSSupplier> getSuppliersForShop(OMSShop shop)
     {
         List<Long> supplierRefs = new ArrayList<>();
@@ -687,17 +735,16 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.setLong(1, shop.getId());
-            log.info("Calling '" + sqlStatement + "'.");
+            log.info("Calling '{}'.", sqlStatement);
             resultSet = sqlStatement.executeQuery();
-            while(resultSet.next())
+            while (resultSet.next())
             {
                 supplierRefs.add(resultSet.getLong("supplierRef"));
             }
         }
-        catch(SQLException sqlEx)
+        catch (SQLException sqlEx)
         {
-            log.error("SQLException getting supplier refs for shop '" + shop.getName() + "' (" + shop.getId() + ")!"
-                            + sqlEx.getMessage());
+            log.error("SQLException getting supplier refs for shop '{}' ({}): {}", shop.getName(), shop.getId(), sqlEx.getMessage());
             throw new RuntimeException(sqlEx);
         }
         finally
@@ -716,7 +763,7 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
 
         if (supplierRefs.isEmpty())
         {
-            log.error("No suppliers found for shop '" + shop.getName() + "' (" + shop.getId() + ")!");
+            log.error("No suppliers found for shop '{}' ({})!", shop.getName(), shop.getId());
             throw new RuntimeException("No suppliers found for shop '" + shop.getName() + "' (" + shop.getId() + ")!");
 
         }
@@ -724,8 +771,7 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
         for (Long supplierRef : supplierRefs)
         {
             OMSSupplier supplier = getOMSSupplierById(supplierRef);
-            log.info("Supplier '" + supplier.getName() + "' (" + supplier.getId() + ") found for shop '"
-                            + shop.getName() + "' (" + shop.getId() + ")!");
+            log.info("Supplier '{}' ({}) found for shop '{}' ({}).", supplier.getName(), supplier.getId(), shop.getName(), shop.getId());
             suppliers.add(supplier);
         }
 
