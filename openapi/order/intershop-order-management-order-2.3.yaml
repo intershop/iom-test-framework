@@ -11,7 +11,7 @@ info:
     \ `amountDiscounted` must not be greater than `amount`. \n* Added undocumented\
     \ constraint to `OrderPosition`. Optional `number` must not be negative. \n* Added\
     \ undocumented attributes to `OrderPositionReturned`. Added `OrderPositionReturnedQuantities`\
-    \ and `OrderPositionReturnedUnits`. \n ---------- \n Version 2.1 \n* Extened `Tax`.\
+    \ and `OrderPositionReturnedUnits`. \n ---------- \n Version 2.1 \n* Extended `Tax`.\
     \ An unknown `type` can be submitted when adding `rate` and `location`. \n* Added\
     \ undocumented constraint to `Tax`. `type` has max length of 512 characters. \n\
     * Added undocumented constraint. In a list of `Tax` (taxes) each type is allowed\
@@ -1603,17 +1603,8 @@ components:
     OrderPositionReturnedQuantities:
       required:
       - quantity
-      - status
       type: object
       properties:
-        status:
-          type: string
-          description: Status of the return
-          example: CLOSED
-        supplierEntryDate:
-          type: string
-          description: Timestamp of the entry of the return at the supplier
-          format: date-time
         quantity:
           type: integer
           description: Number of returned products of the position
@@ -1669,18 +1660,9 @@ components:
       description: Reason for price reduction
     OrderPositionReturnedUnits:
       required:
-      - status
       - units
       type: object
       properties:
-        status:
-          type: string
-          description: Status of the return
-          example: CLOSED
-        supplierEntryDate:
-          type: string
-          description: Timestamp of the entry of the return at the supplier
-          format: date-time
         units:
           type: array
           description: Information about return of individual products

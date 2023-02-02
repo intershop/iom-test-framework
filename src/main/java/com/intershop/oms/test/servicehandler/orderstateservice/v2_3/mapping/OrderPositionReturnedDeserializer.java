@@ -1,4 +1,4 @@
-package com.intershop.oms.test.servicehandler.orderstateservice.v2_3.maping;
+package com.intershop.oms.test.servicehandler.orderstateservice.v2_3.mapping;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -22,7 +22,7 @@ import com.intershop.oms.rest.order.v2_3.model.OrderPositionReturnedUnits;
  */
 public class OrderPositionReturnedDeserializer extends StdDeserializer<OrderPositionReturned>
 {
-    private static final long serialVersionUID = -3604578220894767454L;
+    private static final long serialVersionUID = -315148574189477454L;
     private static final Logger log = Logger.getLogger(OrderPositionReturnedDeserializer.class.getName());
 
     public OrderPositionReturnedDeserializer()
@@ -67,6 +67,9 @@ public class OrderPositionReturnedDeserializer extends StdDeserializer<OrderPosi
                     deserialized = orderPositionReturnedQuantities;
                     match++;
                     log.log(Level.FINER, "Input data matches schema 'OrderPositionReturnedQuantities'");
+                    OrderPositionReturned ret = new OrderPositionReturned();
+                    ret.setActualInstance(deserialized);
+                    return ret;
                 }
             }
         }
@@ -78,9 +81,14 @@ public class OrderPositionReturnedDeserializer extends StdDeserializer<OrderPosi
 
         // deserialize OrderPositionReturnedUnits
         try {
-            boolean attemptParsing = true;
+            boolean attemptParsing = false;
             // ensure that we respect type coercion as set on the client ObjectMapper
-            if (OrderPositionReturnedUnits.class.equals(Integer.class) || OrderPositionReturnedUnits.class.equals(Long.class) || OrderPositionReturnedUnits.class.equals(Float.class) || OrderPositionReturnedUnits.class.equals(Double.class) || OrderPositionReturnedUnits.class.equals(Boolean.class) || OrderPositionReturnedUnits.class.equals(String.class))
+            if (OrderPositionReturnedUnits.class.equals(Integer.class) || 
+                            OrderPositionReturnedUnits.class.equals(Long.class) || 
+                            OrderPositionReturnedUnits.class.equals(Float.class) || 
+                            OrderPositionReturnedUnits.class.equals(Double.class) || 
+                            OrderPositionReturnedUnits.class.equals(Boolean.class) || 
+                            OrderPositionReturnedUnits.class.equals(String.class))
             {
                 attemptParsing = typeCoercion;
                 if (!attemptParsing)
@@ -117,7 +125,7 @@ public class OrderPositionReturnedDeserializer extends StdDeserializer<OrderPosi
             ret.setActualInstance(deserialized);
             return ret;
         }
-        throw new IOException(String.format("Failed deserialization for OrderPositionReturned: %d classes match result, expected 1", match));
+        throw new IOException(String.format("Failed deserialization for OrderPositionReturned: %d classes match result, expected 1. last deserialized: %s", match, deserialized.toString()));
     }
 
     /**

@@ -1,10 +1,13 @@
 package com.intershop.oms.test.servicehandler.orderstateservice.v1;
 
 import com.intershop.oms.rest.orderstate.v1.api.OrderStateServiceApi;
+import com.intershop.oms.rest.orderstate.v1.model.OrderStateOrderPositionReturned;
 import com.intershop.oms.rest.shared.ApiException;
 import com.intershop.oms.test.businessobject.orderstate.OMSOrderStateCollectionContainer;
 import com.intershop.oms.test.configuration.ServiceConfiguration;
 import com.intershop.oms.test.servicehandler.RESTServiceHandler;
+import com.intershop.oms.test.servicehandler.orderstateservice.v1.mapping.OrderStateOrderPositionReturnedMixIn;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,8 +24,8 @@ class OMSOrderStateServiceHandlerV1 extends RESTServiceHandler
 
     OMSOrderStateServiceHandlerV1(ServiceConfiguration serviceConfiguration)
     {
-        super(serviceConfiguration, "/rest/order-state", log);
-        //apiClient.getJSON().getMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
+        super(serviceConfiguration, "/rest/order-state", log);        
+        apiClient.getJSON().getMapper().addMixIn(OrderStateOrderPositionReturned.class, OrderStateOrderPositionReturnedMixIn.class);
         orderStateApi = new OrderStateServiceApi(apiClient);
     }
 

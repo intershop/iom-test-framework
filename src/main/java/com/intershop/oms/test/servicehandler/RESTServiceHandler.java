@@ -5,22 +5,21 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.intershop.oms.rest.order.v2_0.model.OrderPositionReturned;
-import com.intershop.oms.rest.orderstate.v1.model.OrderStateOrderPositionReturned;
 import com.intershop.oms.rest.shared.ApiClient;
 import com.intershop.oms.rest.shared.auth.HttpBasicAuth;
 import com.intershop.oms.rest.shared.auth.HttpBearerAuth;
 import com.intershop.oms.test.configuration.ConfigBuilder;
 import com.intershop.oms.test.configuration.ServiceConfiguration;
 import com.intershop.oms.test.configuration.ServiceEndpoint;
-import com.intershop.oms.test.servicehandler.orderstateservice.v2_0.mapping.OrderPositionReturnedMixIn;
-import com.intershop.oms.test.servicehandler.orderstateservice.v1.mapping.OrderStateOrderPositionReturnedMixIn;
 import com.intershop.oms.test.util.AuthTokenUtil;
 
 public abstract class RESTServiceHandler implements OMSServiceHandler
 {
+    private static final Logger log = LoggerFactory.getLogger(RESTServiceHandler.class);
+
     private static final String BEARER_AUTH = "bearerAuth";
     private static final String BASIC_AUTH = "basicAuth";
     protected String defaultProtocol = null;
@@ -64,7 +63,8 @@ public abstract class RESTServiceHandler implements OMSServiceHandler
         {
             throw new RuntimeException("neither service config nor default-endpoint are configured");
         }
-
+        
+ 
         defaultProtocol = endpoint.protocol().orElse("http");
         defaultHost = endpoint.host();
         defaultPort = endpoint.port().orElse(80);
@@ -77,7 +77,8 @@ public abstract class RESTServiceHandler implements OMSServiceHandler
 //        }
 
         apiClient.setBasePath(defaultProtocol + "://" + defaultHost + ":" + defaultPort + defaultBasePath);
-
+        log.info("RESTServiceHandler instantiated for  " + basePath + "=>" + serviceConfig.getVersion());
+ 
     }
 
     @Override
@@ -163,10 +164,6 @@ public abstract class RESTServiceHandler implements OMSServiceHandler
         // reconfigure API clients to ignore unknown properties
         ApiClient client = new ExtendedApiClient();
         client.getJSON().getMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
-        // force the usage of custom deserializers since the generated ones can't handle the missing type discriminator...
-        client.getJSON().getMapper().addMixIn(OrderPositionReturned.class, OrderPositionReturnedMixIn.class);
-        client.getJSON().getMapper().addMixIn(OrderStateOrderPositionReturned.class, OrderStateOrderPositionReturnedMixIn.class);
 
         return client;
     }

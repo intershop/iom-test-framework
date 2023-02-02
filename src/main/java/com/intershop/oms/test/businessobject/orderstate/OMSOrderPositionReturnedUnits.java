@@ -1,46 +1,39 @@
 package com.intershop.oms.test.businessobject.orderstate;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 
-public class OMSOrderPositionReturned extends OMSBusinessObject
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class OMSOrderPositionReturnedUnits  extends OMSOrderPositionReturned
 {
 
-    protected String status;
-    protected OffsetDateTime supplierEntryDate;
+    private List<OMSOrderPositionReturnedUnitsUnit> oMSOrderPositionReturnedUnitsUnits = new ArrayList<>();
 
-    public void setStatus(String status)
-    {
-        this.status = status;
-    }
-
-    public void setSupplierEntryDate(OffsetDateTime supplierEntryDate)
-    {
-        this.supplierEntryDate = supplierEntryDate;
-    }
-
-
-    public String getStatus()
-    {
-        return status;
-    }
-
-    public OffsetDateTime getSupplierEntryDate()
-    {
-        return supplierEntryDate;
-    }
-
-    public OMSOrderPositionReturned status(String status)
+    @Override
+    public OMSOrderPositionReturnedUnits status(String status)
     {
         this.status = status;
         return this;
     }
 
-    public OMSOrderPositionReturned supplierEntryDate(OffsetDateTime supplierEntryDate)
+    @Override
+    public OMSOrderPositionReturnedUnits supplierEntryDate(OffsetDateTime supplierEntryDate)
     {
         this.supplierEntryDate = supplierEntryDate;
+        return this;
+    }
+    
+    public OMSOrderPositionReturnedUnits status(List<OMSOrderPositionReturnedUnitsUnit> oMSOrderPositionReturnedUnitsUnits)
+    {
+        this.oMSOrderPositionReturnedUnitsUnits = oMSOrderPositionReturnedUnitsUnits;
         return this;
     }
 
@@ -56,7 +49,7 @@ public class OMSOrderPositionReturned extends OMSBusinessObject
             return false;
         }
         OMSOrderPositionReturned orderPositionReturned = (OMSOrderPositionReturned) o;
-        return Objects.equals(this.status, orderPositionReturned.status) && Objects.equals(this.supplierEntryDate, orderPositionReturned.supplierEntryDate);
+        return Objects.equals(status, orderPositionReturned.status) && Objects.equals(supplierEntryDate, orderPositionReturned.supplierEntryDate);
     }
 
     @Override
@@ -69,9 +62,10 @@ public class OMSOrderPositionReturned extends OMSBusinessObject
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
-        sb.append("class OrderPositionReturned {\n");
+        sb.append("class OMSOrderPositionReturnedUnits {\n");
         sb.append("    status: ").append(toIndentedString(status)).append("\n");
         sb.append("    supplierEntryDate: ").append(toIndentedString(supplierEntryDate)).append("\n");
+        sb.append("    oMSOrderPositionReturnedUnitsUnits: ").append(toIndentedString(oMSOrderPositionReturnedUnitsUnits)).append("\n");
         sb.append("}");
         return sb.toString();
     }

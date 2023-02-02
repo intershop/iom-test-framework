@@ -8,14 +8,17 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.intershop.oms.rest.order.v2_3.api.OrderStateApi;
+import com.intershop.oms.rest.order.v2_3.model.OrderPositionReturned;
 import com.intershop.oms.rest.order.v2_3.model.OrderStateCollectionContainer;
 import com.intershop.oms.rest.shared.ApiException;
 import com.intershop.oms.rest.shared.ApiResponse;
 import com.intershop.oms.test.businessobject.orderstate.OMSOrderStateCollectionContainer;
 import com.intershop.oms.test.configuration.ServiceConfiguration;
 import com.intershop.oms.test.servicehandler.RESTServiceHandler;
-import com.intershop.oms.test.servicehandler.orderstateservice.v2_3.maping.OrderStateCollectionContainerMapper;
+import com.intershop.oms.test.servicehandler.orderstateservice.v2_3.mapping.OrderPositionReturnedMixIn;
+import com.intershop.oms.test.servicehandler.orderstateservice.v2_3.mapping.OrderStateCollectionContainerMapper;
 
 public class OMSOrderStateServiceHandlerV2_3 extends RESTServiceHandler
                 implements com.intershop.oms.test.servicehandler.orderstateservice.OMSOrderStateServiceHandler
@@ -26,6 +29,7 @@ public class OMSOrderStateServiceHandlerV2_3 extends RESTServiceHandler
     OMSOrderStateServiceHandlerV2_3(ServiceConfiguration serviceConfiguration)
     {
         super(serviceConfiguration, "/rest/order-service", log);
+        apiClient.getJSON().getMapper().addMixIn(OrderPositionReturned.class, OrderPositionReturnedMixIn.class);
         orderStateApi = new OrderStateApi(apiClient);
     }
 

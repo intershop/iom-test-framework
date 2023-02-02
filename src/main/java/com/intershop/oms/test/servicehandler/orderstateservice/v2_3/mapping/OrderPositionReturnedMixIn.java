@@ -1,6 +1,8 @@
-package com.intershop.oms.test.servicehandler.orderstateservice.v2_3.maping;
+package com.intershop.oms.test.servicehandler.orderstateservice.v2_3.mapping;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.intershop.oms.rest.order.v2_3.model.OrderPositionReturned;
+import com.intershop.oms.test.servicehandler.orderstateservice.v2_3.mapping.OrderPositionReturnedDeserializer;
 
 /**
  * registering a module at the mapper did not override the local deserializer
@@ -9,7 +11,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  * the missing type discriminator...
  */
 @JsonDeserialize(using = OrderPositionReturnedDeserializer.class)
-public abstract class OrderPositionReturnedMixIn
+public abstract class OrderPositionReturnedMixIn 
 {
 
 }

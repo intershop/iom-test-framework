@@ -1,4 +1,4 @@
-package com.intershop.oms.test.servicehandler.orderstateservice.v2_3.maping;
+package com.intershop.oms.test.servicehandler.orderstateservice.v2_3.mapping;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -15,4 +15,5 @@ public interface OrderPositionReturnedMapper
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "supplierEntryDate", ignore = true)
     OMSOrderPositionReturned fromApiOrderPositionReturned(OrderPositionReturned orderPositionReturned);
+
 }

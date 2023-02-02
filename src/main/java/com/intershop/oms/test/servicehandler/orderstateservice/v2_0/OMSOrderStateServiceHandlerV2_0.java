@@ -10,12 +10,14 @@ import org.slf4j.LoggerFactory;
 
 import com.intershop.oms.rest.order.v2_0.api.OrderStateApi;
 import com.intershop.oms.rest.order.v2_0.model.OrderStateCollectionContainer;
+import com.intershop.oms.rest.order.v2_0.model.OrderPositionReturned;
 import com.intershop.oms.rest.shared.ApiException;
 import com.intershop.oms.rest.shared.ApiResponse;
 import com.intershop.oms.test.businessobject.orderstate.OMSOrderStateCollectionContainer;
 import com.intershop.oms.test.configuration.ServiceConfiguration;
 import com.intershop.oms.test.servicehandler.RESTServiceHandler;
 import com.intershop.oms.test.servicehandler.orderstateservice.v2_0.mapping.OrderStateCollectionContainerMapper;
+import com.intershop.oms.test.servicehandler.orderstateservice.v2_0.mapping.OrderPositionReturnedMixIn;
 
 public class OMSOrderStateServiceHandlerV2_0 extends RESTServiceHandler
                 implements com.intershop.oms.test.servicehandler.orderstateservice.OMSOrderStateServiceHandler
@@ -26,6 +28,8 @@ public class OMSOrderStateServiceHandlerV2_0 extends RESTServiceHandler
     OMSOrderStateServiceHandlerV2_0(ServiceConfiguration serviceConfiguration)
     {
         super(serviceConfiguration, "/rest/order-service", log);
+        apiClient.getJSON().getMapper().addMixIn(OrderPositionReturned.class, OrderPositionReturnedMixIn.class);
+
         orderStateApi = new OrderStateApi(apiClient);
     }
 

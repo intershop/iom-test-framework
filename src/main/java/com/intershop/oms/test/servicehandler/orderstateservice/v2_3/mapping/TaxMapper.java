@@ -1,4 +1,4 @@
-package com.intershop.oms.test.servicehandler.orderstateservice.v2_3.maping;
+package com.intershop.oms.test.servicehandler.orderstateservice.v2_3.mapping;
 
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
@@ -12,9 +12,6 @@ import com.intershop.oms.test.businessobject.prices.OMSTax;
 public interface TaxMapper
 {
     TaxMapper INSTANCE = Mappers.getMapper(TaxMapper.class);
-//
-//    @Mapping(target = "rate", ignore = true)
-//    @Mapping(target = "location", ignore = true)
     OMSTax fromApiTax(Tax tax);
 
     @InheritInverseConfiguration

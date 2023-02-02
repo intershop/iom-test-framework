@@ -14,6 +14,6 @@ public class OMSOrderStateServiceHandlerProviderV2_3 implements ServiceProvider<
     @Override
     public String getVersion()
     {
-        return "V2_1";
+        return "V2_3";
     }
 }
