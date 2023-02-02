@@ -306,8 +306,12 @@ paths:
       tags:
       - Order State
       summary: Returns order states by search criteria
-      description: This operation returns the order states of orders that match the
-        given search criterias.
+      description: |
+        This operation returns the order states of orders that match the given search criterias. 
+        
+        When using one search attribute with a list, e.g. emails, 
+        all orders matching ANY of the list element are selected.        
+        Apart from this, the different search conditions are combined with AND.
       operationId: getOrderStatesBySortCriterias
       parameters:
       - name: shopId
