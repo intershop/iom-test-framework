@@ -6,11 +6,6 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.intershop.oms.test.businessobject.transmission.OMSReceiverType;
-import com.intershop.oms.test.businessobject.transmission.OMSTransmissionResponseStatus;
-import com.intershop.oms.test.businessobject.transmission.OMSTransmissionStatus;
-import com.intershop.oms.test.businessobject.transmission.OMSTransmissionTypeGroup;
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
