@@ -1607,8 +1607,17 @@ components:
     OrderPositionReturnedQuantities:
       required:
       - quantity
+      - status
       type: object
       properties:
+        status:
+          type: string
+          description: Status of the return
+          example: CLOSED
+        supplierEntryDate:
+          type: string
+          description: Timestamp of the entry of the return at the supplier
+          format: date-time
         quantity:
           type: integer
           description: Number of returned products of the position
@@ -1664,9 +1673,18 @@ components:
       description: Reason for price reduction
     OrderPositionReturnedUnits:
       required:
+      - status
       - units
       type: object
       properties:
+        status:
+          type: string
+          description: Status of the return
+          example: CLOSED
+        supplierEntryDate:
+          type: string
+          description: Timestamp of the entry of the return at the supplier
+          format: date-time
         units:
           type: array
           description: Information about return of individual products

@@ -1,4 +1,4 @@
-package com.intershop.oms.test.servicehandler.orderstateservice.v2_3.mapping;
+package com.intershop.oms.test.servicehandler.orderservice.v2_3.mapping;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -38,6 +38,8 @@ public class OrderPositionReturnedDeserializer extends StdDeserializer<OrderPosi
     @Override
     public OrderPositionReturned deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException
     {
+        
+        log.log(Level.FINER, "Custom OrderPositionReturnedDeserializer called");
         JsonNode tree = jp.readValueAsTree();
         Object deserialized = null;
         boolean typeCoercion = ctxt.isEnabled(MapperFeature.ALLOW_COERCION_OF_SCALARS);
@@ -121,6 +123,8 @@ public class OrderPositionReturnedDeserializer extends StdDeserializer<OrderPosi
 
         if (match == 1)
         {
+            log.log(Level.FINER, "Deserialized OrderPositionReturned as:\n "+ deserialized);
+
             OrderPositionReturned ret = new OrderPositionReturned();
             ret.setActualInstance(deserialized);
             return ret;

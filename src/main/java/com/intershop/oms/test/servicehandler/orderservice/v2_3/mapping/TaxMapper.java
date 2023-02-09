@@ -1,4 +1,4 @@
-package com.intershop.oms.test.servicehandler.orderstateservice.v2_3.mapping;
+package com.intershop.oms.test.servicehandler.orderservice.v2_3.mapping;
 
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;

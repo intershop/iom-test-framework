@@ -19,10 +19,10 @@ import com.intershop.oms.test.servicehandler.orderservice.v2_0.OMSOrderServiceHa
 import com.intershop.oms.test.servicehandler.orderservice.v2_1.OMSOrderServiceHandlerProviderV2_1;
 import com.intershop.oms.test.servicehandler.orderservice.v2_2.OMSOrderServiceHandlerProviderV2_2;
 import com.intershop.oms.test.servicehandler.orderservice.v2_3.OMSOrderServiceHandlerProviderV2_3;
-import com.intershop.oms.test.servicehandler.orderstateservice.OMSOrderStateServiceHandler;
+import com.intershop.oms.test.servicehandler.orderservice.v2_3.OMSOrderStateServiceHandlerProviderV2_3;
+import com.intershop.oms.test.servicehandler.orderservice.OMSOrderStateServiceHandler;
 import com.intershop.oms.test.servicehandler.orderstateservice.v1.OMSOrderStateServiceHandlerProviderV1;
 import com.intershop.oms.test.servicehandler.orderstateservice.v2_0.OMSOrderStateServiceHandlerProviderV2_0;
-import com.intershop.oms.test.servicehandler.orderstateservice.v2_3.OMSOrderStateServiceHandlerProviderV2_3;
 import com.intershop.oms.test.servicehandler.rmaservice.OMSReturnRequestServiceHandler;
 import com.intershop.oms.test.servicehandler.rmaservice.v2.OMSReturnRequestServiceHandlerProviderV2;
 import com.intershop.oms.test.servicehandler.rmaservice.v2_10.OMSReturnRequestServiceHandlerProviderV2_10;

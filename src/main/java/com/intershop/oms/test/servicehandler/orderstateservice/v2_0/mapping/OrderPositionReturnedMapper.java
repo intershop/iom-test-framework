@@ -14,5 +14,7 @@ public interface OrderPositionReturnedMapper
 
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "supplierEntryDate", ignore = true)
+    @Mapping(target = "units", ignore = true)
+    @Mapping(target = "quantity", ignore = true)
     OMSOrderPositionReturned fromApiOrderPositionReturned(OrderPositionReturned orderPositionReturned);
 }

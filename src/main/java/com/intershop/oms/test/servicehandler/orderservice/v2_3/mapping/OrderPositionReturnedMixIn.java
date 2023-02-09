@@ -1,8 +1,8 @@
-package com.intershop.oms.test.servicehandler.orderstateservice.v2_3.mapping;
+package com.intershop.oms.test.servicehandler.orderservice.v2_3.mapping;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.intershop.oms.rest.order.v2_3.model.OrderPositionReturned;
-import com.intershop.oms.test.servicehandler.orderstateservice.v2_3.mapping.OrderPositionReturnedDeserializer;
+import com.intershop.oms.test.servicehandler.orderservice.v2_3.mapping.OrderPositionReturnedDeserializer;
 
 /**
  * registering a module at the mapper did not override the local deserializer

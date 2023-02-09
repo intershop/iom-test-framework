@@ -1,9 +1,9 @@
-package com.intershop.oms.test.servicehandler.orderstateservice.v2_3;
+package com.intershop.oms.test.servicehandler.orderservice.v2_3;
 
 import com.intershop.oms.test.configuration.ServiceConfiguration;
 import com.intershop.oms.test.servicehandler.ServiceProvider;
 import com.intershop.oms.test.servicehandler.omsdb.OMSDbHandler;
-import com.intershop.oms.test.servicehandler.orderstateservice.OMSOrderStateServiceHandler;
+import com.intershop.oms.test.servicehandler.orderservice.OMSOrderStateServiceHandler;
 
 public class OMSOrderStateServiceHandlerProviderV2_3 implements ServiceProvider<OMSOrderStateServiceHandler> {
     @Override
