@@ -63,22 +63,15 @@ public abstract class RESTServiceHandler implements OMSServiceHandler
         {
             throw new RuntimeException("neither service config nor default-endpoint are configured");
         }
-        
- 
+
         defaultProtocol = endpoint.protocol().orElse("http");
         defaultHost = endpoint.host();
         defaultPort = endpoint.port().orElse(80);
         defaultBasePath = basePath;
 
-//        if (ConfigBuilder.getDefault().clientLogging())
-//        {
-//            //this.apiClient.setDebugging(true);
-//            apiClient.fe
-//        }
-
         apiClient.setBasePath(defaultProtocol + "://" + defaultHost + ":" + defaultPort + defaultBasePath);
-        log.info("RESTServiceHandler instantiated for  " + basePath + "=>" + serviceConfig.getVersion());
- 
+        log.debug("RESTServiceHandler instantiated for {} => {}", basePath, serviceConfig.getVersion());
+
     }
 
     @Override

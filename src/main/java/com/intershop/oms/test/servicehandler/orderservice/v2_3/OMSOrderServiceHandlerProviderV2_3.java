@@ -5,11 +5,11 @@ import com.intershop.oms.test.servicehandler.ServiceProvider;
 import com.intershop.oms.test.servicehandler.omsdb.OMSDbHandler;
 import com.intershop.oms.test.servicehandler.orderservice.OMSOrderServiceHandler;
 
-public class OMSOrderServiceHandlerProviderV2_3 implements ServiceProvider<OMSOrderServiceHandler> {
-
-    // FIXME doesn't support BearerAuth yet
+public class OMSOrderServiceHandlerProviderV2_3 implements ServiceProvider<OMSOrderServiceHandler>
+{
     @Override
-    public OMSOrderServiceHandler createServiceHandler(OMSDbHandler dbhandler, ServiceConfiguration configuration) {
+    public OMSOrderServiceHandler createServiceHandler(OMSDbHandler dbhandler, ServiceConfiguration configuration)
+    {
         return new OMSOrderServiceHandlerV2_3(dbhandler, configuration);
     }
 

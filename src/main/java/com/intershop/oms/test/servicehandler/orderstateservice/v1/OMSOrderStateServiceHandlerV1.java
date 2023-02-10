@@ -1,32 +1,30 @@
 package com.intershop.oms.test.servicehandler.orderstateservice.v1;
 
-import com.intershop.oms.rest.orderstate.v1.api.OrderStateServiceApi;
-import com.intershop.oms.rest.orderstate.v1.model.OrderStateOrderPositionReturned;
-import com.intershop.oms.rest.shared.ApiException;
-import com.intershop.oms.test.businessobject.orderstate.OMSOrderFilter;
-import com.intershop.oms.test.businessobject.orderstate.OMSOrderStateCollectionContainer;
-import com.intershop.oms.test.configuration.ServiceConfiguration;
-import com.intershop.oms.test.servicehandler.RESTServiceHandler;
-import com.intershop.oms.test.servicehandler.orderstateservice.v1.mapping.OrderStateOrderPositionReturnedMixIn;
-import com.intershop.oms.test.util.OMSSearchParams;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.intershop.oms.rest.orderstate.v1.api.OrderStateServiceApi;
+import com.intershop.oms.rest.orderstate.v1.model.OrderStateOrderPositionReturned;
+import com.intershop.oms.rest.shared.ApiException;
+import com.intershop.oms.test.businessobject.orderstate.OMSOrderStateCollectionContainer;
+import com.intershop.oms.test.configuration.ServiceConfiguration;
+import com.intershop.oms.test.servicehandler.RESTServiceHandler;
+import com.intershop.oms.test.servicehandler.orderstateservice.v1.mapping.OrderStateOrderPositionReturnedMixIn;
+
 class OMSOrderStateServiceHandlerV1 extends RESTServiceHandler
-    implements com.intershop.oms.test.servicehandler.orderservice.OMSOrderStateServiceHandler
+    implements com.intershop.oms.test.servicehandler.orderstateservice.OMSOrderStateServiceHandler
 {
     private static final Logger log = LoggerFactory.getLogger(OMSOrderStateServiceHandlerV1.class);
     private final OrderStateServiceApi orderStateApi;
 
     OMSOrderStateServiceHandlerV1(ServiceConfiguration serviceConfiguration)
     {
-        super(serviceConfiguration, "/rest/order-state", log);        
+        super(serviceConfiguration, "/rest/order-state", log);
         apiClient.getJSON().getMapper().addMixIn(OrderStateOrderPositionReturned.class, OrderStateOrderPositionReturnedMixIn.class);
         orderStateApi = new OrderStateServiceApi(apiClient);
     }
@@ -38,16 +36,6 @@ class OMSOrderStateServiceHandlerV1 extends RESTServiceHandler
                     String sortDirection, Integer offset, Integer limit) throws ApiException
     {
         throw new UnsupportedOperationException("Not implemented for service version v1. Call ");
-    }
-
-
-    @Override
-    public OMSOrderStateCollectionContainer getOrderStatesBySortCriterias(Long shopId, OMSOrderFilter filter,
-                    OMSSearchParams searchParams) throws ApiException
-    {
-        {
-            throw new UnsupportedOperationException("Not implemented for service version v1. Call ");
-        }
     }
 
     @Override

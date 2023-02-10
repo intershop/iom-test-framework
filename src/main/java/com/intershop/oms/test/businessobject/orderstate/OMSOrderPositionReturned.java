@@ -3,7 +3,6 @@ package com.intershop.oms.test.businessobject.orderstate;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 
@@ -18,16 +17,16 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @ToString
 @EqualsAndHashCode(callSuper = false)
-public class OMSOrderPositionReturned  extends OMSBusinessObject
+public class OMSOrderPositionReturned extends OMSBusinessObject
 {
 
     private String status;
     private OffsetDateTime supplierEntryDate;
 
-    //OMSOrderPositionReturnedQuantities
+    // OMSOrderPositionReturnedQuantities
     private Integer quantity;
-    
-    //OMSOrderPositionReturnedUnits
+
+    // OMSOrderPositionReturnedUnits
     private List<OMSOrderPositionReturnedUnitsUnit> units = new ArrayList<>();
 
 }

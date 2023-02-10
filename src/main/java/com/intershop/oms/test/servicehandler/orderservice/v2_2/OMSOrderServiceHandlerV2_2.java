@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,6 +20,8 @@ import com.intershop.oms.rest.shared.ApiResponse;
 import com.intershop.oms.test.businessobject.OMSShop;
 import com.intershop.oms.test.businessobject.order.OMSChangeRequest;
 import com.intershop.oms.test.businessobject.order.OMSOrder;
+import com.intershop.oms.test.businessobject.orderstate.OMSOrderFilter;
+import com.intershop.oms.test.businessobject.orderstate.OMSOrderStateCollectionContainer;
 import com.intershop.oms.test.configuration.ServiceConfiguration;
 import com.intershop.oms.test.servicehandler.RESTServiceHandler;
 import com.intershop.oms.test.servicehandler.omsdb.OMSDbHandler;
@@ -25,6 +29,7 @@ import com.intershop.oms.test.servicehandler.orderservice.OMSOrderServiceHandler
 import com.intershop.oms.test.servicehandler.orderservice.v2_2.mapping.ChangeRequestCreateMapper;
 import com.intershop.oms.test.servicehandler.orderservice.v2_2.mapping.ChangeRequestViewMapper;
 import com.intershop.oms.test.servicehandler.orderservice.v2_2.mapping.OrderMapper;
+import com.intershop.oms.test.util.OMSSearchParams;
 
 class OMSOrderServiceHandlerV2_2 extends RESTServiceHandler implements OMSOrderServiceHandler
 {
@@ -228,8 +233,7 @@ class OMSOrderServiceHandlerV2_2 extends RESTServiceHandler implements OMSOrderS
     @Override
     public OMSOrder createOrder(String user, String password, OMSOrder orderData)
     {
-        log.info("Create order called in service handler version 2.2 ---- doing nothing, anymore!");
-        return orderData;
+        throw new UnsupportedOperationException("Method is deprecated and not implemented in more recent service handlers.");
     }
 
     @Override
@@ -250,5 +254,12 @@ class OMSOrderServiceHandlerV2_2 extends RESTServiceHandler implements OMSOrderS
     protected Collection<Object> unwrapApiClient()
     {
         return Set.of(orderApi);
+    }
+
+    @Override
+    public OMSOrderStateCollectionContainer getOrderStatesBySortCriterias(Long shopId, OMSOrderFilter filter,
+                    @Nullable OMSSearchParams searchParams) throws ApiException
+    {
+        throw new RuntimeException("Method not supported for version < 2.3!");
     }
 }

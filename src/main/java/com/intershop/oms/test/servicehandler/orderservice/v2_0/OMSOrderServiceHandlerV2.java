@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,10 +16,13 @@ import com.intershop.oms.rest.shared.ApiException;
 import com.intershop.oms.rest.shared.ApiResponse;
 import com.intershop.oms.test.businessobject.order.OMSChangeRequest;
 import com.intershop.oms.test.businessobject.order.OMSOrder;
+import com.intershop.oms.test.businessobject.orderstate.OMSOrderFilter;
+import com.intershop.oms.test.businessobject.orderstate.OMSOrderStateCollectionContainer;
 import com.intershop.oms.test.configuration.ServiceConfiguration;
 import com.intershop.oms.test.servicehandler.RESTServiceHandler;
 import com.intershop.oms.test.servicehandler.omsdb.OMSDbHandler;
 import com.intershop.oms.test.servicehandler.orderservice.v2_0.mapping.OrderMapper;
+import com.intershop.oms.test.util.OMSSearchParams;
 
 class OMSOrderServiceHandlerV2 extends RESTServiceHandler
                 implements com.intershop.oms.test.servicehandler.orderservice.OMSOrderServiceHandler
@@ -184,5 +189,12 @@ class OMSOrderServiceHandlerV2 extends RESTServiceHandler
     protected Collection<Object> unwrapApiClient()
     {
         return Set.of(orderApi);
+    }
+
+    @Override
+    public OMSOrderStateCollectionContainer getOrderStatesBySortCriterias(Long shopId, OMSOrderFilter filter,
+                    @Nullable OMSSearchParams searchParams) throws ApiException
+    {
+        throw new RuntimeException("Method not supported for version < 2.3!");
     }
 }
