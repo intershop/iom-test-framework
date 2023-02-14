@@ -169,10 +169,6 @@ public interface OMSOrderServiceHandler extends OMSServiceHandler
 
     @Experimental("currently in discussion")
     // FIXME: Proposal = return Collection<OMSOrder> instead..?
-    default  OMSOrderStateCollectionContainer getOrderStatesBySortCriterias(Long shopId, OMSOrderFilter filter, @Nullable OMSSearchParams searchParams) throws ApiException
-    {
-        //Have a default method for this new method in order to avoid an API break
-        throw new RuntimeException("getOrderStatesBySortCriterias has not been implemented");
-    }
+    OMSOrderStateCollectionContainer getOrderStatesBySortCriterias(Long shopId, OMSOrderFilter filter, @Nullable OMSSearchParams searchParams) throws ApiException;
 
 }
