@@ -167,8 +167,11 @@ public interface OMSOrderServiceHandler extends OMSServiceHandler
     @Deprecated
     Long sendOrder(String host, String port, OMSOrder order) throws ApiException;
 
-    @Experimental("currently in discussion")
+    @Experimental("Proposed to be replaced by a method returning Collection<OMSOrder / OMSOrderState>")
     // FIXME: Proposal = return Collection<OMSOrder> instead..?
-    OMSOrderStateCollectionContainer getOrderStatesBySortCriterias(Long shopId, OMSOrderFilter filter, @Nullable OMSSearchParams searchParams) throws ApiException;
+    // Note: Currently this doesn't make sense because those classes are too
+    // different, OMSOrder has to be extended first
+    OMSOrderStateCollectionContainer getOrderStatesBySortCriterias(Long shopId, OMSOrderFilter filter,
+                    @Nullable OMSSearchParams searchParams) throws ApiException;
 
 }
