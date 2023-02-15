@@ -1,7 +1,7 @@
 package com.intershop.oms.test.servicehandler;
 
 import com.intershop.oms.test.servicehandler.orderservice.OMSOrderServiceHandler;
-import com.intershop.oms.test.servicehandler.orderservice.v2_2.OMSOrderServiceHandlerProviderV2_2;
+import com.intershop.oms.test.servicehandler.orderservice.v2_3.OMSOrderServiceHandlerProviderV2_3;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -19,7 +19,7 @@ class ServiceHandlerFactoryTest
         // register a service provider that has been registered statically
         Assertions.assertThrows(IllegalArgumentException.class,
                         () -> ServiceHandlerFactory.registerServiceHandler(OMSOrderServiceHandler.class,
-                                        new OMSOrderServiceHandlerProviderV2_2()));
+                                        new OMSOrderServiceHandlerProviderV2_3()));
     }
 
     @Test

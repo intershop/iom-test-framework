@@ -1,4 +1,4 @@
-package com.intershop.oms.test.servicehandler.orderservice.v2_2;
+package com.intershop.oms.test.servicehandler.orderservice.v2_3;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,10 +11,13 @@ import javax.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.intershop.oms.rest.order.v2_2.api.OrderApi;
-import com.intershop.oms.rest.order.v2_2.model.ChangeRequestCreate;
-import com.intershop.oms.rest.order.v2_2.model.ChangeRequestView;
-import com.intershop.oms.rest.order.v2_2.model.Order;
+import com.intershop.oms.rest.order.v2_3.api.OrderApi;
+import com.intershop.oms.rest.order.v2_3.api.OrderStateApi;
+import com.intershop.oms.rest.order.v2_3.model.ChangeRequestCreate;
+import com.intershop.oms.rest.order.v2_3.model.ChangeRequestView;
+import com.intershop.oms.rest.order.v2_3.model.Order;
+import com.intershop.oms.rest.order.v2_3.model.OrderPositionReturned;
+import com.intershop.oms.rest.order.v2_3.model.OrderStateCollectionContainer;
 import com.intershop.oms.rest.shared.ApiException;
 import com.intershop.oms.rest.shared.ApiResponse;
 import com.intershop.oms.test.businessobject.OMSShop;
@@ -26,22 +29,27 @@ import com.intershop.oms.test.configuration.ServiceConfiguration;
 import com.intershop.oms.test.servicehandler.RESTServiceHandler;
 import com.intershop.oms.test.servicehandler.omsdb.OMSDbHandler;
 import com.intershop.oms.test.servicehandler.orderservice.OMSOrderServiceHandler;
-import com.intershop.oms.test.servicehandler.orderservice.v2_2.mapping.ChangeRequestCreateMapper;
-import com.intershop.oms.test.servicehandler.orderservice.v2_2.mapping.ChangeRequestViewMapper;
-import com.intershop.oms.test.servicehandler.orderservice.v2_2.mapping.OrderMapper;
+import com.intershop.oms.test.servicehandler.orderservice.v2_3.mapping.ChangeRequestCreateMapper;
+import com.intershop.oms.test.servicehandler.orderservice.v2_3.mapping.ChangeRequestViewMapper;
+import com.intershop.oms.test.servicehandler.orderservice.v2_3.mapping.OrderMapper;
+import com.intershop.oms.test.servicehandler.orderservice.v2_3.mapping.OrderPositionReturnedMixIn;
+import com.intershop.oms.test.servicehandler.orderservice.v2_3.mapping.OrderStateCollectionContainerMapper;
 import com.intershop.oms.test.util.OMSSearchParams;
 
-class OMSOrderServiceHandlerV2_2 extends RESTServiceHandler implements OMSOrderServiceHandler
+class OMSOrderServiceHandlerV2_3 extends RESTServiceHandler implements OMSOrderServiceHandler
 {
-    private static final Logger log = LoggerFactory.getLogger(OMSOrderServiceHandlerV2_2.class);
+    private static final Logger log = LoggerFactory.getLogger(OMSOrderServiceHandlerV2_3.class);
     private final OMSDbHandler dbHandler;
     private final OrderApi orderApi;
+    private final OrderStateApi orderStateApi;
 
-    public OMSOrderServiceHandlerV2_2(OMSDbHandler dbHandler, ServiceConfiguration serviceConfig)
+    public OMSOrderServiceHandlerV2_3(OMSDbHandler dbHandler, ServiceConfiguration serviceConfig)
     {
         super(serviceConfig, "/rest/order-service", log);
+        apiClient.getJSON().getMapper().addMixIn(OrderPositionReturned.class, OrderPositionReturnedMixIn.class);
         this.dbHandler = dbHandler;
         this.orderApi = new OrderApi(apiClient);
+        this.orderStateApi = new OrderStateApi(apiClient);
     }
 
     /**
@@ -233,7 +241,8 @@ class OMSOrderServiceHandlerV2_2 extends RESTServiceHandler implements OMSOrderS
     @Override
     public OMSOrder createOrder(String user, String password, OMSOrder orderData)
     {
-        throw new UnsupportedOperationException("Method is deprecated and not implemented in more recent service handlers.");
+        log.info("Create order called in service handler version 2.2 ---- doing nothing, anymore!");
+        return orderData;
     }
 
     @Override
@@ -253,13 +262,25 @@ class OMSOrderServiceHandlerV2_2 extends RESTServiceHandler implements OMSOrderS
     @Override
     protected Collection<Object> unwrapApiClient()
     {
-        return Set.of(orderApi);
+        return Set.of(orderApi, orderStateApi);
     }
 
     @Override
     public OMSOrderStateCollectionContainer getOrderStatesBySortCriterias(Long shopId, OMSOrderFilter filter,
                     @Nullable OMSSearchParams searchParams) throws ApiException
     {
-        throw new RuntimeException("Method not supported for version < 2.3!");
+        if (searchParams == null)
+        {
+            searchParams = new OMSSearchParams();
+        }
+        ApiResponse<OrderStateCollectionContainer> response = orderStateApi.getOrderStatesBySortCriteriasWithHttpInfo(
+                        shopId, filter.getShopOrderNumbers(), filter.getShopCustomerNumbers(),
+                        filter.getProductNumbers(), filter.getStatuses(), filter.getEmails(),
+                        filter.getShopOrderCreationDateFrom(), filter.getShopOrderCreationDateTo(),
+                        searchParams.getSortableAttribute(),
+                        // use a String to avoid an API break (TODO: check if
+                        // required)
+                        searchParams.getSortDirection().name(), searchParams.getOffset(), searchParams.getLimit());
+        return OrderStateCollectionContainerMapper.INSTANCE.fromApiOrderStateCollectionContainer(response.getData());
     }
 }

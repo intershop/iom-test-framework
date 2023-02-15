@@ -3,11 +3,17 @@ package com.intershop.oms.test.servicehandler.orderservice;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import com.intershop.oms.rest.shared.ApiException;
 import com.intershop.oms.rest.shared.ApiResponse;
 import com.intershop.oms.test.businessobject.order.OMSChangeRequest;
 import com.intershop.oms.test.businessobject.order.OMSOrder;
+import com.intershop.oms.test.businessobject.orderstate.OMSOrderFilter;
+import com.intershop.oms.test.businessobject.orderstate.OMSOrderStateCollectionContainer;
 import com.intershop.oms.test.servicehandler.OMSServiceHandler;
+import com.intershop.oms.test.util.Experimental;
+import com.intershop.oms.test.util.OMSSearchParams;
 
 public interface OMSOrderServiceHandler extends OMSServiceHandler
 {
@@ -160,5 +166,12 @@ public interface OMSOrderServiceHandler extends OMSServiceHandler
      */
     @Deprecated
     Long sendOrder(String host, String port, OMSOrder order) throws ApiException;
+
+    @Experimental("Proposed to be replaced by a method returning Collection<OMSOrder / OMSOrderState>")
+    // FIXME: Proposal = return Collection<OMSOrder> instead..?
+    // Note: Currently this doesn't make sense because those classes are too
+    // different, OMSOrder has to be extended first
+    OMSOrderStateCollectionContainer getOrderStatesBySortCriterias(Long shopId, OMSOrderFilter filter,
+                    @Nullable OMSSearchParams searchParams) throws ApiException;
 
 }
