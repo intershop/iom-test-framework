@@ -7,10 +7,9 @@ import com.intershop.oms.test.servicehandler.orderservice.v2_3.mapping.OrderPosi
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(uses = { OrderStatePositionMapper.class, 
-                TaxMapper.class, 
-                AddressInvoiceLocationMapper.class, 
-                AddressShippingLocationMapper.class,
+@Mapper(uses = { OrderStatePositionMapper.class,
+                TaxMapper.class,
+                AddressLocationMapper.class,
                 OrderPositionReturnedQuantitiesMapper.class})
 public interface OrderStateCollectionContainerMapper
 {
