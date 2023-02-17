@@ -11,10 +11,10 @@ info:
     \ `amountDiscounted` must not be greater than `amount`. \n* Added undocumented\
     \ constraint to `OrderPosition`. Optional `number` must not be negative. \n* Added\
     \ undocumented attributes to `OrderPositionReturned`. Added `OrderPositionReturnedQuantities`\
-    \ and `OrderPositionReturnedUnits`. \n ---------- \n Version 2.1 \n* Extended `Tax`.\
-    \ An unknown `type` can be submitted when adding `rate` and `location`. \n* Added\
-    \ undocumented constraint to `Tax`. `type` has max length of 512 characters. \n\
-    * Added undocumented constraint. In a list of `Tax` (taxes) each type is allowed\
+    \ and `OrderPositionReturnedUnits`. \n ---------- \n Version 2.1 \n* Extended\
+    \ `Tax`. An unknown `type` can be submitted when adding `rate` and `location`.\
+    \ \n* Added undocumented constraint to `Tax`. `type` has max length of 512 characters.\
+    \ \n* Added undocumented constraint. In a list of `Tax` (taxes) each type is allowed\
     \ once only. \n* Exceeded length of attributes in `Promotion`. `id` has max length\
     \ of 512 `characters`. `name`, `descriptorId`, `code` and `budgetSourceId` have\
     \ max length of characters. \n \n "
@@ -306,12 +306,10 @@ paths:
       tags:
       - Order State
       summary: Returns order states by search criteria
-      description: |
-        This operation returns the order states of orders that match the given search criterias. 
-        
-        When using one search attribute with a list, e.g. emails, 
-        all orders matching ANY of the list element are selected.        
-        Apart from this, the different search conditions are combined with AND.
+      description: "This operation returns the order states of orders that match the\
+        \ given search criterias.\n\nWhen using one search attribute with a list,\
+        \ e.g. emails, all orders matching ANY of the list element are selected. \n\
+        Apart from this, the different search conditions are combined with AND."
       operationId: getOrderStatesBySortCriterias
       parameters:
       - name: shopId
@@ -493,9 +491,7 @@ components:
       type: object
       properties:
         location:
-          oneOf:
-            - $ref: '#/components/schemas/AddressLocationStreet'
-            - $ref: '#/components/schemas/AddressLocationPOBox'
+          $ref: '#/components/schemas/AddressLocation'
         contact:
           $ref: '#/components/schemas/Contact'
         receiver:
@@ -644,10 +640,7 @@ components:
       type: object
       properties:
         location:
-          oneOf:
-            - $ref: '#/components/schemas/AddressLocationStreet'
-            - $ref: '#/components/schemas/AddressLocationPOBox'
-            - $ref: '#/components/schemas/AddressLocationPackstation'
+          $ref: '#/components/schemas/AddressLocation'
         contact:
           $ref: '#/components/schemas/Contact'
         receiver:
