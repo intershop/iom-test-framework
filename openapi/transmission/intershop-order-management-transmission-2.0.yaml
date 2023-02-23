@@ -719,7 +719,7 @@ components:
       required:
       - transmissionTypeGroup
       type: object
-      x-field-extra-annotation: '@javax.validation.Valid'
+      x-field-extra-annotation: '@jakarta.validation.Valid'
     TransmissionTypeName:
       description: |
         Name of the TransmissionType. Internally translates to TransmissionTypeDefDOEnumInterface::getFieldName
