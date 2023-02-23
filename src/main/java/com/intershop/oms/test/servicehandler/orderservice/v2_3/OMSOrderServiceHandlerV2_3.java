@@ -241,7 +241,7 @@ class OMSOrderServiceHandlerV2_3 extends RESTServiceHandler implements OMSOrderS
     @Override
     public OMSOrder createOrder(String user, String password, OMSOrder orderData)
     {
-        log.info("Create order called in service handler version 2.2 ---- doing nothing, anymore!");
+        log.info("Create order called in service handler version >= 2.2 ---- doing nothing, anymore!");
         return orderData;
     }
 

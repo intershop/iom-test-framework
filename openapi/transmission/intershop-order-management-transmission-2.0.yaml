@@ -261,7 +261,11 @@ components:
         default: 1000
         example: 50
         type: integer
+        x-field-extra-annotation: com.intershop.TestAnnotation
+        x-class-extra-annotation: com.intershop.TestAnnotation
       style: form
+      x-field-extra-annotation: com.intershop.TestAnnotation
+      x-class-extra-annotation: com.intershop.TestAnnotation
     OffsetParam:
       description: The number of items to skip before starting to collect the result
         set.
@@ -489,6 +493,9 @@ components:
           $ref: '#/components/schemas/TransmissionUpdateType'
         transmissionFilter:
           $ref: '#/components/schemas/TransmissionFilter'
+      required:
+      - transmissionFilter
+      - updateType
       type: object
     TransmissionUpdateRequest:
       description: A transmission id and the process that should be done on this transmission.
@@ -499,6 +506,9 @@ components:
           type: string
         updateType:
           $ref: '#/components/schemas/TransmissionUpdateType'
+      required:
+      - id
+      - updateType
       type: object
     TransmissionTypeGroup:
       description: "The type of the transmission. <br><br>\n<u>NOTE</u>: The following\
@@ -605,14 +615,14 @@ components:
         \ in scope of it's type |\n| transmissionType | Sorts by the TransmissionType\
         \ |\n| status | Sorts by the processing status |\n| responseStatus | Sorts\
         \ by the response status |\n| creationDate | Sorts by the creation date |\n\
-        | modificationDate | Sorts by the modification date |\n| orderId | Sorts by\
-        \ the ID of the order |\n| shopOrderNumber | Sorts by the shop order number\
-        \ |\n| shopId | Sorts by the ID of the shop |\n| shopName | Sorts by the name\
-        \ of the shop |\n| supplierId | Sorts by the ID of the supplier |\n| supplierName\
-        \ | Sorts by the name of the supplier |\n| receiver | Sorts by the receiver\
-        \ of the transmission |\n| retryCount | Sorts by the number of sending attempts\
-        \ |\n| retryDate | Sorts by the date of the last attempt to send |\n| nextRetryDate\
-        \ | Sorts by the next date to send |\n"
+        | modificationDate | Sorts by the modification date |\n| shopId | Sorts by\
+        \ the ID of the shop |\n| shopName | Sorts by the name of the shop |\n| supplierId\
+        \ | Sorts by the ID of the supplier |\n| supplierName | Sorts by the name\
+        \ of the supplier |\n| receiverType | Sorts by the receiver type of the transmission\
+        \ |\n| retryCount | Sorts by the number of sending attempts |\n| retryDate\
+        \ | Sorts by the date of the last attempt to send |\n| nextRetryDate | Sorts\
+        \ by the next date to send |\n| invoiceNumber | Sorts by the invoice number\
+        \ |\n"
       example: creationDate
       type: string
     SortDirection:
@@ -709,7 +719,7 @@ components:
       required:
       - transmissionTypeGroup
       type: object
-      x-field-extra-annotation: '@jakarta.validation.Valid'
+      x-field-extra-annotation: '@javax.validation.Valid'
     TransmissionTypeName:
       description: |
         Name of the TransmissionType. Internally translates to TransmissionTypeDefDOEnumInterface::getFieldName
@@ -743,14 +753,13 @@ components:
             \ by the TransmissionType |\n| status | Sorts by the processing status\
             \ |\n| responseStatus | Sorts by the response status |\n| creationDate\
             \ | Sorts by the creation date |\n| modificationDate | Sorts by the modification\
-            \ date |\n| orderId | Sorts by the ID of the order |\n| shopOrderNumber\
-            \ | Sorts by the shop order number |\n| shopId | Sorts by the ID of the\
-            \ shop |\n| shopName | Sorts by the name of the shop |\n| supplierId |\
-            \ Sorts by the ID of the supplier |\n| supplierName | Sorts by the name\
-            \ of the supplier |\n| receiver | Sorts by the receiver of the transmission\
-            \ |\n| retryCount | Sorts by the number of sending attempts |\n| retryDate\
-            \ | Sorts by the date of the last attempt to send |\n| nextRetryDate |\
-            \ Sorts by the next date to send |\n"
+            \ date |\n| shopId | Sorts by the ID of the shop |\n| shopName | Sorts\
+            \ by the name of the shop |\n| supplierId | Sorts by the ID of the supplier\
+            \ |\n| supplierName | Sorts by the name of the supplier |\n| receiverType\
+            \ | Sorts by the receiver type of the transmission |\n| retryCount | Sorts\
+            \ by the number of sending attempts |\n| retryDate | Sorts by the date\
+            \ of the last attempt to send |\n| nextRetryDate | Sorts by the next date\
+            \ to send |\n| invoiceNumber | Sorts by the invoice number |\n"
           example: creationDate
           type: string
         sortDirection:
@@ -762,6 +771,8 @@ components:
           - DESC
           example: ASC
           type: string
+      required:
+      - transmissionFilter
       type: object
     ObjectReference:
       properties:
