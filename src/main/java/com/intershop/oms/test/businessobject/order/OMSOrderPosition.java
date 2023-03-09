@@ -7,11 +7,13 @@ import com.intershop.oms.test.businessobject.orderstate.OMSOrderPositionOrdered;
 import com.intershop.oms.test.businessobject.orderstate.OMSOrderPositionReturned;
 import com.intershop.oms.test.businessobject.orderstate.OMSOrderPositionSupplier;
 import com.intershop.oms.test.businessobject.prices.OMSSumPrice;
+import com.intershop.oms.test.businessobject.prices.OMSTax;
 import com.intershop.oms.test.businessobject.prices.OMSUnitPrice;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -215,6 +217,12 @@ public class OMSOrderPosition extends OMSBusinessObject
     {
         this.id = id;
         return this;
+    }
+
+    public Collection<? extends OMSTax> getUsedTaxes()
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

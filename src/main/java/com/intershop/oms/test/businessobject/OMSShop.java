@@ -1,5 +1,8 @@
 package com.intershop.oms.test.businessobject;
 
+import java.util.Map;
+
+import com.intershop.oms.test.businessobject.prices.OMSTax;
 import com.intershop.oms.test.servicehandler.ServiceHandlerFactory;
 
 import lombok.EqualsAndHashCode;
@@ -35,5 +38,11 @@ public class OMSShop
     {
         name = ServiceHandlerFactory.getDbHandler().getShopName(shopId);
         id = shopId;
+    }
+
+    // Seems we cannot cache this - if tests create new assignments than this must not be static!
+    public Map<String, OMSTax> getShopTaxes()
+    {
+        return ServiceHandlerFactory.getDbHandler().getShopTaxes(this);
     }
 }

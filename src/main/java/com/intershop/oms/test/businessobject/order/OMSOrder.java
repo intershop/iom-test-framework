@@ -10,11 +10,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 import com.intershop.oms.test.businessobject.OMSPropertyGroupOwner;
 import com.intershop.oms.test.businessobject.OMSShop;
 import com.intershop.oms.test.businessobject.address.OMSAddressInvoice;
 import com.intershop.oms.test.businessobject.prices.OMSSales;
+import com.intershop.oms.test.businessobject.prices.OMSTax;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -29,6 +33,8 @@ import lombok.Setter;
 @EqualsAndHashCode(callSuper = false)
 public class OMSOrder extends OMSBusinessObject implements OMSPropertyGroupOwner
 {
+    private static final Logger log = LoggerFactory.getLogger(OMSOrder.class);
+
     private static final AtomicInteger counter = new AtomicInteger();
     // my copy of the counter
     protected int threadSafeCounter = counter.incrementAndGet();
@@ -52,6 +58,54 @@ public class OMSOrder extends OMSBusinessObject implements OMSPropertyGroupOwner
     protected Map<String, Map<String, String>> propertyGroups = new HashMap<>();
     protected List<OMSShippingBucket> shippingBuckets = new ArrayList<>();
     protected OMSShop shop;
+
+    public OMSOrder shop(OMSShop shop)
+    {
+        setShop(shop);
+        return this;
+    }
+
+    public void setShop(OMSShop shop)
+    {
+        this.shop = shop;
+
+        Map<String, OMSTax> shopTaxes = shop.getShopTaxes();
+
+        if (sales != null)
+        {
+            sales.getUsedTaxes().forEach(t -> verifyPersistentTax(shopTaxes, t));
+        }
+        if (shippingBuckets != null)
+        {
+            shippingBuckets.forEach(sb -> sb.getUsedTaxes().forEach(t -> verifyPersistentTax(shopTaxes, t)));
+        }
+    }
+
+    public void verifyPersistentTax(Map<String, OMSTax> shopTaxes, OMSTax tax)
+    {
+        // any tax without a rate is expected as valid - the user should know, what he's doing
+        if (tax.getRate() == null)
+        {
+            return;
+        }
+
+        OMSTax persistentTax = shopTaxes.get(tax.getType());
+        if (null != persistentTax && tax.getRate().compareTo(persistentTax.getRate()) != 0)
+        {
+            throw new RuntimeException("Used tax '"+tax.getType()+"' has tax rate of "+tax.getRate()+" but shop '"+shop.getName()+"' ("+shop.getId()+") uses persistent tax rate of "+persistentTax.getRate()+"!");
+        }
+        else
+        {
+            if (null == persistentTax)
+            {
+                log.info("Expected tax '{}' with tax rate {} for shop '{}' ({}) is not persisted, yet.", tax.getType(), tax.getRate(), shop.getName(), shop.getId());
+            }
+            else
+            {
+                log.info("Validated expected persistent tax '{}' with tax rate {} for shop '{}' ({}).", tax.getType(), tax.getRate(), shop.getName(), shop.getId());
+            }
+        }
+    }
 
     public OMSOrder shopOrderNumber(String shopOrderNumber)
     {

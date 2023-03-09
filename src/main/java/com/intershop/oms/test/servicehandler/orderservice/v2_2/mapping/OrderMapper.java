@@ -5,8 +5,10 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
+import com.intershop.oms.rest.order.v2_2.model.ShippingBucket;
 import com.intershop.oms.rest.order.v2_2.model.Order;
 import com.intershop.oms.test.businessobject.order.OMSOrder;
+import com.intershop.oms.test.businessobject.order.OMSShippingBucket;
 
 @Mapper(uses= {AddressLocationMapper.class, OrderPositionMapper.class})
 public interface OrderMapper
@@ -18,8 +20,12 @@ public interface OrderMapper
     @Mapping(target = "shop", ignore = true)
     @Mapping(target = "threadSafeCounter", ignore = true)
     @Mapping(source = "additionalAttributes", target = "propertyGroups")
+    @Mapping(target = "sales.usedTaxes", ignore = true)
     OMSOrder fromApiOrder(Order order);
 
     @InheritInverseConfiguration
     Order toApiOrder(OMSOrder omsOrder);
+
+    @Mapping(target = "usedTaxes", ignore = true)
+    OMSShippingBucket fromApiShippingBucket(ShippingBucket shippingBucket);
 }
