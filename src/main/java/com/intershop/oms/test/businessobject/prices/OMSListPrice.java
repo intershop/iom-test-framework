@@ -45,6 +45,21 @@ public class OMSListPrice extends OMSBusinessObject
         return this;
     }
 
+    public OMSListPrice amount(String amount)
+    {
+        return amount(new BigDecimal(amount));
+    }
+    
+    public OMSListPrice amountDiscounted(String amount)
+    {
+        return amountDiscounted(new BigDecimal(amount));
+    }
+    
+    public OMSListPrice listPrice(String amount)
+    {
+        return listPrice(new BigDecimal(amount));
+    }
+    
     @Override
     public boolean equals(java.lang.Object o)
     {

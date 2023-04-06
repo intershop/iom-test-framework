@@ -16,6 +16,16 @@ public class OMSPrice extends OMSBusinessObject
 
     private BigDecimal amountDiscounted = null;
 
+    public OMSPrice amount(String amount)
+    {
+        return amount(new BigDecimal(amount));
+    }
+    
+    public OMSPrice amountDiscounted(String amount)
+    {
+        return amountDiscounted(new BigDecimal(amount));
+    }
+    
     public OMSPrice amount(BigDecimal amount)
     {
         if (null != amount)

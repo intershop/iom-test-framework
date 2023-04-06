@@ -1,6 +1,5 @@
 package com.intershop.oms.test.businessobject.prices;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Objects;
 
@@ -121,6 +120,21 @@ public class OMSPromotion extends OMSBusinessObject
         return this;
     }
 
+    public OMSPromotion netValue(String amount)
+    {
+        return netValue(new BigDecimal(amount));
+    }
+
+    public OMSPromotion grossValue(String amount)
+    {
+        return grossValue(new BigDecimal(amount));
+    }
+
+    public OMSPromotion promotionValue(String amount)
+    {
+        return promotionValue(new BigDecimal(amount));
+    }
+    
     @Override
     public boolean equals(java.lang.Object o)
     {

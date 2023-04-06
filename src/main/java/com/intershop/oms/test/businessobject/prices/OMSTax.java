@@ -14,7 +14,7 @@ public class OMSTax extends OMSBusinessObject
     private String type;
     private BigDecimal amount = null;
     private BigDecimal rate = null;
-    private String location =null;
+    private String location = null;
 
     public OMSTax type(String type)
     {
@@ -28,6 +28,11 @@ public class OMSTax extends OMSBusinessObject
         return this;
     }
 
+    public OMSTax amount(String amount)
+    {
+        return amount(new BigDecimal(amount));
+    }
+    
     public OMSTax rate(BigDecimal rate)
     {
         if (null != rate)
