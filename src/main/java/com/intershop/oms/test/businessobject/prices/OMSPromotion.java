@@ -122,17 +122,38 @@ public class OMSPromotion extends OMSBusinessObject
 
     public OMSPromotion netValue(String amount)
     {
-        return netValue(new BigDecimal(amount));
+        if (amount != null)
+        {
+            return netValue(new BigDecimal(amount));
+        }
+        else
+        {
+            return netValue((BigDecimal)null);
+        }
     }
 
     public OMSPromotion grossValue(String amount)
     {
-        return grossValue(new BigDecimal(amount));
+        if (amount != null)
+        {
+            return grossValue(new BigDecimal(amount));
+        }
+        else
+        {
+            return grossValue((BigDecimal)null);
+        }
     }
 
     public OMSPromotion promotionValue(String amount)
     {
-        return promotionValue(new BigDecimal(amount));
+        if (amount != null)
+        {
+            return promotionValue(new BigDecimal(amount));
+        }
+        else
+        {
+            return promotionValue((BigDecimal)null);
+        }
     }
     
     @Override

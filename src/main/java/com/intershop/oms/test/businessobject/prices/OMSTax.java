@@ -30,7 +30,14 @@ public class OMSTax extends OMSBusinessObject
 
     public OMSTax amount(String amount)
     {
-        return amount(new BigDecimal(amount));
+        if (amount != null)
+        {
+            return amount(new BigDecimal(amount));
+        }
+        else
+        {
+            return amount((BigDecimal)null);
+        }
     }
     
     public OMSTax rate(BigDecimal rate)
