@@ -3,21 +3,21 @@ info:
   title: IOM Order API
   description: "The IOM Order API allows to create orders, view orders, create change\
     \ requests and view change requests for an order. \nFurthermore, it is possible\
-    \ to search for order states. \n \n  CHANGELOG \n ---------- \n Version 2.3 \n\
-    * Added optional search filter `emails` to retrieve `order-states`. \n ----------\
-    \ \n Version 2.2 \n* Added operation `getOrder`. \n * Added operations `createChangeRequest`,\
+    \ to search for order states. \n \n  ## Changelog \n - - - \n ### Version 2.3\
+    \ \n* Added optional search filter `emails` to retrieve `order-states`. \n - -\
+    \ - \n ### Version 2.2 \n* Added operation `getOrder`. \n * Added operations `createChangeRequest`,\
     \ `getChangeRequest` and `getChangeRequestViewList`. \n * Added undocumented constraints\
     \ to `Price`, `ListPrice`, `UnitPrice`. `net` must not be greater than `gross`,\
     \ `amountDiscounted` must not be greater than `amount`. \n* Added undocumented\
     \ constraint to `OrderPosition`. Optional `number` must not be negative. \n* Added\
     \ undocumented attributes to `OrderPositionReturned`. Added `OrderPositionReturnedQuantities`\
-    \ and `OrderPositionReturnedUnits`. \n ---------- \n Version 2.1 \n* Extended\
-    \ `Tax`. An unknown `type` can be submitted when adding `rate` and `location`.\
-    \ \n* Added undocumented constraint to `Tax`. `type` has max length of 512 characters.\
-    \ \n* Added undocumented constraint. In a list of `Tax` (taxes) each type is allowed\
+    \ and `OrderPositionReturnedUnits`. \n - - - \n ### Version 2.1 \n* Extended `Tax`.\
+    \ An unknown `type` can be submitted when adding `rate` and `location`. \n* Added\
+    \ undocumented constraint to `Tax`. `type` has max length of 512 characters. \n\
+    * Added undocumented constraint. In a list of `Tax` (taxes) each type is allowed\
     \ once only. \n* Exceeded length of attributes in `Promotion`. `id` has max length\
     \ of 512 `characters`. `name`, `descriptorId`, `code` and `budgetSourceId` have\
-    \ max length of characters. \n \n "
+    \ max length of characters. \n"
   contact:
     name: Intershop Communications AG
     url: http://intershop.com
@@ -749,7 +749,8 @@ components:
           maxLength: 25
           minLength: 0
           type: string
-      description: Detailed company data.
+      description: "Detailed company data. Required for customerDataType COMPANY,\
+        \ otherwise ignored."
     Contact:
       required:
       - email
@@ -788,8 +789,9 @@ components:
       properties:
         customerDataType:
           type: string
-          description: Type of the customer.<br><br>`PERSON` - The customer is a person.<br>`COMPANY`
-            - The customer is a company. `companyData` is required.
+          description: Type of the customer.<br><br>`PERSON` - The customer is a person.
+            `companyData` is ignored.<br>`COMPANY` - The customer is a company. `companyData`
+            is required.
           example: COMPANY
           enum:
           - PERSON
