@@ -940,7 +940,7 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
         }
         catch(Exception e)
         {
-            throw new RuntimeException("issue while retrieving shop name for id", e);
+            throw new RuntimeException("issue while retrieving shop name for id " + shopId, e);
         }
     }
 
