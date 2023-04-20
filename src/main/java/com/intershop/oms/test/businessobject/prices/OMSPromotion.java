@@ -1,15 +1,21 @@
 package com.intershop.oms.test.businessobject.prices;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
 @Getter
 @Setter
+//tried "fluent=true" but then the String setters will prevent the creation of the Lombok setters
+@Accessors(chain = true)
+@ToString
+@EqualsAndHashCode(callSuper = false)
 public class OMSPromotion extends OMSBusinessObject
 {
     public enum OMSPromotionValueTypeEnum
@@ -68,56 +74,47 @@ public class OMSPromotion extends OMSBusinessObject
 
     public OMSPromotion id(String id)
     {
-        this.id = id;
-        return this;
+        return setId(id);
     }
 
     public OMSPromotion promotionValueType(OMSPromotionValueTypeEnum promotionValueType)
     {
-        this.promotionValueType = promotionValueType;
-        return this;
+        return setPromotionValueType(promotionValueType);
       }
 
     public OMSPromotion promotionValue(BigDecimal promotionValue)
     {
-        this.promotionValue = promotionValue;
-        return this;
+        return setPromotionValue(promotionValue);
     }
 
     public OMSPromotion name(String name)
     {
-        this.name = name;
-        return this;
+        return setName(name);
     }
 
     public OMSPromotion descriptorId(String descriptorId)
     {
-        this.descriptorId = descriptorId;
-        return this;
+        return setDescriptorId(descriptorId);
     }
 
     public OMSPromotion code(String code)
     {
-        this.code = code;
-        return this;
+        return setCode(code);
     }
 
     public OMSPromotion budgetSourceId(String budgetSourceId)
     {
-        this.budgetSourceId = budgetSourceId;
-        return this;
+        return setBudgetSourceId(budgetSourceId);
     }
 
     public OMSPromotion netValue(BigDecimal netValue)
     {
-        this.netValue = netValue;
-        return this;
+        return setNetValue(netValue);
     }
 
     public OMSPromotion grossValue(BigDecimal grossValue)
     {
-        this.grossValue = grossValue;
-        return this;
+        return setGrossValue(grossValue);
     }
 
     public OMSPromotion netValue(String amount)
@@ -154,52 +151,5 @@ public class OMSPromotion extends OMSBusinessObject
         {
             return promotionValue((BigDecimal)null);
         }
-    }
-    
-    @Override
-    public boolean equals(java.lang.Object o)
-    {
-      if (this == o)
-      {
-        return true;
-      }
-      if (o == null || getClass() != o.getClass())
-      {
-        return false;
-      }
-      OMSPromotion promotion = (OMSPromotion) o;
-      return Objects.equals(this.promotionValueType, promotion.promotionValueType) &&
-          Objects.equals(this.promotionValue, promotion.promotionValue) &&
-          Objects.equals(this.id, promotion.id) &&
-          Objects.equals(this.name, promotion.name) &&
-          Objects.equals(this.descriptorId, promotion.descriptorId) &&
-          Objects.equals(this.code, promotion.code) &&
-          Objects.equals(this.budgetSourceId, promotion.budgetSourceId) &&
-          Objects.equals(this.netValue, promotion.netValue) &&
-          Objects.equals(this.grossValue, promotion.grossValue);
-    }
-
-    @Override
-    public int hashCode()
-    {
-      return Objects.hash(promotionValueType, promotionValue, id, name, descriptorId, code, budgetSourceId, netValue, grossValue);
-    }
-
-    @Override
-    public String toString()
-    {
-      StringBuilder sb = new StringBuilder();
-      sb.append("class Promotion {\n");
-      sb.append("    promotionValueType: ").append(toIndentedString(promotionValueType)).append("\n");
-      sb.append("    promotionValue: ").append(toIndentedString(promotionValue)).append("\n");
-      sb.append("    id: ").append(toIndentedString(id)).append("\n");
-      sb.append("    name: ").append(toIndentedString(name)).append("\n");
-      sb.append("    descriptorId: ").append(toIndentedString(descriptorId)).append("\n");
-      sb.append("    code: ").append(toIndentedString(code)).append("\n");
-      sb.append("    budgetSourceId: ").append(toIndentedString(budgetSourceId)).append("\n");
-      sb.append("    netValue: ").append(toIndentedString(netValue)).append("\n");
-      sb.append("    grossValue: ").append(toIndentedString(grossValue)).append("\n");
-      sb.append("}");
-      return sb.toString();
     }
 }

@@ -6,9 +6,14 @@ import com.intershop.oms.test.businessobject.OMSBusinessObject;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
-@EqualsAndHashCode(callSuper=false)
 @Data
+//tried "fluent=true" but then the String setters will prevent the creation of the Lombok setters
+@Accessors(chain = true)
+@ToString
+@EqualsAndHashCode(callSuper = false)
 public class OMSTax extends OMSBusinessObject
 {
     private String type;
@@ -18,40 +23,33 @@ public class OMSTax extends OMSBusinessObject
 
     public OMSTax type(String type)
     {
-        this.type = type;
-        return this;
+        return setType(type);
     }
 
     public OMSTax amount(BigDecimal amount)
     {
-        this.amount = amount;
-        return this;
+        return setAmount(amount);
     }
 
     public OMSTax amount(String amount)
     {
         if (amount != null)
         {
-            return amount(new BigDecimal(amount));
+            return setAmount(new BigDecimal(amount));
         }
         else
         {
-            return amount((BigDecimal)null);
+            return setAmount((BigDecimal)null);
         }
     }
     
     public OMSTax rate(BigDecimal rate)
     {
-        if (null != rate)
-        {
-            this.rate = rate;
-        }
-        return this;
+        return setRate(rate);
     }
 
     public OMSTax location(String location)
     {
-        this.location = location;
-        return this;
+        return setLocation(location);
     }
 }

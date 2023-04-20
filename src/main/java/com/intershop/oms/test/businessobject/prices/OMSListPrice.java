@@ -1,15 +1,21 @@
 package com.intershop.oms.test.businessobject.prices;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
 @Getter
 @Setter
+// tried "fluent=true" but then the String setters will prevent the creation of the Lombok setters
+@Accessors(chain = true)
+@ToString
+@EqualsAndHashCode(callSuper = false)
 public class OMSListPrice extends OMSBusinessObject
 {
     private BigDecimal amount = null;
@@ -20,40 +26,28 @@ public class OMSListPrice extends OMSBusinessObject
 
     public OMSListPrice amount(BigDecimal amount)
     {
-        if (null != amount)
-        {
-            this.amount = amount;
-        }
-        return this;
+        return setAmount(amount);
     }
 
     public OMSListPrice amountDiscounted(BigDecimal amountDiscounted)
     {
-        if (null != amountDiscounted)
-        {
-            this.amountDiscounted = amountDiscounted;
-        }
-        return this;
+        return setAmountDiscounted(amountDiscounted);
     }
 
     public OMSListPrice listPrice(BigDecimal listPrice)
     {
-        if (null != listPrice)
-        {
-            this.listPrice = listPrice;
-        }
-        return this;
+        return setListPrice(listPrice);
     }
 
     public OMSListPrice amount(String amount)
     {
         if (amount != null)
         {
-            return amount(new BigDecimal(amount));
+            return setAmount(new BigDecimal(amount));
         }
         else
         {
-            return amount((BigDecimal)null);
+            return setAmount((BigDecimal)null);
         }
     }
     
@@ -61,11 +55,11 @@ public class OMSListPrice extends OMSBusinessObject
     {
         if (amount != null)
         {
-            return amountDiscounted(new BigDecimal(amount));
+            return setAmountDiscounted(new BigDecimal(amount));
         }
         else
         {
-            return amountDiscounted((BigDecimal)null);
+            return setAmountDiscounted((BigDecimal)null);
         }
     }
     
@@ -73,46 +67,11 @@ public class OMSListPrice extends OMSBusinessObject
     {
         if (amount != null)
         {
-            return listPrice(new BigDecimal(amount));
+            return setListPrice(new BigDecimal(amount));
         }
         else
         {
-            return listPrice((BigDecimal)null);
+            return setListPrice((BigDecimal)null);
         }
-    }
-    
-    @Override
-    public boolean equals(java.lang.Object o)
-    {
-        if (this == o)
-        {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass())
-        {
-            return false;
-        }
-        OMSListPrice listPrice = (OMSListPrice) o;
-        return Objects.equals(this.amount, listPrice.amount) &&
-                        Objects.equals(this.amountDiscounted, listPrice.amountDiscounted) &&
-                        Objects.equals(this.listPrice, listPrice.listPrice);
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(amount, amountDiscounted, listPrice);
-    }
-
-    @Override
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class ListPrice {\n");
-        sb.append("    amount: ").append(toIndentedString(amount)).append("\n");
-        sb.append("    amountDiscounted: ").append(toIndentedString(amountDiscounted)).append("\n");
-        sb.append("    listPrice: ").append(toIndentedString(listPrice)).append("\n");
-        sb.append("}");
-        return sb.toString();
     }
 }
