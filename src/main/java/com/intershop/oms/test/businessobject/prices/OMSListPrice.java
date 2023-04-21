@@ -12,8 +12,7 @@ import lombok.experimental.Accessors;
 
 @Getter
 @Setter
-// tried "fluent=true" but then the String setters will prevent the creation of the Lombok setters
-@Accessors(chain = true)
+@Accessors(chain = true, fluent = true)
 @ToString
 @EqualsAndHashCode(callSuper = false)
 public class OMSListPrice extends OMSBusinessObject
@@ -24,54 +23,39 @@ public class OMSListPrice extends OMSBusinessObject
 
     private BigDecimal listPrice = null;
 
-    public OMSListPrice amount(BigDecimal amount)
-    {
-        return setAmount(amount);
-    }
-
-    public OMSListPrice amountDiscounted(BigDecimal amountDiscounted)
-    {
-        return setAmountDiscounted(amountDiscounted);
-    }
-
-    public OMSListPrice listPrice(BigDecimal listPrice)
-    {
-        return setListPrice(listPrice);
-    }
-
-    public OMSListPrice amount(String amount)
+    public OMSListPrice setAmount(String amount)
     {
         if (amount != null)
         {
-            return setAmount(new BigDecimal(amount));
+            return amount(new BigDecimal(amount));
         }
         else
         {
-            return setAmount((BigDecimal)null);
+            return amount((BigDecimal)null);
         }
     }
     
-    public OMSListPrice amountDiscounted(String amount)
+    public OMSListPrice setAmountDiscounted(String amount)
     {
         if (amount != null)
         {
-            return setAmountDiscounted(new BigDecimal(amount));
+            return amountDiscounted(new BigDecimal(amount));
         }
         else
         {
-            return setAmountDiscounted((BigDecimal)null);
+            return amountDiscounted((BigDecimal)null);
         }
     }
     
-    public OMSListPrice listPrice(String amount)
+    public OMSListPrice setListPrice(String amount)
     {
         if (amount != null)
         {
-            return setListPrice(new BigDecimal(amount));
+            return listPrice(new BigDecimal(amount));
         }
         else
         {
-            return setListPrice((BigDecimal)null);
+            return listPrice((BigDecimal)null);
         }
     }
 }

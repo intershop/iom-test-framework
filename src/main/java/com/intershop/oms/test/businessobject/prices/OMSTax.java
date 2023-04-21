@@ -10,8 +10,7 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 
 @Data
-//tried "fluent=true" but then the String setters will prevent the creation of the Lombok setters
-@Accessors(chain = true)
+@Accessors(chain = true, fluent = true)
 @ToString
 @EqualsAndHashCode(callSuper = false)
 public class OMSTax extends OMSBusinessObject
@@ -21,35 +20,15 @@ public class OMSTax extends OMSBusinessObject
     private BigDecimal rate = null;
     private String location = null;
 
-    public OMSTax type(String type)
-    {
-        return setType(type);
-    }
-
-    public OMSTax amount(BigDecimal amount)
-    {
-        return setAmount(amount);
-    }
-
-    public OMSTax amount(String amount)
+    public OMSTax setAmount(String amount)
     {
         if (amount != null)
         {
-            return setAmount(new BigDecimal(amount));
+            return amount(new BigDecimal(amount));
         }
         else
         {
-            return setAmount((BigDecimal)null);
+            return amount((BigDecimal)null);
         }
-    }
-    
-    public OMSTax rate(BigDecimal rate)
-    {
-        return setRate(rate);
-    }
-
-    public OMSTax location(String location)
-    {
-        return setLocation(location);
     }
 }

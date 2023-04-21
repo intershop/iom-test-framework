@@ -12,8 +12,7 @@ import lombok.experimental.Accessors;
 
 @Getter
 @Setter
-//tried "fluent=true" but then the String setters will prevent the creation of the Lombok setters
-@Accessors(chain = true)
+@Accessors(chain = true, fluent = true)
 @ToString
 @EqualsAndHashCode(callSuper = false)
 public class OMSPromotion extends OMSBusinessObject
@@ -72,52 +71,7 @@ public class OMSPromotion extends OMSBusinessObject
 
     private BigDecimal grossValue = null;
 
-    public OMSPromotion id(String id)
-    {
-        return setId(id);
-    }
-
-    public OMSPromotion promotionValueType(OMSPromotionValueTypeEnum promotionValueType)
-    {
-        return setPromotionValueType(promotionValueType);
-      }
-
-    public OMSPromotion promotionValue(BigDecimal promotionValue)
-    {
-        return setPromotionValue(promotionValue);
-    }
-
-    public OMSPromotion name(String name)
-    {
-        return setName(name);
-    }
-
-    public OMSPromotion descriptorId(String descriptorId)
-    {
-        return setDescriptorId(descriptorId);
-    }
-
-    public OMSPromotion code(String code)
-    {
-        return setCode(code);
-    }
-
-    public OMSPromotion budgetSourceId(String budgetSourceId)
-    {
-        return setBudgetSourceId(budgetSourceId);
-    }
-
-    public OMSPromotion netValue(BigDecimal netValue)
-    {
-        return setNetValue(netValue);
-    }
-
-    public OMSPromotion grossValue(BigDecimal grossValue)
-    {
-        return setGrossValue(grossValue);
-    }
-
-    public OMSPromotion netValue(String amount)
+    public OMSPromotion setNetValue(String amount)
     {
         if (amount != null)
         {
@@ -129,7 +83,7 @@ public class OMSPromotion extends OMSBusinessObject
         }
     }
 
-    public OMSPromotion grossValue(String amount)
+    public OMSPromotion setGrossValue(String amount)
     {
         if (amount != null)
         {
@@ -141,7 +95,7 @@ public class OMSPromotion extends OMSBusinessObject
         }
     }
 
-    public OMSPromotion promotionValue(String amount)
+    public OMSPromotion setPromotionValue(String amount)
     {
         if (amount != null)
         {

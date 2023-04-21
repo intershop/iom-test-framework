@@ -12,8 +12,7 @@ import lombok.experimental.Accessors;
 
 @Getter
 @Setter
-//tried "fluent=true" but then the String setters will prevent the creation of the Lombok setters
-@Accessors(chain = true)
+@Accessors(chain = true, fluent = true)
 @ToString
 @EqualsAndHashCode(callSuper = false)
 public class OMSPrice extends OMSBusinessObject
@@ -22,37 +21,28 @@ public class OMSPrice extends OMSBusinessObject
 
     private BigDecimal amountDiscounted = null;
 
-    public OMSPrice amount(String amount)
+    public OMSPrice setAmount(String amount)
     {
         if (amount != null)
         {
-            return setAmount(new BigDecimal(amount));
+            return amount(new BigDecimal(amount));
         }
         else
         {
-            return setAmount((BigDecimal)null);
+            return amount((BigDecimal)null);
         }
     }
     
-    public OMSPrice amountDiscounted(String amount)
+    public OMSPrice setAmountDiscounted(String amount)
     {
         if (amount != null)
         {
-            return setAmountDiscounted(new BigDecimal(amount));
+            return amountDiscounted(new BigDecimal(amount));
         }
         else
         {
-            return setAmountDiscounted((BigDecimal)null);
+            return amountDiscounted((BigDecimal)null);
         }
     }
-    
-    public OMSPrice amount(BigDecimal amount)
-    {
-        return setAmount(amount);
-    }
-
-    public OMSPrice amountDiscounted(BigDecimal amountDiscounted)
-    {
-        return setAmountDiscounted(amountDiscounted);
-    }
+   
 }
