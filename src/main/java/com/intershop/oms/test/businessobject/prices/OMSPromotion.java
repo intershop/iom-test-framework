@@ -9,10 +9,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+import lombok.experimental.Tolerate;
 
 @Getter
 @Setter
-@Accessors(chain = true, fluent = true)
+@Accessors(chain = true)
 @ToString
 @EqualsAndHashCode(callSuper = false)
 public class OMSPromotion extends OMSBusinessObject
@@ -71,39 +72,60 @@ public class OMSPromotion extends OMSBusinessObject
 
     private BigDecimal grossValue = null;
 
-    public OMSPromotion setNetValue(String amount)
+    @Tolerate
+    public OMSPromotion netValue(String amount)
     {
         if (amount != null)
         {
-            return netValue(new BigDecimal(amount));
+            return setNetValue(new BigDecimal(amount));
         }
         else
         {
-            return netValue((BigDecimal)null);
+            return setNetValue((BigDecimal)null);
         }
     }
 
-    public OMSPromotion setGrossValue(String amount)
+    @Tolerate
+    public OMSPromotion grossValue(String amount)
     {
         if (amount != null)
         {
-            return grossValue(new BigDecimal(amount));
+            return setGrossValue(new BigDecimal(amount));
         }
         else
         {
-            return grossValue((BigDecimal)null);
+            return setGrossValue((BigDecimal)null);
         }
     }
 
-    public OMSPromotion setPromotionValue(String amount)
+    @Tolerate
+    public OMSPromotion promotionValue(String amount)
     {
         if (amount != null)
         {
-            return promotionValue(new BigDecimal(amount));
+            return setPromotionValue(new BigDecimal(amount));
         }
         else
         {
-            return promotionValue((BigDecimal)null);
+            return setPromotionValue((BigDecimal)null);
         }
+    }
+
+    @Deprecated(since = "4.5.0", forRemoval = true)
+    public OMSPromotion netValue(BigDecimal amount)
+    {
+        return setNetValue(amount);
+    }
+    
+    @Deprecated(since = "4.5.0", forRemoval = true)
+    public OMSPromotion grossValue(BigDecimal amount)
+    {
+        return setGrossValue(amount);
+    }
+    
+    @Deprecated(since = "4.5.0", forRemoval = true)
+    public OMSPromotion promotionValue(BigDecimal amount)
+    {
+        return setPromotionValue(amount);
     }
 }

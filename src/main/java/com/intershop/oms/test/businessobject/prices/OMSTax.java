@@ -4,13 +4,16 @@ import java.math.BigDecimal;
 
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+import lombok.experimental.Tolerate;
 
-@Data
-@Accessors(chain = true, fluent = true)
+@Getter
+@Setter
+@Accessors(chain = true)
 @ToString
 @EqualsAndHashCode(callSuper = false)
 public class OMSTax extends OMSBusinessObject
@@ -20,15 +23,22 @@ public class OMSTax extends OMSBusinessObject
     private BigDecimal rate = null;
     private String location = null;
 
+    @Tolerate
     public OMSTax setAmount(String amount)
     {
         if (amount != null)
         {
-            return amount(new BigDecimal(amount));
+            return setAmount(new BigDecimal(amount));
         }
         else
         {
-            return amount((BigDecimal)null);
+            return setAmount((BigDecimal)null);
         }
+    }
+
+    @Deprecated(since = "4.5.0", forRemoval = true)
+    public OMSTax amount(BigDecimal amount)
+    {
+        return setAmount(amount);
     }
 }

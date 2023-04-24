@@ -9,10 +9,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+import lombok.experimental.Tolerate;
 
 @Getter
 @Setter
-@Accessors(chain = true, fluent = true)
+@Accessors(chain = true)
 @ToString
 @EqualsAndHashCode(callSuper = false)
 public class OMSPrice extends OMSBusinessObject
@@ -21,28 +22,42 @@ public class OMSPrice extends OMSBusinessObject
 
     private BigDecimal amountDiscounted = null;
 
+    @Tolerate
     public OMSPrice setAmount(String amount)
     {
         if (amount != null)
         {
-            return amount(new BigDecimal(amount));
+            return setAmount(new BigDecimal(amount));
         }
         else
         {
-            return amount((BigDecimal)null);
+            return setAmount((BigDecimal)null);
         }
     }
     
+    @Tolerate
     public OMSPrice setAmountDiscounted(String amount)
     {
         if (amount != null)
         {
-            return amountDiscounted(new BigDecimal(amount));
+            return setAmountDiscounted(new BigDecimal(amount));
         }
         else
         {
-            return amountDiscounted((BigDecimal)null);
+            return setAmountDiscounted((BigDecimal)null);
         }
+    }
+   
+    @Deprecated(since = "4.5.0", forRemoval = true)
+    public OMSPrice amount(BigDecimal amount)
+    {
+        return setAmount(amount);
+    }
+    
+    @Deprecated(since = "4.5.0", forRemoval = true)
+    public OMSPrice amountDiscounted(BigDecimal amount)
+    {
+        return setAmountDiscounted(amount);
     }
    
 }
