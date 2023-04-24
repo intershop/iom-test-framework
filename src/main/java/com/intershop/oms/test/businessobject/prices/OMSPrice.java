@@ -9,10 +9,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+import lombok.experimental.Tolerate;
 
 @Getter
 @Setter
-//tried "fluent=true" but then the String setters will prevent the creation of the Lombok setters
 @Accessors(chain = true)
 @ToString
 @EqualsAndHashCode(callSuper = false)
@@ -22,7 +22,8 @@ public class OMSPrice extends OMSBusinessObject
 
     private BigDecimal amountDiscounted = null;
 
-    public OMSPrice amount(String amount)
+    @Tolerate
+    public OMSPrice setAmount(String amount)
     {
         if (amount != null)
         {
@@ -34,7 +35,8 @@ public class OMSPrice extends OMSBusinessObject
         }
     }
     
-    public OMSPrice amountDiscounted(String amount)
+    @Tolerate
+    public OMSPrice setAmountDiscounted(String amount)
     {
         if (amount != null)
         {
@@ -45,14 +47,17 @@ public class OMSPrice extends OMSBusinessObject
             return setAmountDiscounted((BigDecimal)null);
         }
     }
-    
+   
+    @Deprecated(since = "4.5.0", forRemoval = true)
     public OMSPrice amount(BigDecimal amount)
     {
         return setAmount(amount);
     }
-
-    public OMSPrice amountDiscounted(BigDecimal amountDiscounted)
+    
+    @Deprecated(since = "4.5.0", forRemoval = true)
+    public OMSPrice amountDiscounted(BigDecimal amount)
     {
-        return setAmountDiscounted(amountDiscounted);
+        return setAmountDiscounted(amount);
     }
+   
 }

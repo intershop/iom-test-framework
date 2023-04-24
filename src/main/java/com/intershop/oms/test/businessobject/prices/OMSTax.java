@@ -4,13 +4,15 @@ import java.math.BigDecimal;
 
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+import lombok.experimental.Tolerate;
 
-@Data
-//tried "fluent=true" but then the String setters will prevent the creation of the Lombok setters
+@Getter
+@Setter
 @Accessors(chain = true)
 @ToString
 @EqualsAndHashCode(callSuper = false)
@@ -21,17 +23,8 @@ public class OMSTax extends OMSBusinessObject
     private BigDecimal rate = null;
     private String location = null;
 
-    public OMSTax type(String type)
-    {
-        return setType(type);
-    }
-
-    public OMSTax amount(BigDecimal amount)
-    {
-        return setAmount(amount);
-    }
-
-    public OMSTax amount(String amount)
+    @Tolerate
+    public OMSTax setAmount(String amount)
     {
         if (amount != null)
         {
@@ -42,12 +35,26 @@ public class OMSTax extends OMSBusinessObject
             return setAmount((BigDecimal)null);
         }
     }
+
+    @Deprecated(since = "4.5.0", forRemoval = true)
+    public OMSTax amount(BigDecimal amount)
+    {
+        return setAmount(amount);
+    }
     
+    @Deprecated(since = "4.5.0", forRemoval = true)
     public OMSTax rate(BigDecimal rate)
     {
         return setRate(rate);
     }
-
+    
+    @Deprecated(since = "4.5.0", forRemoval = true)
+    public OMSTax type(String type)
+    {
+        return setType(type);
+    }
+    
+    @Deprecated(since = "4.5.0", forRemoval = true)
     public OMSTax location(String location)
     {
         return setLocation(location);

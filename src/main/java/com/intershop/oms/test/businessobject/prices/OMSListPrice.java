@@ -9,10 +9,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+import lombok.experimental.Tolerate;
 
 @Getter
 @Setter
-// tried "fluent=true" but then the String setters will prevent the creation of the Lombok setters
 @Accessors(chain = true)
 @ToString
 @EqualsAndHashCode(callSuper = false)
@@ -24,22 +24,8 @@ public class OMSListPrice extends OMSBusinessObject
 
     private BigDecimal listPrice = null;
 
-    public OMSListPrice amount(BigDecimal amount)
-    {
-        return setAmount(amount);
-    }
-
-    public OMSListPrice amountDiscounted(BigDecimal amountDiscounted)
-    {
-        return setAmountDiscounted(amountDiscounted);
-    }
-
-    public OMSListPrice listPrice(BigDecimal listPrice)
-    {
-        return setListPrice(listPrice);
-    }
-
-    public OMSListPrice amount(String amount)
+    @Tolerate
+    public OMSListPrice setAmount(String amount)
     {
         if (amount != null)
         {
@@ -51,7 +37,8 @@ public class OMSListPrice extends OMSBusinessObject
         }
     }
     
-    public OMSListPrice amountDiscounted(String amount)
+    @Tolerate
+    public OMSListPrice setAmountDiscounted(String amount)
     {
         if (amount != null)
         {
@@ -63,7 +50,8 @@ public class OMSListPrice extends OMSBusinessObject
         }
     }
     
-    public OMSListPrice listPrice(String amount)
+    @Tolerate
+    public OMSListPrice setListPrice(String amount)
     {
         if (amount != null)
         {
@@ -74,4 +62,23 @@ public class OMSListPrice extends OMSBusinessObject
             return setListPrice((BigDecimal)null);
         }
     }
+
+    @Deprecated(since = "4.5.0", forRemoval = true)
+    public OMSListPrice amount(BigDecimal amount)
+    {
+        return setAmount(amount);
+    }
+    
+    @Deprecated(since = "4.5.0", forRemoval = true)
+    public OMSListPrice amountDiscounted(BigDecimal amount)
+    {
+        return setAmountDiscounted(amount);
+    }
+    
+    @Deprecated(since = "4.5.0", forRemoval = true)
+    public OMSListPrice listPrice(BigDecimal amount)
+    {
+        return setListPrice(amount);
+    }
+    
 }

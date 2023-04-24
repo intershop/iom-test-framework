@@ -9,10 +9,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+import lombok.experimental.Tolerate;
 
 @Getter
 @Setter
-//tried "fluent=true" but then the String setters will prevent the creation of the Lombok setters
 @Accessors(chain = true)
 @ToString
 @EqualsAndHashCode(callSuper = false)
@@ -72,84 +72,96 @@ public class OMSPromotion extends OMSBusinessObject
 
     private BigDecimal grossValue = null;
 
+    @Tolerate
+    public OMSPromotion setNetValue(String amount)
+    {
+        if (amount != null)
+        {
+            return setNetValue(new BigDecimal(amount));
+        }
+        else
+        {
+            return setNetValue((BigDecimal)null);
+        }
+    }
+
+    @Tolerate
+    public OMSPromotion setGrossValue(String amount)
+    {
+        if (amount != null)
+        {
+            return setGrossValue(new BigDecimal(amount));
+        }
+        else
+        {
+            return setGrossValue((BigDecimal)null);
+        }
+    }
+
+    @Tolerate
+    public OMSPromotion setPromotionValue(String amount)
+    {
+        if (amount != null)
+        {
+            return setPromotionValue(new BigDecimal(amount));
+        }
+        else
+        {
+            return setPromotionValue((BigDecimal)null);
+        }
+    }
+
+    @Deprecated(since = "4.5.0", forRemoval = true)
+    public OMSPromotion netValue(BigDecimal amount)
+    {
+        return setNetValue(amount);
+    }
+    
+    @Deprecated(since = "4.5.0", forRemoval = true)
+    public OMSPromotion grossValue(BigDecimal amount)
+    {
+        return setGrossValue(amount);
+    }
+    
+    @Deprecated(since = "4.5.0", forRemoval = true)
+    public OMSPromotion promotionValue(BigDecimal amount)
+    {
+        return setPromotionValue(amount);
+    }
+
+    @Deprecated(since = "4.5.0", forRemoval = true)
+    public OMSPromotion promotionValueType(OMSPromotionValueTypeEnum pvt)
+    {
+        return setPromotionValueType(pvt);
+    }
+
+    @Deprecated(since = "4.5.0", forRemoval = true)
+    public OMSPromotion name(String name)
+    {
+        return setName(name);
+    }
+    
+    @Deprecated(since = "4.5.0", forRemoval = true)
     public OMSPromotion id(String id)
     {
         return setId(id);
     }
 
-    public OMSPromotion promotionValueType(OMSPromotionValueTypeEnum promotionValueType)
+    @Deprecated(since = "4.5.0", forRemoval = true)
+    public OMSPromotion budgetSourceId(String id)
     {
-        return setPromotionValueType(promotionValueType);
-      }
-
-    public OMSPromotion promotionValue(BigDecimal promotionValue)
+        return setBudgetSourceId(id);
+    }
+    
+    @Deprecated(since = "4.5.0", forRemoval = true)
+    public OMSPromotion descriptorId(String id)
     {
-        return setPromotionValue(promotionValue);
+        return setDescriptorId(id);
     }
 
-    public OMSPromotion name(String name)
+    @Deprecated(since = "4.5.0", forRemoval = true)
+    public OMSPromotion code(String id)
     {
-        return setName(name);
-    }
-
-    public OMSPromotion descriptorId(String descriptorId)
-    {
-        return setDescriptorId(descriptorId);
-    }
-
-    public OMSPromotion code(String code)
-    {
-        return setCode(code);
-    }
-
-    public OMSPromotion budgetSourceId(String budgetSourceId)
-    {
-        return setBudgetSourceId(budgetSourceId);
-    }
-
-    public OMSPromotion netValue(BigDecimal netValue)
-    {
-        return setNetValue(netValue);
-    }
-
-    public OMSPromotion grossValue(BigDecimal grossValue)
-    {
-        return setGrossValue(grossValue);
-    }
-
-    public OMSPromotion netValue(String amount)
-    {
-        if (amount != null)
-        {
-            return netValue(new BigDecimal(amount));
-        }
-        else
-        {
-            return netValue((BigDecimal)null);
-        }
-    }
-
-    public OMSPromotion grossValue(String amount)
-    {
-        if (amount != null)
-        {
-            return grossValue(new BigDecimal(amount));
-        }
-        else
-        {
-            return grossValue((BigDecimal)null);
-        }
-    }
-
-    public OMSPromotion promotionValue(String amount)
-    {
-        if (amount != null)
-        {
-            return promotionValue(new BigDecimal(amount));
-        }
-        else
-        {
-            return promotionValue((BigDecimal)null);
-        }
+        return setCode(id);
     }
 }
