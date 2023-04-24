@@ -73,7 +73,7 @@ public class OMSPromotion extends OMSBusinessObject
     private BigDecimal grossValue = null;
 
     @Tolerate
-    public OMSPromotion netValue(String amount)
+    public OMSPromotion setNetValue(String amount)
     {
         if (amount != null)
         {
@@ -86,7 +86,7 @@ public class OMSPromotion extends OMSBusinessObject
     }
 
     @Tolerate
-    public OMSPromotion grossValue(String amount)
+    public OMSPromotion setGrossValue(String amount)
     {
         if (amount != null)
         {
@@ -99,7 +99,7 @@ public class OMSPromotion extends OMSBusinessObject
     }
 
     @Tolerate
-    public OMSPromotion promotionValue(String amount)
+    public OMSPromotion setPromotionValue(String amount)
     {
         if (amount != null)
         {
@@ -127,5 +127,41 @@ public class OMSPromotion extends OMSBusinessObject
     public OMSPromotion promotionValue(BigDecimal amount)
     {
         return setPromotionValue(amount);
+    }
+
+    @Deprecated(since = "4.5.0", forRemoval = true)
+    public OMSPromotion promotionValueType(OMSPromotionValueTypeEnum pvt)
+    {
+        return setPromotionValueType(pvt);
+    }
+
+    @Deprecated(since = "4.5.0", forRemoval = true)
+    public OMSPromotion name(String name)
+    {
+        return setName(name);
+    }
+    
+    @Deprecated(since = "4.5.0", forRemoval = true)
+    public OMSPromotion id(String id)
+    {
+        return setId(id);
+    }
+
+    @Deprecated(since = "4.5.0", forRemoval = true)
+    public OMSPromotion budgetSourceId(String id)
+    {
+        return setBudgetSourceId(id);
+    }
+    
+    @Deprecated(since = "4.5.0", forRemoval = true)
+    public OMSPromotion descriptorId(String id)
+    {
+        return setDescriptorId(id);
+    }
+
+    @Deprecated(since = "4.5.0", forRemoval = true)
+    public OMSPromotion code(String id)
+    {
+        return setCode(id);
     }
 }

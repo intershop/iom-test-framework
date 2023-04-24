@@ -41,4 +41,22 @@ public class OMSTax extends OMSBusinessObject
     {
         return setAmount(amount);
     }
+    
+    @Deprecated(since = "4.5.0", forRemoval = true)
+    public OMSTax rate(BigDecimal amount)
+    {
+        return setRate(amount);
+    }
+    
+    @Deprecated(since = "4.5.0", forRemoval = true)
+    public OMSTax type(String type)
+    {
+        return setType(type);
+    }
+    
+    @Deprecated(since = "4.5.0", forRemoval = true)
+    public OMSTax location(String location)
+    {
+        return setLocation(type);
+    }
 }
