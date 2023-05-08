@@ -4,17 +4,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 import com.intershop.oms.test.businessobject.address.OMSAddressShipping;
 import com.intershop.oms.test.businessobject.prices.OMSCharge;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
 @Getter
 @Setter
+@Accessors(chain = true)
+@ToString
+@EqualsAndHashCode(callSuper = false)
 public class OMSShippingBucket extends OMSBusinessObject
 {
     private String number;
@@ -29,27 +34,40 @@ public class OMSShippingBucket extends OMSBusinessObject
 
     private List<OMSOrderPosition> positions = new ArrayList<>();
 
+    @Deprecated(since = "4.6.0", forRemoval = true)
     public OMSShippingBucket number(String number)
     {
-        this.number = number;
-        return this;
+        return setNumber(number);
     }
 
+    @Deprecated(since = "4.6.0", forRemoval = true)
     public OMSShippingBucket shippingAddress(OMSAddressShipping shippingAddress)
     {
-        this.shippingAddress = shippingAddress;
-        return this;
+        return setShippingAddress(shippingAddress);
     }
 
+    @Deprecated(since = "4.6.0", forRemoval = true)
     public OMSShippingBucket shippingMethod(String shippingMethod)
     {
-        this.shippingMethod = shippingMethod;
-        return this;
+        return setShippingMethod(shippingMethod);
     }
+
+    @Deprecated(since = "4.6.0", forRemoval = true)
     public OMSShippingBucket charges(List<OMSCharge> charges)
     {
-        this.charges = charges;
-        return this;
+        return setCharges(charges);
+    }
+
+    @Deprecated(since = "4.6.0", forRemoval = true)
+    public OMSShippingBucket additionalAttributes(Map<String, Map<String, String>> additionalAttributes)
+    {
+        return setAdditionalAttributes(additionalAttributes);
+    }
+
+    @Deprecated(since = "4.6.0", forRemoval = true)
+    public OMSShippingBucket positions(List<OMSOrderPosition> positions)
+    {
+        return setPositions(positions);
     }
 
     public OMSShippingBucket addChargesItem(OMSCharge chargesItem)
@@ -59,12 +77,6 @@ public class OMSShippingBucket extends OMSBusinessObject
             charges = new ArrayList<>();
         }
         charges.add(chargesItem);
-        return this;
-    }
-
-    public OMSShippingBucket additionalAttributes(Map<String, Map<String, String>> additionalAttributes)
-    {
-        this.additionalAttributes = additionalAttributes;
         return this;
     }
 
@@ -78,56 +90,9 @@ public class OMSShippingBucket extends OMSBusinessObject
         return this;
     }
 
-    public OMSShippingBucket positions(List<OMSOrderPosition> positions)
-    {
-        this.positions = positions;
-        return this;
-    }
-
     public OMSShippingBucket addPositionsItem(OMSOrderPosition positionsItem)
     {
         positions.add(positionsItem);
         return this;
-    }
-
-    @Override
-    public boolean equals(java.lang.Object o)
-    {
-        if (this == o)
-        {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass())
-        {
-            return false;
-        }
-        OMSShippingBucket shippingBucket = (OMSShippingBucket) o;
-        return Objects.equals(number, shippingBucket.number) &&
-                        Objects.equals(shippingAddress, shippingBucket.shippingAddress) &&
-                        Objects.equals(shippingMethod, shippingBucket.shippingMethod) &&
-                        Objects.equals(charges, shippingBucket.charges) &&
-                        Objects.equals(additionalAttributes, shippingBucket.additionalAttributes) &&
-                        Objects.equals(positions, shippingBucket.positions);
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(number, shippingAddress, shippingMethod, charges, additionalAttributes, positions);
-    }
-
-    @Override
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class ShippingBucket {\n");
-        sb.append("    number: ").append(toIndentedString(number)).append("\n");
-        sb.append("    shippingAddress: ").append(toIndentedString(shippingAddress)).append("\n");
-        sb.append("    shippingMethod: ").append(toIndentedString(shippingMethod)).append("\n");
-        sb.append("    charges: ").append(toIndentedString(charges)).append("\n");
-        sb.append("    additionalAttributes: ").append(toIndentedString(additionalAttributes)).append("\n");
-        sb.append("    positions: ").append(toIndentedString(positions)).append("\n");
-        sb.append("}");
-        return sb.toString();
     }
 }

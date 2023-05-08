@@ -66,7 +66,7 @@ public class OMSPerson extends OMSBusinessObject
      */
     public String getSOAPRequestString(String prefix)
     {
-        StringBuffer soapContent = new StringBuffer();
+        StringBuilder soapContent = new StringBuilder();
         soapContent.append("\n    <" +prefix+":Person ");
         if (firstName != null)
         {

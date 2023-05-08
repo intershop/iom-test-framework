@@ -1,15 +1,20 @@
 package com.intershop.oms.test.businessobject.order;
 
 import java.time.OffsetDateTime;
-import java.util.Objects;
 
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
 @Getter
 @Setter
+@Accessors(chain = true)
+@ToString
+@EqualsAndHashCode(callSuper = false)
 public class OMSDeliveryDate extends OMSBusinessObject
 {
     public enum OMSDeliveryDateTypeEnum
@@ -56,57 +61,21 @@ public class OMSDeliveryDate extends OMSBusinessObject
 
     private OffsetDateTime desiredDeliveryDate;
 
+    @Deprecated(since = "4.6.0", forRemoval = true)
     public OMSDeliveryDate deliveryDateType(OMSDeliveryDateTypeEnum deliveryDateType)
     {
-        this.deliveryDateType = deliveryDateType;
-        return this;
+        return setDeliveryDateType(deliveryDateType);
     }
 
+    @Deprecated(since = "4.6.0", forRemoval = true)
     public OMSDeliveryDate name(String name)
     {
-        this.name = name;
-        return this;
+        return setName(name);
     }
 
+    @Deprecated(since = "4.6.0", forRemoval = true)
     public OMSDeliveryDate desiredDeliveryDate(OffsetDateTime desiredDeliveryDate)
     {
-        this.desiredDeliveryDate = desiredDeliveryDate;
-        return this;
+        return setDesiredDeliveryDate(desiredDeliveryDate);
     }
-
-    @Override
-    public boolean equals(java.lang.Object o)
-    {
-        if (this == o)
-        {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass())
-        {
-            return false;
-        }
-        OMSDeliveryDate deliveryDate = (OMSDeliveryDate) o;
-        return Objects.equals(this.deliveryDateType, deliveryDate.deliveryDateType) &&
-                        Objects.equals(this.name, deliveryDate.name) &&
-                        Objects.equals(this.desiredDeliveryDate, deliveryDate.desiredDeliveryDate);
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(deliveryDateType, name, desiredDeliveryDate);
-    }
-
-    @Override
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class DeliveryDate {\n");
-        sb.append("    deliveryDateType: ").append(toIndentedString(deliveryDateType)).append("\n");
-        sb.append("    name: ").append(toIndentedString(name)).append("\n");
-        sb.append("    desiredDeliveryDate: ").append(toIndentedString(desiredDeliveryDate)).append("\n");
-        sb.append("}");
-        return sb.toString();
-    }
-
 }

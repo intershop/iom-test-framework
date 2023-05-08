@@ -1,5 +1,10 @@
 package com.intershop.oms.test.businessobject.order;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 import com.intershop.oms.test.businessobject.orderstate.OMSOrderPositionConfirmed;
 import com.intershop.oms.test.businessobject.orderstate.OMSOrderPositionDispatched;
@@ -8,15 +13,17 @@ import com.intershop.oms.test.businessobject.orderstate.OMSOrderPositionReturned
 import com.intershop.oms.test.businessobject.orderstate.OMSOrderPositionSupplier;
 import com.intershop.oms.test.businessobject.prices.OMSSumPrice;
 import com.intershop.oms.test.businessobject.prices.OMSUnitPrice;
-import lombok.Data;
+
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-@Data
+@Getter
+@Setter
+@Accessors(chain = true)
+@ToString
 @EqualsAndHashCode(callSuper = false)
 public class OMSOrderPosition extends OMSBusinessObject
 {
@@ -54,167 +61,135 @@ public class OMSOrderPosition extends OMSBusinessObject
 
     private Long id;
 
+    @Deprecated(since = "4.6.0", forRemoval = true)
+    public OMSOrderPosition id(Long id)
+    {
+        return setId(id);
+    }
+    
+    @Deprecated(since = "4.6.0", forRemoval = true)
     public OMSOrderPosition number(Integer number)
     {
-        this.number = number;
-        return this;
+        return setNumber(number);
     }
 
+    @Deprecated(since = "4.6.0", forRemoval = true)
     public OMSOrderPosition productUnit(String productUnit)
     {
-        this.productUnit = productUnit;
-        return this;
+        return setProductUnit(productUnit);
     }
 
+    @Deprecated(since = "4.6.0", forRemoval = true)
     public OMSOrderPosition product(OMSProduct product)
     {
-        this.product = product;
-        return this;
+        return setProduct(product);
     }
 
+    @Deprecated(since = "4.6.0", forRemoval = true)
     public OMSOrderPosition costCenter(String costCenter)
     {
-        this.costCenter = costCenter;
-        return this;
+        return setCostCenter(costCenter);
     }
 
+    @Deprecated(since = "4.6.0", forRemoval = true)
     public OMSOrderPosition project(String project)
     {
-        this.project = project;
-        return this;
+        return setProject(project);
     }
 
+    @Deprecated(since = "4.6.0", forRemoval = true)
     public OMSOrderPosition additionalAttributes(Map<String, Map<String, String>> additionalAttributes)
     {
-        this.additionalAttributes = additionalAttributes;
-        return this;
+        return setAdditionalAttributes(additionalAttributes);
+    }
+
+    @Deprecated(since = "4.6.0", forRemoval = true)
+    public OMSOrderPosition quantity(Integer quantity)
+    {
+        return setQuantity(quantity);
+    }
+
+    @Deprecated(since = "4.6.0", forRemoval = true)
+    public OMSOrderPosition sum(OMSSumPrice sum)
+    {
+        return setSum(sum);
+    }
+
+    @Deprecated(since = "4.6.0", forRemoval = true)
+    public OMSOrderPosition unitPrice(OMSUnitPrice unitPrice)
+    {
+        return setUnitPrice(unitPrice);
+    }
+
+    @Deprecated(since = "4.6.0", forRemoval = true)
+    public OMSOrderPosition shipping(OMSShipping shipping)
+    {
+        return setShipping(shipping);
+    }
+
+    @Deprecated(since = "4.6.0", forRemoval = true)
+    public OMSOrderPosition status(String status)
+    {
+        return setStatus(status);
+    }
+
+    @Deprecated(since = "4.6.0", forRemoval = true)
+    public OMSOrderPosition ordered(OMSOrderPositionOrdered ordered)
+    {
+        return setOrdered(ordered);
+    }
+
+    @Deprecated(since = "4.6.0", forRemoval = true)
+    public OMSOrderPosition commissioned(OMSOrderPositionSupplier commissioned)
+    {
+        return setCommissioned(commissioned);
+    }
+
+    @Deprecated(since = "4.6.0", forRemoval = true)
+    public OMSOrderPosition confirmed(OMSOrderPositionConfirmed confirmed)
+    {
+        return setConfirmed(confirmed);
+    }
+
+    @Deprecated(since = "4.6.0", forRemoval = true)
+    public OMSOrderPosition dispatched(List<OMSOrderPositionDispatched> dispatched)
+    {
+        return setDispatched(dispatched);
+    }
+
+    @Deprecated(since = "4.6.0", forRemoval = true)
+    public OMSOrderPosition returned(List<OMSOrderPositionReturned> returned)
+    {
+        return setReturned(returned);
     }
 
     public OMSOrderPosition putAdditionalAttributesItem(String key, Map<String, String> additionalAttributesItem)
     {
-        if (this.additionalAttributes == null)
+        if (additionalAttributes == null)
         {
-            this.additionalAttributes = new HashMap<>();
+            additionalAttributes = new HashMap<>();
         }
-        this.additionalAttributes.put(key, additionalAttributesItem);
-        return this;
-    }
-
-    public OMSOrderPosition quantity(Integer quantity)
-    {
-        this.quantity = quantity;
-        return this;
-    }
-
-    public OMSOrderPosition sum(OMSSumPrice sum)
-    {
-        this.sum = sum;
-        return this;
-    }
-
-    public OMSSumPrice getSum()
-    {
-        return sum;
-    }
-
-    public void setSum(OMSSumPrice sum)
-    {
-        this.sum = sum;
-    }
-
-    public OMSOrderPosition unitPrice(OMSUnitPrice unitPrice)
-    {
-        this.unitPrice = unitPrice;
-        return this;
-    }
-
-    public OMSUnitPrice getUnitPrice()
-    {
-        return unitPrice;
-    }
-
-    public void setUnitPrice(OMSUnitPrice unitPrice)
-    {
-        this.unitPrice = unitPrice;
-    }
-
-    public OMSOrderPosition shipping(OMSShipping shipping)
-    {
-        this.shipping = shipping;
-        return this;
-    }
-
-    public OMSShipping getShipping()
-    {
-        return shipping;
-    }
-
-    public void setShipping(OMSShipping shipping)
-    {
-        this.shipping = shipping;
-    }
-
-    public OMSOrderPosition status(String status)
-    {
-
-        this.status = status;
-        return this;
-    }
-
-    public OMSOrderPosition ordered(OMSOrderPositionOrdered ordered)
-    {
-        this.ordered = ordered;
-        return this;
-    }
-
-    public OMSOrderPosition commissioned(OMSOrderPositionSupplier commissioned)
-    {
-        this.commissioned = commissioned;
-        return this;
-    }
-
-    public OMSOrderPosition confirmed(OMSOrderPositionConfirmed confirmed)
-    {
-        this.confirmed = confirmed;
-        return this;
-    }
-
-    public OMSOrderPosition dispatched(List<OMSOrderPositionDispatched> dispatched)
-    {
-        this.dispatched = dispatched;
+        additionalAttributes.put(key, additionalAttributesItem);
         return this;
     }
 
     public OMSOrderPosition addDispatchedItem(OMSOrderPositionDispatched dispatchedItem)
     {
-        if (this.dispatched == null)
+        if (dispatched == null)
         {
-            this.dispatched = new ArrayList<>();
+            dispatched = new ArrayList<>();
         }
-        this.dispatched.add(dispatchedItem);
+        dispatched.add(dispatchedItem);
         return this;
     }
 
-    public OMSOrderPosition returned(List<OMSOrderPositionReturned> returned)
+   public OMSOrderPosition addReturnedItem(OMSOrderPositionReturned returnedItem)
     {
-        this.returned = returned;
-        return this;
-    }
-
-    public OMSOrderPosition addReturnedItem(OMSOrderPositionReturned returnedItem)
-    {
-        if (this.returned == null)
+        if (returned == null)
         {
-            this.returned = new ArrayList<>();
+            returned = new ArrayList<>();
         }
-        this.returned.add(returnedItem);
+        returned.add(returnedItem);
         return this;
     }
-
-    public OMSOrderPosition id(Long id)
-    {
-        this.id = id;
-        return this;
-    }
-
 }

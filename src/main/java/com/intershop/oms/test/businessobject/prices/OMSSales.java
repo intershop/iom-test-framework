@@ -2,15 +2,20 @@ package com.intershop.oms.test.businessobject.prices;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
 @Getter
 @Setter
+@Accessors(chain = true)
+@ToString
+@EqualsAndHashCode(callSuper = false)
 public class OMSSales extends OMSBusinessObject
 {
     private String currencyCode;
@@ -21,70 +26,33 @@ public class OMSSales extends OMSBusinessObject
 
     private OMSTotalPrice total;
 
+    @Deprecated(since = "4.6.0", forRemoval = true)
     public OMSSales currencyCode(String currencyCode)
     {
-        this.currencyCode = currencyCode;
-        return this;
+        return setCurrencyCode(currencyCode);
     }
 
+    @Deprecated(since = "4.6.0", forRemoval = true)
+    public OMSSales total(OMSTotalPrice total)
+    {
+        return setTotal(total);
+    }
+    
+    @Deprecated(since = "4.6.0", forRemoval = true)
     public OMSSales subTotal(OMSSumPrice subTotal)
     {
-        this.subTotal = subTotal;
-        return this;
+        return setSubTotal(subTotal);
     }
 
+    @Deprecated(since = "4.6.0", forRemoval = true)
     public OMSSales charges(List<OMSCharge> charges)
     {
-        this.charges = charges;
-        return this;
+        return setCharges(charges);
     }
 
     public OMSSales addChargesItem(OMSCharge chargesItem)
     {
-        this.charges.add(chargesItem);
+        charges.add(chargesItem);
         return this;
-    }
-
-    public OMSSales total(OMSTotalPrice total)
-    {
-        this.total = total;
-        return this;
-    }
-
-    @Override
-    public boolean equals(java.lang.Object o)
-    {
-        if (this == o)
-        {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass())
-        {
-            return false;
-        }
-        OMSSales sales = (OMSSales) o;
-        return Objects.equals(this.currencyCode, sales.currencyCode) &&
-                        Objects.equals(this.subTotal, sales.subTotal) &&
-                        Objects.equals(this.charges, sales.charges) &&
-                        Objects.equals(this.total, sales.total);
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(currencyCode, subTotal, charges, total);
-    }
-
-    @Override
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class Sales {\n");
-        sb.append("    currencyCode: ").append(toIndentedString(currencyCode)).append("\n");
-        sb.append("    subTotal: ").append(toIndentedString(subTotal)).append("\n");
-        sb.append("    charges: ").append(toIndentedString(charges)).append("\n");
-        sb.append("    total: ").append(toIndentedString(total)).append("\n");
-        sb.append("}");
-        return sb.toString();
     }
 }

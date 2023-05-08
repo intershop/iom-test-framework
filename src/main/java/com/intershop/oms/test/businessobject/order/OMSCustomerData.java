@@ -1,14 +1,18 @@
 package com.intershop.oms.test.businessobject.order;
 
-import java.util.Objects;
-
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
 @Getter
 @Setter
+@Accessors(chain = true)
+@ToString
+@EqualsAndHashCode(callSuper = false)
 public class OMSCustomerData extends OMSBusinessObject
 {
     public enum OMSCustomerDataTypeEnum
@@ -55,65 +59,27 @@ public class OMSCustomerData extends OMSBusinessObject
 
     private OMSCompanyData companyData;
 
+    @Deprecated(since = "4.6.0", forRemoval = true)
     public OMSCustomerData customerDataType(OMSCustomerDataTypeEnum customerDataType)
     {
-        this.customerDataType = customerDataType;
-        return this;
+        return setCustomerDataType(customerDataType);
     }
 
+    @Deprecated(since = "4.6.0", forRemoval = true)
     public OMSCustomerData orderNumber(String orderNumber)
     {
-        this.orderNumber = orderNumber;
-        return this;
+        return setOrderNumber(orderNumber);
     }
 
+    @Deprecated(since = "4.6.0", forRemoval = true)
     public OMSCustomerData shopCustomerNumber(String shopCustomerNumber)
     {
-        this.shopCustomerNumber = shopCustomerNumber;
-        return this;
+        return setShopCustomerNumber(shopCustomerNumber);
     }
 
+    @Deprecated(since = "4.6.0", forRemoval = true)
     public OMSCustomerData companyData(OMSCompanyData companyData)
     {
-        this.companyData = companyData;
-        return this;
-    }
-
-    @Override
-    public boolean equals(java.lang.Object o)
-    {
-        if (this == o)
-        {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass())
-        {
-            return false;
-        }
-        OMSCustomerData customerData = (OMSCustomerData) o;
-        return Objects.equals(this.customerDataType, customerData.customerDataType) &&
-                        Objects.equals(this.orderNumber, customerData.orderNumber) &&
-                        Objects.equals(this.shopCustomerNumber, customerData.shopCustomerNumber) &&
-                        Objects.equals(this.companyData, customerData.companyData);
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(customerDataType, orderNumber, shopCustomerNumber, companyData);
-    }
-
-
-    @Override
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class CustomerData {\n");
-        sb.append("    customerDataType: ").append(toIndentedString(customerDataType)).append("\n");
-        sb.append("    orderNumber: ").append(toIndentedString(orderNumber)).append("\n");
-        sb.append("    shopCustomerNumber: ").append(toIndentedString(shopCustomerNumber)).append("\n");
-        sb.append("    companyData: ").append(toIndentedString(companyData)).append("\n");
-        sb.append("}");
-        return sb.toString();
+        return setCompanyData(companyData);
     }
 }

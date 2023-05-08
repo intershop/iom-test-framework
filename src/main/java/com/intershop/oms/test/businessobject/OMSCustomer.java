@@ -73,7 +73,7 @@ public class OMSCustomer
         }
         else
         {
-            OMSCompanyData omsCompanyData = new OMSCompanyData().companyName(company);
+            OMSCompanyData omsCompanyData = new OMSCompanyData().setCompanyName(company);
             customerData = customerData.customerDataType(OMSCustomerData.OMSCustomerDataTypeEnum.COMPANY).companyData(omsCompanyData);
         }
         customerData.shopCustomerNumber(customerShopNo);

@@ -2016,8 +2016,8 @@ DELETE  FROM "StockReservationDO" r2
                                 k -> new ArrayList<>());
                 OMSOrderPosition orderPosition = new OMSOrderPosition();
                 com.intershop.oms.test.businessobject.order.OMSProduct product = new com.intershop.oms.test.businessobject.order.OMSProduct();
-                product.productId(articleId).name(shopArticleName).number(shopArticleNo);
-                orderPosition.quantity(quantity).number(orderPosNo).product(product).id(orderPosID);
+                product.productId(articleId).name(shopArticleName).setNumber(shopArticleNo);
+                orderPosition.setQuantity(quantity).setNumber(orderPosNo).setProduct(product).id(orderPosID);
                 log.info("Adding orderPos '" + orderPosition + "' for supplier id '" + supplierId + "'");
                 supplierPos.add(orderPosition);
             }
