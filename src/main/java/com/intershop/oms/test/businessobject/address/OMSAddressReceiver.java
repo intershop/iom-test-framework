@@ -1,14 +1,18 @@
 package com.intershop.oms.test.businessobject.address;
 
-import java.util.Objects;
-
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
 @Getter
 @Setter
+@Accessors(chain = true)
+@ToString
+@EqualsAndHashCode(callSuper = false)
 public class OMSAddressReceiver extends OMSBusinessObject
 {
     public enum OMSAddressReceiverTypeEnum
@@ -53,56 +57,20 @@ public class OMSAddressReceiver extends OMSBusinessObject
 
     private String companyName;
 
+    @Deprecated(since = "4.6.0", forRemoval = true)
     public OMSAddressReceiver addressReceiverType(OMSAddressReceiverTypeEnum addressReceiverType)
     {
-        this.addressReceiverType = addressReceiverType;
-        return this;
-    }
+        return setAddressReceiverType(addressReceiverType);    }
 
+    @Deprecated(since = "4.6.0", forRemoval = true)
     public OMSAddressReceiver person(OMSPerson person)
     {
-        this.person = person;
-        return this;
+        return setPerson(person);
     }
 
+    @Deprecated(since = "4.6.0", forRemoval = true)
     public OMSAddressReceiver companyName(String companyName)
     {
-        this.companyName = companyName;
-        return this;
-    }
-
-    @Override
-    public boolean equals(java.lang.Object o)
-    {
-        if (this == o)
-        {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass())
-        {
-            return false;
-        }
-        OMSAddressReceiver addressReceiver = (OMSAddressReceiver) o;
-        return Objects.equals(this.addressReceiverType, addressReceiver.addressReceiverType) &&
-                        Objects.equals(this.person, addressReceiver.person) &&
-                        Objects.equals(this.companyName, addressReceiver.companyName);
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(addressReceiverType, person, companyName);
-    }
-
-    @Override
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class AddressReceiver {\n");
-        sb.append("    addressReceiverType: ").append(toIndentedString(addressReceiverType)).append("\n");
-        sb.append("    person: ").append(toIndentedString(person)).append("\n");
-        sb.append("    companyName: ").append(toIndentedString(companyName)).append("\n");
-        sb.append("}");
-        return sb.toString();
+        return setCompanyName(companyName);
     }
 }

@@ -6,11 +6,17 @@ import java.util.Objects;
 
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
 @Getter
 @Setter
+@Accessors(chain = true)
+@ToString
+@EqualsAndHashCode(callSuper = false)
 public class OMSAddressLocation extends OMSBusinessObject
 {
     private String city;
@@ -27,93 +33,52 @@ public class OMSAddressLocation extends OMSBusinessObject
 
     public OMSAddressLocation()
     {
-        this.type = this.getClass().getSimpleName();
+        type = getClass().getSimpleName();
     }
 
+    @Deprecated(since = "4.6.0", forRemoval = true)
     public OMSAddressLocation city(String city)
     {
-        this.city = city;
-        return this;
+        return setCity(city);
     }
 
+    @Deprecated(since = "4.6.0", forRemoval = true)
     public OMSAddressLocation postCode(String postCode)
     {
-        this.postCode = postCode;
-        return this;
+        return setPostCode(postCode);
     }
 
+    @Deprecated(since = "4.6.0", forRemoval = true)
     public OMSAddressLocation district(String district)
     {
-        this.district = district;
-        return this;
+        return setDistrict(district);
     }
 
+    @Deprecated(since = "4.6.0", forRemoval = true)
     public OMSAddressLocation countryCode(String countryCode)
     {
-        this.countryCode = countryCode;
-        return this;
+        return setCountryCode(countryCode);
     }
 
+    @Deprecated(since = "4.6.0", forRemoval = true)
+    public OMSAddressLocation type(String type)
+    {
+        return setType(type);
+    }
+
+    @Deprecated(since = "4.6.0", forRemoval = true)
     public OMSAddressLocation additions(List<String> additions)
     {
-        this.additions = additions;
-        return this;
+        return setAdditions(additions);
     }
 
     public OMSAddressLocation addAdditionsItem(String additionsItem)
     {
-        if (this.additions == null)
+        if (additions == null)
         {
-            this.additions = new ArrayList<>();
+            additions = new ArrayList<>();
         }
-        this.additions.add(additionsItem);
+        additions.add(additionsItem);
         return this;
-    }
-
-    public OMSAddressLocation type(String type)
-    {
-        this.type = type;
-        return this;
-    }
-
-    @Override
-    public boolean equals(java.lang.Object o)
-    {
-        if (this == o)
-        {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass())
-        {
-            return false;
-        }
-        OMSAddressLocation addressLocation = (OMSAddressLocation) o;
-        return Objects.equals(this.city, addressLocation.city) &&
-                        Objects.equals(this.postCode, addressLocation.postCode) &&
-                        Objects.equals(this.district, addressLocation.district) &&
-                        Objects.equals(this.countryCode, addressLocation.countryCode) &&
-                        Objects.equals(this.additions, addressLocation.additions) &&
-                        Objects.equals(this.type, addressLocation.type);
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(city, postCode, district, countryCode, additions, type);
-    }
-
-    @Override
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class AddressLocation {\n");
-        sb.append("    city: ").append(toIndentedString(city)).append("\n");
-        sb.append("    postCode: ").append(toIndentedString(postCode)).append("\n");
-        sb.append("    district: ").append(toIndentedString(district)).append("\n");
-        sb.append("    countryCode: ").append(toIndentedString(countryCode)).append("\n");
-        sb.append("    additions: ").append(toIndentedString(additions)).append("\n");
-        sb.append("    type: ").append(toIndentedString(type)).append("\n");
-        sb.append("}");
-        return sb.toString();
     }
 }

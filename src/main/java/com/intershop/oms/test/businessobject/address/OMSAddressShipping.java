@@ -1,14 +1,18 @@
 package com.intershop.oms.test.businessobject.address;
 
-import java.util.Objects;
-
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
 @Getter
 @Setter
+@Accessors(chain = true)
+@ToString
+@EqualsAndHashCode(callSuper = false)
 public class OMSAddressShipping extends OMSBusinessObject
 {
     private OMSAddressLocation location;
@@ -17,60 +21,21 @@ public class OMSAddressShipping extends OMSBusinessObject
 
     private OMSAddressReceiver receiver;
 
+    @Deprecated(since = "4.6.0", forRemoval = true)
     public OMSAddressShipping location(OMSAddressLocation location)
     {
-        this.location = location;
-        return this;
+        return setLocation(location);
     }
 
+    @Deprecated(since = "4.6.0", forRemoval = true)
     public OMSAddressShipping contact(OMSContact contact)
     {
-        this.contact = contact;
-        return this;
+        return setContact(contact);
     }
 
+    @Deprecated(since = "4.6.0", forRemoval = true)
     public OMSAddressShipping receiver(OMSAddressReceiver receiver)
     {
-        this.receiver = receiver;
-        return this;
-    }
-
-    @Override
-    public boolean equals(java.lang.Object o)
-    {
-        if (this == o)
-        {
-            return true;
-        }
-        if (o == null)
-        {
-            return false;
-        }
-        if (!o.getClass().isAssignableFrom(getClass()) && !getClass().isAssignableFrom(o.getClass()))
-        {
-            return false;
-        }
-        OMSAddressShipping addressShipping = (OMSAddressShipping) o;
-        return Objects.equals(this.location, addressShipping.location) &&
-                        Objects.equals(this.contact, addressShipping.contact) &&
-                        Objects.equals(this.receiver, addressShipping.receiver);
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(location, contact, receiver);
-    }
-
-    @Override
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class AddressShipping {\n");
-        sb.append("    location: ").append(toIndentedString(location)).append("\n");
-        sb.append("    contact: ").append(toIndentedString(contact)).append("\n");
-        sb.append("    receiver: ").append(toIndentedString(receiver)).append("\n");
-        sb.append("}");
-        return sb.toString();
+        return setReceiver(receiver);
     }
 }
