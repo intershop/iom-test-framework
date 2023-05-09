@@ -69,15 +69,15 @@ public class OMSCustomer
         OMSCustomerData customerData = new OMSCustomerData();
         if (null == company)
         {
-            customerData = customerData.customerDataType(OMSCustomerData.OMSCustomerDataTypeEnum.PERSON);
+            customerData = customerData.setCustomerDataType(OMSCustomerData.OMSCustomerDataTypeEnum.PERSON);
         }
         else
         {
             OMSCompanyData omsCompanyData = new OMSCompanyData().setCompanyName(company);
-            customerData = customerData.customerDataType(OMSCustomerData.OMSCustomerDataTypeEnum.COMPANY).companyData(omsCompanyData);
+            customerData = customerData.setCustomerDataType(OMSCustomerData.OMSCustomerDataTypeEnum.COMPANY).setCompanyData(omsCompanyData);
         }
-        customerData.shopCustomerNumber(customerShopNo);
-        customerData.orderNumber(shopOrderNo);
+        customerData.setShopCustomerNumber(customerShopNo);
+        customerData.setOrderNumber(shopOrderNo);
 
         return customerData;
     }
