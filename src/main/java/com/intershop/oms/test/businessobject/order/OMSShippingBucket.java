@@ -34,37 +34,37 @@ public class OMSShippingBucket extends OMSBusinessObject
 
     private List<OMSOrderPosition> positions = new ArrayList<>();
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSShippingBucket number(String number)
     {
         return setNumber(number);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSShippingBucket shippingAddress(OMSAddressShipping shippingAddress)
     {
         return setShippingAddress(shippingAddress);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSShippingBucket shippingMethod(String shippingMethod)
     {
         return setShippingMethod(shippingMethod);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSShippingBucket charges(List<OMSCharge> charges)
     {
         return setCharges(charges);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSShippingBucket additionalAttributes(Map<String, Map<String, String>> additionalAttributes)
     {
         return setAdditionalAttributes(additionalAttributes);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSShippingBucket positions(List<OMSOrderPosition> positions)
     {
         return setPositions(positions);

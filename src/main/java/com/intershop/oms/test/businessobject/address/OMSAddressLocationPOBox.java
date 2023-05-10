@@ -20,7 +20,7 @@ public class OMSAddressLocationPOBox extends OMSAddressLocation
         type = "AddressLocationPOBox";
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSAddressLocationPOBox postBox(String postBox)
     {
         return setPostBox(postBox);

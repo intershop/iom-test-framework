@@ -59,25 +59,25 @@ public class OMSCustomerData extends OMSBusinessObject
 
     private OMSCompanyData companyData;
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSCustomerData customerDataType(OMSCustomerDataTypeEnum customerDataType)
     {
         return setCustomerDataType(customerDataType);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSCustomerData orderNumber(String orderNumber)
     {
         return setOrderNumber(orderNumber);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSCustomerData shopCustomerNumber(String shopCustomerNumber)
     {
         return setShopCustomerNumber(shopCustomerNumber);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSCustomerData companyData(OMSCompanyData companyData)
     {
         return setCompanyData(companyData);

@@ -2,7 +2,6 @@ package com.intershop.oms.test.businessobject.address;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 
@@ -36,37 +35,37 @@ public class OMSAddressLocation extends OMSBusinessObject
         type = getClass().getSimpleName();
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSAddressLocation city(String city)
     {
         return setCity(city);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSAddressLocation postCode(String postCode)
     {
         return setPostCode(postCode);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSAddressLocation district(String district)
     {
         return setDistrict(district);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSAddressLocation countryCode(String countryCode)
     {
         return setCountryCode(countryCode);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSAddressLocation type(String type)
     {
         return setType(type);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSAddressLocation additions(List<String> additions)
     {
         return setAdditions(additions);

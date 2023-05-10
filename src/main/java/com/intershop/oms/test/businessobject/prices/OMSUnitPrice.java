@@ -19,13 +19,13 @@ public class OMSUnitPrice extends OMSBusinessObject
 
     private OMSListPrice gross;
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSUnitPrice net(OMSListPrice net)
     {
         return setNet(net);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSUnitPrice gross(OMSListPrice gross)
     {
         return setGross(gross);

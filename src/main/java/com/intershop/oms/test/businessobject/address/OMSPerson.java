@@ -34,25 +34,25 @@ public class OMSPerson extends OMSBusinessObject
         lastName = omsCustomer.getLastName();
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSPerson salutation(String salutation)
     {
         return setSalutation(salutation);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSPerson title(String title)
     {
         return setTitle(title);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSPerson firstName(String firstName)
     {
         return setFirstName(firstName);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSPerson lastName(String lastName)
     {
         return setLastName(lastName);

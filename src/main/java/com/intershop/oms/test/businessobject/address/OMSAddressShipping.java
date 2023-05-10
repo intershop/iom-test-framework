@@ -21,19 +21,19 @@ public class OMSAddressShipping extends OMSBusinessObject
 
     private OMSAddressReceiver receiver;
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSAddressShipping location(OMSAddressLocation location)
     {
         return setLocation(location);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSAddressShipping contact(OMSContact contact)
     {
         return setContact(contact);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSAddressShipping receiver(OMSAddressReceiver receiver)
     {
         return setReceiver(receiver);

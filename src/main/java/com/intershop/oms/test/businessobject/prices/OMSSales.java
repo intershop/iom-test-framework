@@ -26,25 +26,25 @@ public class OMSSales extends OMSBusinessObject
 
     private OMSTotalPrice total;
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSSales currencyCode(String currencyCode)
     {
         return setCurrencyCode(currencyCode);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSSales total(OMSTotalPrice total)
     {
         return setTotal(total);
     }
     
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSSales subTotal(OMSSumPrice subTotal)
     {
         return setSubTotal(subTotal);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSSales charges(List<OMSCharge> charges)
     {
         return setCharges(charges);

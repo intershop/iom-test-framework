@@ -23,25 +23,25 @@ public class OMSContact extends OMSBusinessObject
 
     private String fax;
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSContact email(String email)
     {
         return setEmail(email);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSContact phone(String phone)
     {
         return setPhone(phone);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSContact mobile(String mobile)
     {
         return setMobile(mobile);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSContact fax(String fax)
     {
         return setFax(fax);

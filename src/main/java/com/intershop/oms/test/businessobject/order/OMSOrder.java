@@ -58,73 +58,73 @@ public class OMSOrder extends OMSBusinessObject implements OMSPropertyGroupOwner
     protected List<OMSShippingBucket> shippingBuckets = new ArrayList<>();
     protected OMSShop shop;
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSOrder shopOrderNumber(String shopOrderNumber)
     {
         return setShopOrderNumber(shopOrderNumber);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSOrder shopOrderCreationDate(OffsetDateTime shopOrderCreationDate)
     {
         return setShopOrderCreationDate(shopOrderCreationDate);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSOrder shopOrderUpdateDate(OffsetDateTime shopOrderUpdateDate)
     {
         return setShopOrderUpdateDate(shopOrderUpdateDate);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSOrder reservationId(Long reservationId)
     {
         return setReservationId(reservationId);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSOrder costCenter(String costCenter)
     {
         return setCostCenter(costCenter);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSOrder project(String project)
     {
         return setProject(project);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSOrder customerData(OMSCustomerData customerData)
     {
         return setCustomerData(customerData);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSOrder invoiceAddress(OMSAddressInvoice invoiceAddress)
     {
         return setInvoiceAddress(invoiceAddress);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSOrder sales(OMSSales sales)
     {
         return setSales(sales);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSOrder payment(OMSPayment payment)
     {
         return setPayment(payment);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSOrder optimizationRule(String optimizationRule)
     {
         return setOptimizationRule(optimizationRule);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSOrder splitShipmentAllowed(Boolean splitShipmentAllowed)
     {
         return setSplitShipmentAllowed(splitShipmentAllowed);
@@ -137,19 +137,19 @@ public class OMSOrder extends OMSBusinessObject implements OMSPropertyGroupOwner
      * 
      * @deprecated use setPropertyGroups instead
      */
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSOrder additionalAttributes(Map<String, Map<String, String>> additionalAttributes)
     {
         return setPropertyGroups(additionalAttributes);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSOrder shippingBuckets(List<OMSShippingBucket> shippingBuckets)
     {
         return setShippingBuckets(shippingBuckets);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSOrder id(Long id)
     {
         return setId(id);

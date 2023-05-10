@@ -21,19 +21,19 @@ public class OMSAddressInvoice extends OMSBusinessObject
 
     private OMSAddressReceiver receiver;
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSAddressInvoice location(OMSAddressLocation location)
     {
         return setLocation(location);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSAddressInvoice contact(OMSContact contact)
     {
         return setContact(contact);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSAddressInvoice receiver(OMSAddressReceiver receiver)
     {
         return setReceiver(receiver);

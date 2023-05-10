@@ -21,31 +21,31 @@ public class OMSProduct extends OMSBusinessObject
     private Long ean;
     private Long productId;
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSProduct name(String name)
     {
         return setName(name);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSProduct number(String number)
     {
         return setNumber(number);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSProduct isbn(String isbn)
     {
         return setIsbn(isbn);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSProduct ean(Long ean)
     {
         return setEan(ean);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSProduct productId(Long productId)
     {
         return setProductId(productId);

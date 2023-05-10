@@ -30,37 +30,37 @@ public class OMSCharge extends OMSBusinessObject
 
     private List<OMSPromotion> promotions = null;
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSCharge number(Long number)
     {
         return setNumber(number);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSCharge type(String type)
     {
         return setType(type);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSCharge net(OMSPrice net)
     {
         return setNet(net);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSCharge gross(OMSPrice gross)
     {
         return setGross(gross);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSCharge taxes(List<OMSTax> taxes)
     {
         return setTaxes(taxes);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSCharge promotions(List<OMSPromotion> promotions)
     {
         return setPromotions(promotions);

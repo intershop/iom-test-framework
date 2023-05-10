@@ -28,31 +28,31 @@ public class OMSShipping extends OMSBusinessObject
 
     private Integer expectedDeliveryDays;
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSShipping freightClass(String freightClass)
     {
         return setFreightClass(freightClass);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSShipping selectedSupplier(String selectedSupplier)
     {
         return setSelectedSupplier(selectedSupplier);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSShipping deliveryOptions(List<String> deliveryOptions)
     {
         return setDeliveryOptions(deliveryOptions);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSShipping deliveryDate(OMSDeliveryDate deliveryDate)
     {
         return setDeliveryDate(deliveryDate);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSShipping expectedDeliveryDays(Integer expectedDeliveryDays)
     {
         return setExpectedDeliveryDays(expectedDeliveryDays);

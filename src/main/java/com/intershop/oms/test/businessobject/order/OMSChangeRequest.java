@@ -69,43 +69,43 @@ public class OMSChangeRequest extends OMSBusinessObject
         }
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSChangeRequest changeRequest(OMSOrder changeRequest)
     {
         return setChangeRequest(changeRequest);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSChangeRequest changeRequestId(String changeRequestId)
     {
         return setChangeRequestId(changeRequestId);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSChangeRequest status(String status)
     {
         return setStatus(status);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSChangeRequest updateDate(OffsetDateTime updateDate)
     {
         return setUpdateDate(updateDate);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSChangeRequest creationDate(OffsetDateTime creationDate)
     {
         return setCreationDate(creationDate);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSChangeRequest creator(String creator)
     {
         return setCreator(creator);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSChangeRequest id(Long id)
     {
         return setId(id);

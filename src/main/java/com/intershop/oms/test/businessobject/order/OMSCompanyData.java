@@ -31,49 +31,49 @@ public class OMSCompanyData extends OMSBusinessObject
 
     private String vatNumber;
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSCompanyData companyName(String companyName)
     {
         return setCompanyName(companyName);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSCompanyData department(String department)
     {
         return setDepartment(department);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSCompanyData lineOfBusiness(String lineOfBusiness)
     {
         return setLineOfBusiness(lineOfBusiness);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSCompanyData costCenterNumber(String costCenterNumber)
     {
         return setCostCenterNumber(costCenterNumber);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSCompanyData commercialRegisterNumber(String commercialRegisterNumber)
     {
         return setCommercialRegisterNumber(commercialRegisterNumber);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSCompanyData commercialRegisterLocation(String commercialRegisterLocation)
     {
         return setCommercialRegisterLocation(commercialRegisterLocation);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSCompanyData companyType(String companyType)
     {
         return setCompanyType(companyType);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSCompanyData vatNumber(String vatNumber)
     {
         return setVatNumber(vatNumber);

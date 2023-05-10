@@ -23,25 +23,25 @@ public class OMSPayment extends OMSBusinessObject
 
     private String paymentProviderMerchantAccount;
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSPayment paymentMethod(String paymentMethod)
     {
         return setPaymentMethod(paymentMethod);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSPayment paymentProviderOrderNo(String paymentProviderOrderNo)
     {
         return setPaymentProviderOrderNo(paymentProviderOrderNo);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSPayment paymentProviderRefNo(String paymentProviderRefNo)
     {
         return setPaymentProviderRefNo(paymentProviderRefNo);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSPayment paymentProviderMerchantAccount(String paymentProviderMerchantAccount)
     {
         return setPaymentProviderMerchantAccount(paymentProviderMerchantAccount);

@@ -24,19 +24,19 @@ public class OMSTotalPrice extends OMSBusinessObject
 
     private List<OMSTax> taxes = null;
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSTotalPrice net(OMSPrice net)
     {
         return setNet(net);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSTotalPrice gross(OMSPrice gross)
     {
         return setGross(gross);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSTotalPrice taxes(List<OMSTax> taxes)
     {
         return setTaxes(taxes);

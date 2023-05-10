@@ -22,13 +22,13 @@ public class OMSAddressLocationPackstation extends OMSAddressLocation
         type = "AddressLocationPackstation";
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSAddressLocationPackstation userId(String userId)
     {
         return setUserId(userId);
     }
 
-    @Deprecated(since = "4.6.0", forRemoval = true)
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSAddressLocationPackstation stationNumber(String stationNumber)
     {
         return setStationNumber(stationNumber);
