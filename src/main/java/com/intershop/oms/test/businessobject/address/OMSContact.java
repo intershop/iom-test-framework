@@ -1,14 +1,18 @@
 package com.intershop.oms.test.businessobject.address;
 
-import java.util.Objects;
-
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
 @Getter
 @Setter
+@Accessors(chain = true)
+@ToString
+@EqualsAndHashCode(callSuper = false)
 public class OMSContact extends OMSBusinessObject
 {
     private String email;
@@ -19,64 +23,28 @@ public class OMSContact extends OMSBusinessObject
 
     private String fax;
 
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSContact email(String email)
     {
-        this.email = email;
-        return this;
+        return setEmail(email);
     }
 
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSContact phone(String phone)
     {
-        this.phone = phone;
-        return this;
+        return setPhone(phone);
     }
 
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSContact mobile(String mobile)
     {
-        this.mobile = mobile;
-        return this;
+        return setMobile(mobile);
     }
 
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSContact fax(String fax)
     {
-        this.fax = fax;
-        return this;
-    }
-
-    @Override
-    public boolean equals(java.lang.Object o)
-    {
-        if (this == o)
-        {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass())
-        {
-            return false;
-        }
-        OMSContact contact = (OMSContact) o;
-        return Objects.equals(this.email, contact.email) &&
-                        Objects.equals(this.phone, contact.phone) &&
-                        Objects.equals(this.mobile, contact.mobile) &&
-                        Objects.equals(this.fax, contact.fax);
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(email, phone, mobile, fax);
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class Contact {\n");
-        sb.append("    email: ").append(toIndentedString(email)).append("\n");
-        sb.append("    phone: ").append(toIndentedString(phone)).append("\n");
-        sb.append("    mobile: ").append(toIndentedString(mobile)).append("\n");
-        sb.append("    fax: ").append(toIndentedString(fax)).append("\n");
-        sb.append("}");
-        return sb.toString();
+        return setFax(fax);
     }
 
     /**

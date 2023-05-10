@@ -1,14 +1,18 @@
 package com.intershop.oms.test.businessobject.address;
 
-import java.util.Objects;
-
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
 @Getter
 @Setter
+@Accessors(chain = true)
+@ToString
+@EqualsAndHashCode(callSuper = false)
 public class OMSAddressInvoice extends OMSBusinessObject
 {
     private OMSAddressLocation location;
@@ -17,58 +21,21 @@ public class OMSAddressInvoice extends OMSBusinessObject
 
     private OMSAddressReceiver receiver;
 
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSAddressInvoice location(OMSAddressLocation location)
     {
-        this.location = location;
-        return this;
+        return setLocation(location);
     }
 
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSAddressInvoice contact(OMSContact contact)
     {
-        this.contact = contact;
-        return this;
+        return setContact(contact);
     }
 
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSAddressInvoice receiver(OMSAddressReceiver receiver)
     {
-        this.receiver = receiver;
-        return this;
-    }
-
-    @Override
-    public boolean equals(java.lang.Object o)
-    {
-        if (o == null)
-        {
-            return false;
-        }
-        if (this == o)
-        {
-            return true;
-        }
-        if (!o.getClass().isAssignableFrom(getClass()) && !getClass().isAssignableFrom(o.getClass()))
-        {
-            return false;
-        }
-        OMSAddressInvoice addressInvoice = (OMSAddressInvoice) o;
-        return location.equals(addressInvoice.location) && contact.equals(addressInvoice.contact) && receiver.equals(addressInvoice.receiver);
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(location, contact, receiver);
-    }
-
-    @Override
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class AddressInvoice {\n");
-        sb.append("    location: ").append(toIndentedString(location)).append("\n");
-        sb.append("    contact: ").append(toIndentedString(contact)).append("\n");
-        sb.append("    receiver: ").append(toIndentedString(receiver)).append("\n");
-        sb.append("}");
-        return sb.toString();
+        return setReceiver(receiver);
     }
 }

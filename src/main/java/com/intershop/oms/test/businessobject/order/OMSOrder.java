@@ -17,15 +17,19 @@ import com.intershop.oms.test.businessobject.address.OMSAddressInvoice;
 import com.intershop.oms.test.businessobject.prices.OMSSales;
 
 import lombok.AccessLevel;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
 /**
  * Represents the current state of the schedule including basic and runtime configuration.&lt;br&gt; The basic configuration parameters have the suffix &#x60;Configured&#x60;.&lt;br&gt; The runtime configuration parameters have the suffix &#x60;Runtime&#x60;. If not set, the basic configuration will be used.
  */
-@Data
+@Getter
+@Setter
+@Accessors(chain = true)
+@ToString
 @EqualsAndHashCode(callSuper = false)
 public class OMSOrder extends OMSBusinessObject implements OMSPropertyGroupOwner
 {
@@ -50,85 +54,105 @@ public class OMSOrder extends OMSBusinessObject implements OMSPropertyGroupOwner
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.PROTECTED)
     protected Map<String, Map<String, String>> propertyGroups = new HashMap<>();
+    
     protected List<OMSShippingBucket> shippingBuckets = new ArrayList<>();
     protected OMSShop shop;
 
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSOrder shopOrderNumber(String shopOrderNumber)
     {
-        this.shopOrderNumber = shopOrderNumber;
-        return this;
+        return setShopOrderNumber(shopOrderNumber);
     }
 
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSOrder shopOrderCreationDate(OffsetDateTime shopOrderCreationDate)
     {
-        this.shopOrderCreationDate = shopOrderCreationDate;
-        return this;
+        return setShopOrderCreationDate(shopOrderCreationDate);
     }
 
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSOrder shopOrderUpdateDate(OffsetDateTime shopOrderUpdateDate)
     {
-        this.shopOrderUpdateDate = shopOrderUpdateDate;
-        return this;
+        return setShopOrderUpdateDate(shopOrderUpdateDate);
     }
 
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSOrder reservationId(Long reservationId)
     {
-        this.reservationId = reservationId;
-        return this;
+        return setReservationId(reservationId);
     }
 
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSOrder costCenter(String costCenter)
     {
-        this.costCenter = costCenter;
-        return this;
+        return setCostCenter(costCenter);
     }
 
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSOrder project(String project)
     {
-        this.project = project;
-        return this;
+        return setProject(project);
     }
 
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSOrder customerData(OMSCustomerData customerData)
     {
-        this.customerData = customerData;
-        return this;
+        return setCustomerData(customerData);
     }
 
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSOrder invoiceAddress(OMSAddressInvoice invoiceAddress)
     {
-        this.invoiceAddress = invoiceAddress;
-        return this;
+        return setInvoiceAddress(invoiceAddress);
     }
 
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSOrder sales(OMSSales sales)
     {
-        this.sales = sales;
-        return this;
+        return setSales(sales);
     }
 
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSOrder payment(OMSPayment payment)
     {
-        this.payment = payment;
-        return this;
+        return setPayment(payment);
     }
 
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSOrder optimizationRule(String optimizationRule)
     {
-        this.optimizationRule = optimizationRule;
-        return this;
+        return setOptimizationRule(optimizationRule);
     }
 
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSOrder splitShipmentAllowed(Boolean splitShipmentAllowed)
     {
-        this.splitShipmentAllowed = splitShipmentAllowed;
-        return this;
+        return setSplitShipmentAllowed(splitShipmentAllowed);
     }
 
+    /**
+     * 
+     * @param additionalAttributes
+     * @return
+     * 
+     * @deprecated use setPropertyGroups instead
+     */
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSOrder additionalAttributes(Map<String, Map<String, String>> additionalAttributes)
     {
-        this.propertyGroups = additionalAttributes;
-        return this;
+        return setPropertyGroups(additionalAttributes);
+    }
+
+    @Deprecated(since = "5.0.0", forRemoval = true)
+    public OMSOrder shippingBuckets(List<OMSShippingBucket> shippingBuckets)
+    {
+        return setShippingBuckets(shippingBuckets);
+    }
+
+    @Deprecated(since = "5.0.0", forRemoval = true)
+    public OMSOrder id(Long id)
+    {
+        return setId(id);
     }
 
     public OMSOrder putAdditionalAttributesItem(String key, Map<String, String> additionalAttributesItem)
@@ -141,24 +165,12 @@ public class OMSOrder extends OMSBusinessObject implements OMSPropertyGroupOwner
         return this;
     }
 
-    public OMSOrder shippingBuckets(List<OMSShippingBucket> shippingBuckets)
-    {
-        this.shippingBuckets = shippingBuckets;
-        return this;
-    }
-
     public OMSOrder addShippingBucketsItem(OMSShippingBucket shippingBucketsItem)
     {
         shippingBuckets.add(shippingBucketsItem);
         return this;
     }
-
-    public OMSOrder id(Long id)
-    {
-        this.id = id;
-        return this;
-    }
-
+    
     public void setTestCaseId(String testCaseId)
     {
         OffsetDateTime nowOffset = OffsetDateTime.now();

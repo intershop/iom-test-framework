@@ -5,9 +5,13 @@ import com.intershop.oms.test.businessobject.OMSBusinessObject;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
 @Getter
 @Setter
+@Accessors(chain = true)
+@ToString
 @EqualsAndHashCode(callSuper = false)
 public class OMSProduct extends OMSBusinessObject
 {
@@ -17,47 +21,33 @@ public class OMSProduct extends OMSBusinessObject
     private Long ean;
     private Long productId;
 
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSProduct name(String name)
     {
-        this.name = name;
-        return this;
+        return setName(name);
     }
 
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSProduct number(String number)
     {
-        this.number = number;
-        return this;
+        return setNumber(number);
     }
 
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSProduct isbn(String isbn)
     {
-        this.isbn = isbn;
-        return this;
+        return setIsbn(isbn);
     }
 
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSProduct ean(Long ean)
     {
-        this.ean = ean;
-        return this;
+        return setEan(ean);
     }
 
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSProduct productId(Long productId)
     {
-        this.productId = productId;
-        return this;
-    }
-
-    @Override
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class Product {\n");
-        sb.append("    name: ").append(toIndentedString(name)).append("\n");
-        sb.append("    number: ").append(toIndentedString(number)).append("\n");
-        sb.append("    isbn: ").append(toIndentedString(isbn)).append("\n");
-        sb.append("    ean: ").append(toIndentedString(ean)).append("\n");
-        sb.append("    productId: ").append(toIndentedString(productId)).append("\n");
-        sb.append("}");
-        return sb.toString();
+        return setProductId(productId);
     }
 }

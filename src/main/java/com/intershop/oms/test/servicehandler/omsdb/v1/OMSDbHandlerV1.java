@@ -1043,7 +1043,7 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
 
         if (null == articleId)
         {
-            log.error("No articleRef found for '" + shopArticleNo + "' in shop '" + shopId + "'!");
+            log.error("No articleRef found for '{}' in shop '{}'!", shopArticleNo, shopId);
             throw new RuntimeException("No articleRef found for '" + shopArticleNo + "' in shop '" + shopId + "'!");
         }
 
@@ -2016,15 +2016,15 @@ DELETE  FROM "StockReservationDO" r2
                                 k -> new ArrayList<>());
                 OMSOrderPosition orderPosition = new OMSOrderPosition();
                 com.intershop.oms.test.businessobject.order.OMSProduct product = new com.intershop.oms.test.businessobject.order.OMSProduct();
-                product.productId(articleId).name(shopArticleName).number(shopArticleNo);
-                orderPosition.quantity(quantity).number(orderPosNo).product(product).id(orderPosID);
-                log.info("Adding orderPos '" + orderPosition + "' for supplier id '" + supplierId + "'");
+                product.setProductId(articleId).setName(shopArticleName).setNumber(shopArticleNo);
+                orderPosition.setQuantity(quantity).setNumber(orderPosNo).setProduct(product).setId(orderPosID);
+                log.info("Adding orderPos '{}' for supplier id '{}'", orderPosition, supplierId);
                 supplierPos.add(orderPosition);
             }
         }
-        catch(SQLException sqlEx)
+        catch (SQLException sqlEx)
         {
-            log.error("SQLException getting order positions for '" + order.getId() + "': " + sqlEx.getMessage());
+            log.error("SQLException getting order positions for '{}': {}", order.getId(), sqlEx.getMessage());
             throw new RuntimeException(sqlEx);
         }
         finally
@@ -2035,15 +2035,13 @@ DELETE  FROM "StockReservationDO" r2
                 {
                     resultSet.close();
                 }
-                catch(SQLException e)
-                {
-                }
+                catch(SQLException e) {}
             }
         }
 
         if (supplierIdOrderPositions.isEmpty())
         {
-            log.error("No order positions for '" + order.getId() + "'!");
+            log.error("No order positions for '{}'!", order.getId());
             throw new RuntimeException("No order positions for '" + order.getId() + "'!");
         }
 

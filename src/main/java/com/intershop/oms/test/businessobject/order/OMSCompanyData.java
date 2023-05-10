@@ -1,14 +1,18 @@
 package com.intershop.oms.test.businessobject.order;
 
-import java.util.Objects;
-
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
 @Getter
 @Setter
+@Accessors(chain = true)
+@ToString
+@EqualsAndHashCode(callSuper = false)
 public class OMSCompanyData extends OMSBusinessObject
 {
     private String companyName;
@@ -27,96 +31,51 @@ public class OMSCompanyData extends OMSBusinessObject
 
     private String vatNumber;
 
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSCompanyData companyName(String companyName)
     {
-        this.companyName = companyName;
-        return this;
+        return setCompanyName(companyName);
     }
 
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSCompanyData department(String department)
     {
-        this.department = department;
-        return this;
+        return setDepartment(department);
     }
 
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSCompanyData lineOfBusiness(String lineOfBusiness)
     {
-        this.lineOfBusiness = lineOfBusiness;
-        return this;
+        return setLineOfBusiness(lineOfBusiness);
     }
 
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSCompanyData costCenterNumber(String costCenterNumber)
     {
-        this.costCenterNumber = costCenterNumber;
-        return this;
+        return setCostCenterNumber(costCenterNumber);
     }
 
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSCompanyData commercialRegisterNumber(String commercialRegisterNumber)
     {
-        this.commercialRegisterNumber = commercialRegisterNumber;
-        return this;
+        return setCommercialRegisterNumber(commercialRegisterNumber);
     }
 
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSCompanyData commercialRegisterLocation(String commercialRegisterLocation)
     {
-        this.commercialRegisterLocation = commercialRegisterLocation;
-        return this;
+        return setCommercialRegisterLocation(commercialRegisterLocation);
     }
 
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSCompanyData companyType(String companyType)
     {
-        this.companyType = companyType;
-        return this;
+        return setCompanyType(companyType);
     }
 
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSCompanyData vatNumber(String vatNumber)
     {
-        this.vatNumber = vatNumber;
-        return this;
-    }
-
-    @Override
-    public boolean equals(java.lang.Object o)
-    {
-        if (this == o)
-        {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass())
-        {
-            return false;
-        }
-        OMSCompanyData companyData = (OMSCompanyData) o;
-        return Objects.equals(this.companyName, companyData.companyName) &&
-                        Objects.equals(this.department, companyData.department) &&
-                        Objects.equals(this.lineOfBusiness, companyData.lineOfBusiness) &&
-                        Objects.equals(this.costCenterNumber, companyData.costCenterNumber) &&
-                        Objects.equals(this.commercialRegisterNumber, companyData.commercialRegisterNumber) &&
-                        Objects.equals(this.commercialRegisterLocation, companyData.commercialRegisterLocation) &&
-                        Objects.equals(this.companyType, companyData.companyType) &&
-                        Objects.equals(this.vatNumber, companyData.vatNumber);
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(companyName, department, lineOfBusiness, costCenterNumber, commercialRegisterNumber, commercialRegisterLocation, companyType, vatNumber);
-    }
-
-    @Override
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class CompanyData {\n");
-        sb.append("    companyName: ").append(toIndentedString(companyName)).append("\n");
-        sb.append("    department: ").append(toIndentedString(department)).append("\n");
-        sb.append("    lineOfBusiness: ").append(toIndentedString(lineOfBusiness)).append("\n");
-        sb.append("    costCenterNumber: ").append(toIndentedString(costCenterNumber)).append("\n");
-        sb.append("    commercialRegisterNumber: ").append(toIndentedString(commercialRegisterNumber)).append("\n");
-        sb.append("    commercialRegisterLocation: ").append(toIndentedString(commercialRegisterLocation)).append("\n");
-        sb.append("    companyType: ").append(toIndentedString(companyType)).append("\n");
-        sb.append("    vatNumber: ").append(toIndentedString(vatNumber)).append("\n");
-        sb.append("}");
-        return sb.toString();
+        return setVatNumber(vatNumber);
     }
 }

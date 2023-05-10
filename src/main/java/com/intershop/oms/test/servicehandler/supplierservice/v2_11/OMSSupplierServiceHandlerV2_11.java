@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,11 +67,11 @@ public class OMSSupplierServiceHandlerV2_11 extends RESTServiceHandler
     public String sendCrossDockingDispatch(OMSSupplier collectingSupplier, OMSOrder order, boolean useSupplierData)
                     throws ApiException
     {
-        log.info("Sending cross docking dispatch for: " + order.toString());
+        log.info("Sending cross docking dispatch for: {}", order);
 
         Collection<OMSDispatchPosition> collectedDispatchPositions = dbHandler
                         .getDispatchPositionsForOrder(order, useSupplierData).values().stream()
-                        .flatMap(Collection::stream).collect(Collectors.toList());
+                        .flatMap(Collection::stream).toList();
         OMSShop shop = order.getShop();
         OMSDispatch dispatch = SupplierServiceUtil.prepareDispatch(shop, collectingSupplier, order.getShopOrderNumber(),
                         collectedDispatchPositions, null);
@@ -83,7 +82,7 @@ public class OMSSupplierServiceHandlerV2_11 extends RESTServiceHandler
     @Override
     public Collection<String> sendFullDispatch(OMSOrder order, boolean useSupplierData) throws ApiException
     {
-        log.info("Sending full dispatch for: " + order.toString());
+        log.info("Sending full dispatch for: {}", order);
 
         Map<OMSSupplier, Collection<OMSDispatchPosition>> supplierDispatchPositions = dbHandler
                         .getDispatchPositionsForOrder(order, useSupplierData);
@@ -95,7 +94,7 @@ public class OMSSupplierServiceHandlerV2_11 extends RESTServiceHandler
     public Collection<String> sendDispatchPositions(OMSOrder order, String messageId,
                     Map<OMSSupplier, Collection<OMSDispatchPosition>> supplierDispatchPositions) throws ApiException
     {
-        log.info("Sending dispatch positions for: " + order.toString());
+        log.info("Sending dispatch positions for: {}", order);
 
         Collection<String> dispatchLocations = new ArrayList<>();
         for (Map.Entry<OMSSupplier, Collection<OMSDispatchPosition>> supplierDispatchPosition : supplierDispatchPositions
@@ -115,11 +114,10 @@ public class OMSSupplierServiceHandlerV2_11 extends RESTServiceHandler
     public String sendCrossDockingOrderResponse(OMSSupplier collectingSupplier, OMSOrder order, boolean useSupplierData)
                     throws ApiException
     {
-        log.info("Sending cross docking dispatch for: " + order.toString());
+        log.info("Sending cross docking dispatch for: {}", order);
 
         Collection<OMSOrderResponsePosition> collectedOrderResponsePositions = SupplierServiceUtil
-                        .prepareFullResponse(order, useSupplierData).stream().flatMap(r -> r.getPositions().stream())
-                        .collect(Collectors.toList());
+                        .prepareFullResponse(order, useSupplierData).stream().flatMap(r -> r.getPositions().stream()).toList();
         OMSOrderResponse prepareResponse = SupplierServiceUtil.prepareResponse(order.getShop(), collectingSupplier,
                         order.getShopOrderNumber(), collectedOrderResponsePositions, null);
 
@@ -129,11 +127,10 @@ public class OMSSupplierServiceHandlerV2_11 extends RESTServiceHandler
     @Override
     public Collection<String> sendFullOrderResponse(OMSOrder order, boolean useSupplierData) throws ApiException
     {
-        log.info("Sending full order response for: " + order.toString());
+        log.info("Sending full order response for: {}", order);
 
         List<OMSOrderResponse> responses = SupplierServiceUtil.prepareFullResponse(order, useSupplierData);
-        return createResponses(responses, null).stream().map(r -> "sendFullOrderResponse-is-deprecated/" + r.getId())
-                        .collect(Collectors.toList());
+        return createResponses(responses, null).stream().map(r -> "sendFullOrderResponse-is-deprecated/" + r.getId()).toList();
     }
 
     @Override
@@ -141,11 +138,10 @@ public class OMSSupplierServiceHandlerV2_11 extends RESTServiceHandler
                     Map<OMSSupplier, Collection<OMSOrderResponsePosition>> supplierOrderResponsePositions)
                     throws ApiException
     {
-        log.info("Sending order response positions for: " + order.toString());
+        log.info("Sending order response positions for: {}", order);
 
         Collection<String> orderResponseLocations = new ArrayList<>();
-        for (Map.Entry<OMSSupplier, Collection<OMSOrderResponsePosition>> supplierOrderResponsePosition : supplierOrderResponsePositions
-                        .entrySet())
+        for (Map.Entry<OMSSupplier, Collection<OMSOrderResponsePosition>> supplierOrderResponsePosition : supplierOrderResponsePositions.entrySet())
         {
             OMSOrderResponse response = SupplierServiceUtil.prepareResponse(order.getShop(),
                             supplierOrderResponsePosition.getKey(), order.getShopOrderNumber(),
@@ -161,11 +157,10 @@ public class OMSSupplierServiceHandlerV2_11 extends RESTServiceHandler
     public String sendCrossDockingReturn(OMSSupplier collectingSupplier, OMSOrder order, String returnReason,
                     boolean useSupplierData) throws ApiException
     {
-        log.info("Sending cross docking return request for: " + order.toString());
+        log.info("Sending cross docking return request for: {}", order);
 
         Collection<OMSReturnPosition> collectedReturnPositions = dbHandler
-                        .getReturnPositionsForOrder(order, useSupplierData).values().stream()
-                        .flatMap(Collection::stream).collect(Collectors.toList());
+                        .getReturnPositionsForOrder(order, useSupplierData).values().stream().flatMap(Collection::stream).toList();
         OMSReturn returnMessage = SupplierServiceUtil.prepareReturn(order.getShop(), collectingSupplier,
                         order.getShopOrderNumber(), collectedReturnPositions, null);
         returnMessage.setReason(Objects.requireNonNullElse(returnReason, "RET010"));
@@ -178,7 +173,7 @@ public class OMSSupplierServiceHandlerV2_11 extends RESTServiceHandler
     @Override
     public Collection<String> sendFullReturn(OMSOrder order, boolean useSupplierData) throws ApiException
     {
-        log.info("Sending full return for: " + order.toString());
+        log.info("Sending full return for: {}", order);
 
         Map<OMSSupplier, Collection<OMSReturnPosition>> supplierReturnPositions = dbHandler
                         .getReturnPositionsForOrder(order, useSupplierData);
@@ -190,7 +185,7 @@ public class OMSSupplierServiceHandlerV2_11 extends RESTServiceHandler
     public Collection<String> sendReturnPositions(OMSOrder order, String messageId, String reason,
                     Map<OMSSupplier, Collection<OMSReturnPosition>> supplierReturnPositions) throws ApiException
     {
-        log.info("Sending return positions for: " + order.toString());
+        log.info("Sending return positions for: {}", order);
 
         Collection<String> returnLocations = new ArrayList<>();
         for (Map.Entry<OMSSupplier, Collection<OMSReturnPosition>> supplierReturnPosition : supplierReturnPositions

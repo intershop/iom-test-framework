@@ -8,14 +8,15 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.Accessors;
 
 @Getter
 @Setter
+@Accessors(chain = true)
 @ToString
 @EqualsAndHashCode(callSuper = false)
 public class OMSChangeRequest extends OMSBusinessObject
 {
-
     private OMSOrder changeRequest;
 
     private String changeRequestId;
@@ -68,46 +69,45 @@ public class OMSChangeRequest extends OMSBusinessObject
         }
     }
 
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSChangeRequest changeRequest(OMSOrder changeRequest)
     {
-        this.changeRequest = changeRequest;
-        return this;
+        return setChangeRequest(changeRequest);
     }
 
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSChangeRequest changeRequestId(String changeRequestId)
     {
-        this.changeRequestId = changeRequestId;
-        return this;
+        return setChangeRequestId(changeRequestId);
     }
 
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSChangeRequest status(String status)
     {
-        this.status = status;
-        return this;
+        return setStatus(status);
     }
 
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSChangeRequest updateDate(OffsetDateTime updateDate)
     {
-        this.updateDate = updateDate;
-        return this;
+        return setUpdateDate(updateDate);
     }
 
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSChangeRequest creationDate(OffsetDateTime creationDate)
     {
-        this.creationDate = creationDate;
-        return this;
+        return setCreationDate(creationDate);
     }
 
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSChangeRequest creator(String creator)
     {
-        this.creator = creator;
-        return this;
+        return setCreator(creator);
     }
 
+    @Deprecated(since = "5.0.0", forRemoval = true)
     public OMSChangeRequest id(Long id)
     {
-        this.id = id;
-        return this;
+        return setId(id);
     }
-
 }
