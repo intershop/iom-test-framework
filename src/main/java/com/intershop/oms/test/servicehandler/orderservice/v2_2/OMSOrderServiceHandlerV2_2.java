@@ -1,6 +1,5 @@
 package com.intershop.oms.test.servicehandler.orderservice.v2_2;
 
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -16,7 +15,6 @@ import com.intershop.oms.rest.order.v2_2.api.OrderApi;
 import com.intershop.oms.rest.order.v2_2.model.ChangeRequestCreate;
 import com.intershop.oms.rest.order.v2_2.model.ChangeRequestView;
 import com.intershop.oms.rest.order.v2_2.model.Order;
-import com.intershop.oms.rest.order.v2_4.model.LatestOrderStateCollectionContainer;
 import com.intershop.oms.rest.shared.ApiException;
 import com.intershop.oms.rest.shared.ApiResponse;
 import com.intershop.oms.test.businessobject.OMSShop;
@@ -263,12 +261,5 @@ class OMSOrderServiceHandlerV2_2 extends RESTServiceHandler implements OMSOrderS
                     @Nullable OMSSearchParams searchParams) throws ApiException
     {
         throw new RuntimeException("Method not supported for version < 2.3!");
-    }
-    
-    @Override
-    public LatestOrderStateCollectionContainer getModifiedOrderStates(Long shopId, OffsetDateTime modifiedSince,
-                    Long minCursor, Integer limit) throws ApiException
-    {
-        throw new RuntimeException("Method not supported for version < 2.4!");
     }
 }
