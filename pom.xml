@@ -528,7 +528,24 @@
                             <generateSupportingFiles>true</generateSupportingFiles>
                         </configuration>
                     </execution>
-
+                    <execution>
+                        <id>Order v2.4</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/openapi/order/intershop-order-management-order-2.4.yaml</inputSpec>
+                            <ignoreFileOverride>${project.basedir}/.openapi-generator-ignore</ignoreFileOverride>
+                            <generatorName>java</generatorName>
+                            <library>jersey3</library>
+                            <configurationFile>${project.basedir}/openapi/order/v2_4-config.json</configurationFile>
+                            <configOptions>
+                                <useOneOfDiscriminatorLookup>true</useOneOfDiscriminatorLookup>
+                                <caseInsensitiveResponseHeaders>true</caseInsensitiveResponseHeaders>
+                            </configOptions>
+                            <generateSupportingFiles>true</generateSupportingFiles>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
