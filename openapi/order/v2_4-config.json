@@ -1,0 +1,13 @@
+{    
+    "groupId":"com.intershop.oms.rest",
+    "artifactId":"OrderServiceClient",
+    "artifactVersion":"2.4",
+
+    "apiPackage":"com.intershop.oms.rest.order.v2_4.api",
+    "modelPackage":"com.intershop.oms.rest.order.v2_4.model",
+    "invokerPackage":"com.intershop.oms.rest.shared",
+
+    "dateLibrary": "java8",
+    "java8": true,
+    "hideGenerationTimestamp": true
+}
