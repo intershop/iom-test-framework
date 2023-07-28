@@ -37,7 +37,7 @@ public class SupplierServiceUtil
         return supplierDispatchPositions
                         .entrySet().stream().map(entry -> prepareDispatch(order.getShop(), entry.getKey(),
                                         order.getShopOrderNumber(), entry.getValue(), null))
-                        .collect(Collectors.toList());
+                        .toList();
     }
 
     public static List<OMSReturn> prepareFullReturn(OMSOrder order, boolean useSupplierData)
@@ -49,8 +49,7 @@ public class SupplierServiceUtil
         return supplierReturnPositions
                         .entrySet().stream().map(entry -> prepareReturn(order.getShop(), entry.getKey(),
                                         order.getShopOrderNumber(), entry.getValue(), null))
-                        .collect(Collectors.toList());
-
+                        .toList();
     }
 
     public static List<OMSOrderResponse> prepareFullResponse(OMSOrder order, boolean useSupplierData)
@@ -62,8 +61,7 @@ public class SupplierServiceUtil
         return orderResponsePositionsForOrder
                         .entrySet().stream().map(entry -> prepareResponse(order.getShop(), entry.getKey(),
                                         order.getShopOrderNumber(), entry.getValue(), null))
-                        .collect(Collectors.toList());
-
+                        .toList();
     }
 
     public static OMSDispatch prepareDispatch(OMSShop shop, OMSSupplier supplier, String shopOrderNo,
@@ -119,5 +117,4 @@ public class SupplierServiceUtil
         return "TestMsgID_" + new SimpleDateFormat("yy-MM-dd-HH:mm:ss.SSS").format(Calendar.getInstance().getTime())
                         + "_" + UUID.randomUUID();
     }
-
 }
