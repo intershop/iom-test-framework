@@ -1267,13 +1267,29 @@ public interface OMSDbHandler
     public void setPlatformConfigPropertyDO(String key, String value);
     public void deletePlatformConfigPropertyDO(String key);
 
-/**
- * wait until an order has at least reached the given state (wait time = 12 minutes)
- * @param orderId
- * @param expectedState
- * @return
- */
+    /**
+     * wait until an order has at least reached the given state
+     * @param orderId
+     * @param expectedState
+     * @return
+     */
     boolean waitForOrderStateMet(long orderId, int expectedState);
+
+    /**
+     * wait until a dispatch has at least reached the given state
+     * @param dispatchId
+     * @param expectedState
+     * @return
+     */
+    boolean waitForDispatchStateMet(long dispatchId, int expectedState);
+
+    /**
+     * wait until a return has at least reached the given state
+     * @param returnId
+     * @param expectedState
+     * @return
+     */
+    boolean waitForReturnStateMet(long returnId, int expectedState);
 
 
 }
