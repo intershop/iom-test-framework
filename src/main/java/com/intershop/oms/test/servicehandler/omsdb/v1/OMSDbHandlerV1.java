@@ -553,13 +553,13 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
         try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
+            for (Object o : parameters)
+            {
+                sqlStatement.setObject(param++, o);
+            }
+
             do
             {
-                for (Object o : parameters)
-                {
-                    sqlStatement.setObject(param++, o);
-                }
-
                 resultSet = sqlStatement.executeQuery();
                 log.info("called " + query);
 
@@ -575,13 +575,12 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
                 {
                     throw new RuntimeException("The query did return more than one row: '" + query);
                 }
-                if (!matched && stillWaitFor > 0)
+                if (!matched)
                 {
                     Thread.sleep(retryDelay);
                 }
             }
             while(!matched && countRetry++ < maxRetry);
-
         }
         catch(SQLException sqlEx)
         {
@@ -590,7 +589,7 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
         }
         catch(InterruptedException intEx)
         {
-            log.error("InterruptedException (runDBStmtBoolean (String query, int waitTimeSec,  boolean expectedStatus, int sleepTimeSec) )': "
+            log.error("InterruptedException (runDBStmtBooleanWait (String query,  boolean expectedStatus, List<Object> parameters) )': "
                             + intEx.getMessage());
             throw new RuntimeException(intEx);
         }
