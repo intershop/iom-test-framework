@@ -10,6 +10,7 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Comparator;
@@ -542,17 +543,23 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
         return matched;
     }
     @Override
-    public boolean runDBStmtBooleanWait(String query, boolean expectedStatus)
+    public boolean runDBStmtBooleanWait(String query, boolean expectedStatus, List<Object> parameters)
     {
         boolean matched = false;
         ResultSet resultSet = null;
         int countRetry = 0;
+        int param = 0;
 
         try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             do
             {
+                for (Object o : parameters)
+                {
+                    sqlStatement.setObject(param++, o);
+                }
+
                 resultSet = sqlStatement.executeQuery();
                 log.info("called " + query);
 
@@ -571,7 +578,6 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
                 if (!matched && stillWaitFor > 0)
                 {
                     Thread.sleep(retryDelay);
-                    stillWaitFor = stillWaitFor - sleepTimeSec;
                 }
             }
             while(!matched && countRetry++ < maxRetry);
@@ -3060,6 +3066,25 @@ DELETE  FROM "StockReservationDO" r2
     }
 
     @Override
+    public boolean waitForOrderStateMet(long orderId, int expectedState)
+    {
+        String sqlStatement = "SELECT EXISTS(select * from oms.\"OrderStateHistoryDO\" where \"orderRef\"= ?  and \"targetStateRef\" = ?";
+        return runDBStmtBooleanWait(sqlStatement,true, Arrays.asList(Long.valueOf(orderId), Integer.valueOf(expectedState)));
+    }
+    @Override
+    public boolean waitForDispatchStateMet(long dispatchId, int expectedState)
+    {
+        String sqlStatement = "SELECT EXISTS(select * from oms.\"DispatchStateHistoryDO\" where \"dispatchRef\"=?  and \"targetStateRef\" = ?";
+        return runDBStmtBooleanWait(sqlStatement,true, Arrays.asList(Long.valueOf(dispatchId), Integer.valueOf(expectedState)));
+    }
+    @Override
+    public boolean waitForReturnStateMet(long returnId, int expectedState)
+    {
+        String sqlStatement = "SELECT EXISTS(select * from oms.\"ReturnStateHistoryDO\" where \"returnRef\"=?  and \"targetStateRef\" = ?";
+        return runDBStmtBooleanWait(sqlStatement,true, Arrays.asList(Long.valueOf(returnId), Integer.valueOf(expectedState)));
+    }
+
+    @Override
     public boolean waitForDispatchStateOfOrder(long orderId, int expectedState)
     {
         String sqlStatement = "SELECT \"stateRef\" FROM \"DispatchDO\" WHERE \"orderRef\" = ?";
@@ -3092,12 +3117,6 @@ DELETE  FROM "StockReservationDO" r2
     {
         String sqlStatement = "SELECT \"stateRef\" FROM \"OrderDO\" WHERE \"id\" = ?";
         return doDBWaitForStateCheck("order", sqlStatement, orderId, expectedState);
-    }
-    @Override
-    public boolean waitForOrderStateMet(long orderId, int expectedState)
-    {
-        String sqlStatement = "SELECT EXISTS(select * from oms.\"OrderStateHistoryDO\" where \"orderRef\"= "+ orderId +"  and \"targetStateRef\" = " + expectedState;
-        return runDBStmtBooleanWait(sqlStatement,true);
     }
 
     @Override
