@@ -541,6 +541,70 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
 
         return matched;
     }
+    @Override
+    public boolean runDBStmtBooleanWait(String query, boolean expectedStatus)
+    {
+        boolean matched = false;
+        ResultSet resultSet = null;
+        int countRetry = 0;
+
+        try (Connection connection = getConnection();
+                        PreparedStatement sqlStatement = connection.prepareStatement(query))
+        {
+            do
+            {
+                resultSet = sqlStatement.executeQuery();
+                log.info("called " + query);
+
+                if (!resultSet.next())
+                {
+                    throw new RuntimeException("Found no result getting boolean result from '" + query);
+                }
+                if (expectedStatus == resultSet.getBoolean(1))
+                {
+                    matched = true;
+                }
+                if (resultSet.next())
+                {
+                    throw new RuntimeException("The query did return more than one row: '" + query);
+                }
+                if (!matched && stillWaitFor > 0)
+                {
+                    Thread.sleep(retryDelay);
+                    stillWaitFor = stillWaitFor - sleepTimeSec;
+                }
+            }
+            while(!matched && countRetry++ < maxRetry);
+
+        }
+        catch(SQLException sqlEx)
+        {
+            log.error("SQLException getting boolean result ' from '" + query + "':" + sqlEx.getMessage());
+            throw new RuntimeException(sqlEx);
+        }
+        catch(InterruptedException intEx)
+        {
+            log.error("InterruptedException (runDBStmtBoolean (String query, int waitTimeSec,  boolean expectedStatus, int sleepTimeSec) )': "
+                            + intEx.getMessage());
+            throw new RuntimeException(intEx);
+        }
+
+        finally
+        {
+            if (null != resultSet)
+            {
+                try
+                {
+                    resultSet.close();
+                }
+                catch(SQLException e)
+                {
+                }
+            }
+        }
+
+        return matched;
+    }
 
     /**
      * runs a statement and checks if the result is success or failure as expected in 'assertTrue'
@@ -3028,6 +3092,12 @@ DELETE  FROM "StockReservationDO" r2
     {
         String sqlStatement = "SELECT \"stateRef\" FROM \"OrderDO\" WHERE \"id\" = ?";
         return doDBWaitForStateCheck("order", sqlStatement, orderId, expectedState);
+    }
+    @Override
+    public boolean waitForOrderStateMet(long orderId, int expectedState)
+    {
+        String sqlStatement = "SELECT EXISTS(select * from oms.\"OrderStateHistoryDO\" where \"orderRef\"= "+ orderId +"  and \"targetStateRef\" = " + expectedState;
+        return runDBStmtBooleanWait(sqlStatement,true);
     }
 
     @Override

@@ -412,6 +412,7 @@ public interface OMSDbHandler
      *
      */
     boolean runDBStmtBoolean(String query, String resultColumnName, boolean expectedResult);
+    
 
     /**
      * runs the query repeatedly until it reach the expected status for at max waitTimeSec
@@ -421,6 +422,16 @@ public interface OMSDbHandler
      *
      */
     boolean runDBStmtBoolean(String query, int waitTimeSec, boolean expectedResult, int sleepTimeSec);
+
+    /**
+     * runs the query repeatedly until it reach the expected status.
+     * will throw an exception if the query does not return a boolean in the first column or does not return exactly one row.
+     * use the instance maxRetry and retryDelayparameters.
+     *
+     * @return true - if the expected status was found in the given time, false otherwise
+     *
+     */
+    boolean runDBStmtBooleanWait(String query, boolean expectedStatus);
 
     /**
      * runs the query and returns the resulting integer as the result of the only one result line
@@ -1254,4 +1265,14 @@ public interface OMSDbHandler
 
     public void setPlatformConfigPropertyDO(String key, String value);
     public void deletePlatformConfigPropertyDO(String key);
+
+/**
+ * wait until an order has at least reached the given state (wait time = 12 minutes)
+ * @param orderId
+ * @param expectedState
+ * @return
+ */
+    boolean waitForOrderStateMet(long orderId, int expectedState);
+
+
 }
