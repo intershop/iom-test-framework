@@ -548,7 +548,7 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
         boolean matched = false;
         ResultSet resultSet = null;
         int countRetry = 0;
-        int param = 0;
+        int param = 1;
 
         try (Connection connection = getConnection();
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
