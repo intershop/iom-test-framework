@@ -3067,19 +3067,19 @@ DELETE  FROM "StockReservationDO" r2
     @Override
     public boolean waitForOrderStateMet(long orderId, int expectedState)
     {
-        String sqlStatement = "SELECT EXISTS(select * from oms.\"OrderStateHistoryDO\" where \"orderRef\"= ?  and \"targetStateRef\" = ?";
+        String sqlStatement = "SELECT EXISTS(select * from oms.\"OrderStateHistoryDO\" where \"orderRef\"= ?  and \"targetStateRef\" = ?)";
         return runDBStmtBooleanWait(sqlStatement,true, Arrays.asList(Long.valueOf(orderId), Integer.valueOf(expectedState)));
     }
     @Override
     public boolean waitForDispatchStateMet(long dispatchId, int expectedState)
     {
-        String sqlStatement = "SELECT EXISTS(select * from oms.\"DispatchStateHistoryDO\" where \"dispatchRef\"=?  and \"targetStateRef\" = ?";
+        String sqlStatement = "SELECT EXISTS(select * from oms.\"DispatchStateHistoryDO\" where \"dispatchRef\"=?  and \"targetStateRef\" = ?)";
         return runDBStmtBooleanWait(sqlStatement,true, Arrays.asList(Long.valueOf(dispatchId), Integer.valueOf(expectedState)));
     }
     @Override
     public boolean waitForReturnStateMet(long returnId, int expectedState)
     {
-        String sqlStatement = "SELECT EXISTS(select * from oms.\"ReturnStateHistoryDO\" where \"returnRef\"=?  and \"targetStateRef\" = ?";
+        String sqlStatement = "SELECT EXISTS(select * from oms.\"ReturnStateHistoryDO\" where \"returnRef\"=?  and \"targetStateRef\" = ?)";
         return runDBStmtBooleanWait(sqlStatement,true, Arrays.asList(Long.valueOf(returnId), Integer.valueOf(expectedState)));
     }
 
