@@ -424,13 +424,13 @@ public interface OMSDbHandler
     boolean runDBStmtBoolean(String query, int waitTimeSec, boolean expectedResult, int sleepTimeSec);
     
     /**
-     * runs the query repeatedly until it reach the expected status.
+     * runs the query repeatedly until it reaches the expected status.
      * will throw an exception if the query does not return a boolean in the first column or does not return exactly one row.
-     * use the instance maxRetry and retryDelayparameters.
+     * uses the instance maxRetry and retryDelay parameters.
      * @param query
      * @param expectedStatus
      * @param parameters the query parameters in the correct position order
-     * @return true - if the expected status was found in the given time, false otherwise
+     * @return true - if the expected status was found in the given time - false otherwise
      */
     boolean runDBStmtBooleanWait(String query, boolean expectedStatus, List<Object> parameters);
 
