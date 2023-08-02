@@ -88,7 +88,8 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
                 ds.setJdbcUrl(url);
                 ds.setUsername(aDbUser);
                 ds.setPassword(aDbPass);
-                ds.setMaximumPoolSize(20);
+                ds.setMaximumPoolSize(30);
+                
 
                 if (aForceSsl)
                 {
