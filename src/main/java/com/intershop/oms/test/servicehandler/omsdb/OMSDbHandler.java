@@ -1273,15 +1273,7 @@ public interface OMSDbHandler
      * @param expectedState
      * @return
      */
-    boolean waitForOrderStateMet(long orderId, int expectedState);
-
-    /**
-     * wait until a dispatch has at least reached the given state
-     * @param dispatchId
-     * @param expectedState
-     * @return
-     */
-    boolean waitForDispatchStateMet(long dispatchId, int expectedState);
+    boolean waitForOrderStateReached(long orderId, int expectedState);
 
     /**
      * wait until a return has at least reached the given state
@@ -1289,7 +1281,5 @@ public interface OMSDbHandler
      * @param expectedState
      * @return
      */
-    boolean waitForReturnStateMet(long returnId, int expectedState);
-
-
+    boolean waitForReturnStateReached(long returnId, int expectedState);
 }

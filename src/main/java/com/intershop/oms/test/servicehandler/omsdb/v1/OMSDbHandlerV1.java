@@ -2989,7 +2989,7 @@ DELETE  FROM "StockReservationDO" r2
             }
             catch(SQLException sqlEx)
             {
-                log.error("SQLException getting singlePositionArticle: " + sqlEx.getMessage());
+                log.error("SQLException getting singlePositionArticle: {}", sqlEx.getMessage());
                 throw new RuntimeException(sqlEx);
             }
             finally
@@ -3006,7 +3006,7 @@ DELETE  FROM "StockReservationDO" r2
                 }
             }
 
-            log.info("Got singlePositionArticle: " + singlePositionArticle + " from supplier: '" + supplierId + "'!");
+            log.info("Got singlePositionArticle: {} from supplier: '{}'!", singlePositionArticle, supplierId);
         }
 
         return singlePositionArticles;
@@ -3041,9 +3041,9 @@ DELETE  FROM "StockReservationDO" r2
                 throw new RuntimeException("More than one aggregated invoice found for orders '" + orderId1 + "' and '" + orderId2 + "'!");
             }
         }
-        catch(SQLException sqlEx)
+        catch (SQLException sqlEx)
         {
-            log.error("SQLException getting aggregated invoice: " + sqlEx.getMessage());
+            log.error("SQLException getting aggregated invoice: {}", sqlEx.getMessage());
             throw new RuntimeException(sqlEx);
         }
         finally
@@ -3060,25 +3060,20 @@ DELETE  FROM "StockReservationDO" r2
             }
         }
 
-        log.info("Got aggregated invoice '" + invoiceId + "' for orders '" + orderId1 + "' and '" + orderId2 + "'.");
+        log.info("Got aggregated invoice '{}' for orders '{}' and '{}'.", invoiceId, orderId1, orderId2);
 
         return invoiceId;
     }
 
     @Override
-    public boolean waitForOrderStateMet(long orderId, int expectedState)
+    public boolean waitForOrderStateReached(long orderId, int expectedState)
     {
         String sqlStatement = "SELECT EXISTS(select * from oms.\"OrderStateHistoryDO\" where \"orderRef\"= ?  and \"targetStateRef\" = ?)";
         return runDBStmtBooleanWait(sqlStatement,true, Arrays.asList(Long.valueOf(orderId), Integer.valueOf(expectedState)));
     }
+
     @Override
-    public boolean waitForDispatchStateMet(long dispatchId, int expectedState)
-    {
-        String sqlStatement = "SELECT EXISTS(select * from oms.\"DispatchStateHistoryDO\" where \"dispatchRef\"=?  and \"targetStateRef\" = ?)";
-        return runDBStmtBooleanWait(sqlStatement,true, Arrays.asList(Long.valueOf(dispatchId), Integer.valueOf(expectedState)));
-    }
-    @Override
-    public boolean waitForReturnStateMet(long returnId, int expectedState)
+    public boolean waitForReturnStateReached(long returnId, int expectedState)
     {
         String sqlStatement = "SELECT EXISTS(select * from oms.\"ReturnStateHistoryDO\" where \"returnRef\"=?  and \"targetStateRef\" = ?)";
         return runDBStmtBooleanWait(sqlStatement,true, Arrays.asList(Long.valueOf(returnId), Integer.valueOf(expectedState)));
