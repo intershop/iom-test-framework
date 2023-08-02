@@ -1,10 +1,6 @@
 package com.intershop.oms.test.businessobject.rma;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
-import com.intershop.oms.test.businessobject.OMSLink;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -25,6 +21,4 @@ public class OMSContactPerson extends OMSBusinessObject
     private String phoneNumber;
     private String emailAddress;
     private String language;
-    private Long id;
-    private List<OMSLink> links = new ArrayList<>();
 }

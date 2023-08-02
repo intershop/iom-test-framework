@@ -1,7 +1,9 @@
 package com.intershop.oms.test.businessobject.rma;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
@@ -24,6 +26,8 @@ public class OMSWriteReturnRequestPosition extends OMSBusinessObject
 
     private List<OMSWriteReturnRequestItem> items = null;
 
+    private Map<String, String> customAttributes = new HashMap<>();
+    
     public OMSWriteReturnRequestPosition(OMSDispatchPosition dispatchPosition)
     {
         setPositionNumber(dispatchPosition.getOrderPositionNumber());

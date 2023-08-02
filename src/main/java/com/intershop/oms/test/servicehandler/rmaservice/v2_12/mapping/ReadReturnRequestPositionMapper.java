@@ -1,23 +1,21 @@
-package com.intershop.oms.test.servicehandler.rmaservice.v2_11.mapping;
+package com.intershop.oms.test.servicehandler.rmaservice.v2_12.mapping;
 
 import java.util.List;
 
 import org.mapstruct.AfterMapping;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 
-import com.intershop.oms.rest.rma.v2_11.model.ReadReturnRequestPosition;
+import com.intershop.oms.rest.rma.v2_12.model.ReadReturnRequestPosition;
 import com.intershop.oms.test.businessobject.rma.OMSReadReturnRequestPosition;
 
-@Mapper
+@Mapper(uses= {CustomAttributesMapper.class} )
 public interface ReadReturnRequestPositionMapper
 {
     ReadReturnRequestPositionMapper INSTANCE = Mappers.getMapper(ReadReturnRequestPositionMapper.class);
 
-    @Mapping(target = "customAttributes", ignore = true) // introduced in 2.12
     OMSReadReturnRequestPosition fromApiReadReturnRequestPosition(ReadReturnRequestPosition readReturnRequestPosition);
 
     @InheritInverseConfiguration
@@ -28,4 +26,5 @@ public interface ReadReturnRequestPositionMapper
     {
         readReturnRequestPositions.stream().forEach(readReturnRequestPosition -> omsReadReturnRequestPositions.add(fromApiReadReturnRequestPosition(readReturnRequestPosition)));
     }
+
 }

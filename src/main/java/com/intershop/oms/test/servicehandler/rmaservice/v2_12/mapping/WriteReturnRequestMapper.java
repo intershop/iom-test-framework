@@ -1,20 +1,17 @@
-package com.intershop.oms.test.servicehandler.rmaservice.v2_11.mapping;
+package com.intershop.oms.test.servicehandler.rmaservice.v2_12.mapping;
 
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-import com.intershop.oms.rest.rma.v2_11.model.WriteReturnRequest;
+import com.intershop.oms.rest.rma.v2_12.model.WriteReturnRequest;
 import com.intershop.oms.test.businessobject.rma.OMSWriteReturnRequest;
-import com.intershop.oms.test.servicehandler.rmaservice.v2_11.mapping.WriteReturnRequestPositionMapper;
 
-@Mapper( uses = { WriteReturnRequestPositionMapper.class } )
+@Mapper(uses= {CustomAttributesMapper.class} )
 public interface WriteReturnRequestMapper
 {
     WriteReturnRequestMapper INSTANCE = Mappers.getMapper(WriteReturnRequestMapper.class);
 
-    @Mapping(target = "customAttributes", ignore = true) // introduced in 2.12
     OMSWriteReturnRequest fromApiWriteReturnRequest(WriteReturnRequest writeReturnRequest);
 
     @InheritInverseConfiguration

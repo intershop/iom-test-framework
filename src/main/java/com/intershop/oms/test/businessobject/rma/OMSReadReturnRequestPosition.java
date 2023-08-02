@@ -1,7 +1,9 @@
 package com.intershop.oms.test.businessobject.rma;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
@@ -29,6 +31,8 @@ public class OMSReadReturnRequestPosition extends OMSBusinessObject
     private String productName;
 
     private String supplierProductNumber;
+
+    private Map<String, String> customAttributes = new HashMap<>();
 
     public OMSReadReturnRequestPosition links(List<OMSLink> links)
     {

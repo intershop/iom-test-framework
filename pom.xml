@@ -338,6 +338,23 @@
                         </configuration>
                     </execution>
                     <execution>
+                        <id>RMA v2.12</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/openapi/rma/intershop-order-management-rma-2.12.yaml</inputSpec>
+                            <ignoreFileOverride>${project.basedir}/.openapi-generator-ignore</ignoreFileOverride>
+                            <generatorName>java</generatorName>
+                            <library>jersey3</library>
+                            <configurationFile>${project.basedir}/openapi/rma/v2_12-config.json</configurationFile>
+                            <configOptions>
+                                <useOneOfDiscriminatorLookup>true</useOneOfDiscriminatorLookup>
+                                <caseInsensitiveResponseHeaders>true</caseInsensitiveResponseHeaders>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>RMA v2.11</id>
                         <goals>
                             <goal>generate</goal>
@@ -352,7 +369,6 @@
                                 <useOneOfDiscriminatorLookup>true</useOneOfDiscriminatorLookup>
                                 <caseInsensitiveResponseHeaders>true</caseInsensitiveResponseHeaders>
                             </configOptions>
-
                         </configuration>
                     </execution>
                     <execution>
@@ -370,7 +386,6 @@
                                 <useOneOfDiscriminatorLookup>true</useOneOfDiscriminatorLookup>
                                 <caseInsensitiveResponseHeaders>true</caseInsensitiveResponseHeaders>
                             </configOptions>
-
                         </configuration>
                     </execution>
                     <execution>
