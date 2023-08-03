@@ -10,6 +10,7 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Comparator;
@@ -87,7 +88,8 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
                 ds.setJdbcUrl(url);
                 ds.setUsername(aDbUser);
                 ds.setPassword(aDbPass);
-                ds.setMaximumPoolSize(20);
+                ds.setMaximumPoolSize(30);
+                
 
                 if (aForceSsl)
                 {
@@ -521,6 +523,74 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
         catch(InterruptedException intEx)
         {
             log.error("InterruptedException (runDBStmtBoolean (String query, int waitTimeSec,  boolean expectedStatus, int sleepTimeSec) )': "
+                            + intEx.getMessage());
+            throw new RuntimeException(intEx);
+        }
+
+        finally
+        {
+            if (null != resultSet)
+            {
+                try
+                {
+                    resultSet.close();
+                }
+                catch(SQLException e)
+                {
+                }
+            }
+        }
+
+        return matched;
+    }
+    @Override
+    public boolean runDBStmtBooleanWait(String query, boolean expectedStatus, List<Object> parameters)
+    {
+        boolean matched = false;
+        ResultSet resultSet = null;
+        int countRetry = 0;
+        int param = 1;
+
+        try (Connection connection = getConnection();
+                        PreparedStatement sqlStatement = connection.prepareStatement(query))
+        {
+            for (Object o : parameters)
+            {
+                sqlStatement.setObject(param++, o);
+            }
+
+            do
+            {
+                resultSet = sqlStatement.executeQuery();
+                log.info("called " + query);
+
+                if (!resultSet.next())
+                {
+                    throw new RuntimeException("Found no result getting boolean result from '" + query);
+                }
+                if (expectedStatus == resultSet.getBoolean(1))
+                {
+                    matched = true;
+                }
+                if (resultSet.next())
+                {
+                    throw new RuntimeException("The query did return more than one row: '" + query);
+                }
+                if (!matched)
+                {
+                    Thread.sleep(retryDelay);
+                }
+            }
+            while(!matched && countRetry++ < maxRetry);
+        }
+        catch(SQLException sqlEx)
+        {
+            log.error("SQLException getting boolean result ' from '" + query + "':" + sqlEx.getMessage());
+            throw new RuntimeException(sqlEx);
+        }
+        catch(InterruptedException intEx)
+        {
+            log.error("InterruptedException (runDBStmtBooleanWait (String query,  boolean expectedStatus, List<Object> parameters) )': "
                             + intEx.getMessage());
             throw new RuntimeException(intEx);
         }
@@ -2919,7 +2989,7 @@ DELETE  FROM "StockReservationDO" r2
             }
             catch(SQLException sqlEx)
             {
-                log.error("SQLException getting singlePositionArticle: " + sqlEx.getMessage());
+                log.error("SQLException getting singlePositionArticle: {}", sqlEx.getMessage());
                 throw new RuntimeException(sqlEx);
             }
             finally
@@ -2936,7 +3006,7 @@ DELETE  FROM "StockReservationDO" r2
                 }
             }
 
-            log.info("Got singlePositionArticle: " + singlePositionArticle + " from supplier: '" + supplierId + "'!");
+            log.info("Got singlePositionArticle: {} from supplier: '{}'!", singlePositionArticle, supplierId);
         }
 
         return singlePositionArticles;
@@ -2971,9 +3041,9 @@ DELETE  FROM "StockReservationDO" r2
                 throw new RuntimeException("More than one aggregated invoice found for orders '" + orderId1 + "' and '" + orderId2 + "'!");
             }
         }
-        catch(SQLException sqlEx)
+        catch (SQLException sqlEx)
         {
-            log.error("SQLException getting aggregated invoice: " + sqlEx.getMessage());
+            log.error("SQLException getting aggregated invoice: {}", sqlEx.getMessage());
             throw new RuntimeException(sqlEx);
         }
         finally
@@ -2990,9 +3060,23 @@ DELETE  FROM "StockReservationDO" r2
             }
         }
 
-        log.info("Got aggregated invoice '" + invoiceId + "' for orders '" + orderId1 + "' and '" + orderId2 + "'.");
+        log.info("Got aggregated invoice '{}' for orders '{}' and '{}'.", invoiceId, orderId1, orderId2);
 
         return invoiceId;
+    }
+
+    @Override
+    public boolean waitForOrderStateReached(long orderId, int expectedState)
+    {
+        String sqlStatement = "SELECT EXISTS(select * from oms.\"OrderStateHistoryDO\" where \"orderRef\"= ?  and \"targetStateRef\" = ?)";
+        return runDBStmtBooleanWait(sqlStatement,true, Arrays.asList(Long.valueOf(orderId), Integer.valueOf(expectedState)));
+    }
+
+    @Override
+    public boolean waitForReturnStateReached(long returnId, int expectedState)
+    {
+        String sqlStatement = "SELECT EXISTS(select * from oms.\"ReturnStateHistoryDO\" where \"returnRef\"=?  and \"targetStateRef\" = ?)";
+        return runDBStmtBooleanWait(sqlStatement,true, Arrays.asList(Long.valueOf(returnId), Integer.valueOf(expectedState)));
     }
 
     @Override
