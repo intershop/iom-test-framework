@@ -22,7 +22,7 @@ public interface CustomAttributesMapper
             .collect(Collectors.toMap(ReadCustomAttribute::getKey, ReadCustomAttribute::getValue, (t, u) -> t, HashMap::new));
     }
 
-    default List<ReadCustomAttribute> toApiReadCustomAttributes(Map<String,String>  customAttributes)
+    default List<ReadCustomAttribute> toApiReadCustomAttributes(Map<String,String> customAttributes)
     {
         return customAttributes.entrySet().stream().map( in ->
             {

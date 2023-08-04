@@ -364,7 +364,7 @@ paths:
       summary: List the return request position custom attributes
       description: "Returns a list of custom attributes of a return request position\
         \ for a given returnRequestPositionId, shopName and shopOrderNumber."
-      operationId: getCustomAttributes_1
+      operationId: getPositionCustomAttributes
       parameters:
       - name: returnRequestPositionId
         in: path
@@ -401,6 +401,128 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ReadCustomAttribute'
+        "401":
+          description: Authentication information is missing or invalid
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "406":
+          description: Not Acceptable
+    post:
+      tags:
+      - Shop
+      summary: Create/Update custom attribute for a return request position
+      description: Create a new custom attribute or update an existing one for a return
+        request position.
+      operationId: createPositionCustomAttribute
+      parameters:
+      - name: returnRequestPositionId
+        in: path
+        description: The return request position id of the related return request
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: returnRequestId
+        in: path
+        description: The return request id of the related order
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: shopOrderNumber
+        in: path
+        description: The order number of the shop
+        required: true
+        schema:
+          type: string
+      - name: shopName
+        in: path
+        description: The shop name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/vnd.intershop.custom-attribute.v1+json:
+            schema:
+              $ref: '#/components/schemas/WriteCustomAttribute'
+        required: true
+      responses:
+        "201":
+          description: Created
+          headers:
+            Location:
+              description: The path to the newly created resource
+              style: simple
+              schema:
+                type: string
+                format: url
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorReport'
+        "401":
+          description: Authentication information is missing or invalid
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "406":
+          description: Not Acceptable
+  ? /shops/{shopName}/orders/{shopOrderNumber}/return-requests/{returnRequestId}/positions/{returnRequestPositionId}/custom-attributes/{customAttributeId}
+  : delete:
+      tags:
+      - Shop
+      summary: Delete a specific custom attribute of a return request position
+      description: "Delete a custom attribute for a given returnRequestId, shopName,\
+        \ shopOrderNumber, returnRequestPositionId, and a customAttributeId."
+      operationId: deletePositionCustomAttribute
+      parameters:
+      - name: customAttributeId
+        in: path
+        description: The id of the custom attribute of the related return request
+          position
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: returnRequestPositionId
+        in: path
+        description: The return request position id of the related return request
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: returnRequestId
+        in: path
+        description: The return request id of the related order
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: shopOrderNumber
+        in: path
+        description: The order number of the shop
+        required: true
+        schema:
+          type: string
+      - name: shopName
+        in: path
+        description: The shop name
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/vnd.intershop.custom-attribute.v1+json:
+              schema:
+                $ref: '#/components/schemas/ReadCustomAttribute'
         "401":
           description: Authentication information is missing or invalid
         "403":

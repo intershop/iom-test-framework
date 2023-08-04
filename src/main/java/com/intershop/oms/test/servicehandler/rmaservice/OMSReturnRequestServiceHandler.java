@@ -7,6 +7,7 @@ import com.intershop.oms.test.businessobject.rma.OMSReadReturnRequestPosition;
 import com.intershop.oms.test.businessobject.rma.OMSReturnRequest;
 import com.intershop.oms.test.businessobject.rma.OMSReturnableData;
 import com.intershop.oms.test.businessobject.rma.OMSShopReturnReason;
+import com.intershop.oms.test.businessobject.rma.OMSWriteCustomAttribute;
 import com.intershop.oms.test.businessobject.rma.OMSWriteReturnRequestPosition;
 import com.intershop.oms.test.servicehandler.OMSServiceHandler;
 import com.intershop.oms.test.util.Experimental;
@@ -83,4 +84,8 @@ public interface OMSReturnRequestServiceHandler extends OMSServiceHandler
      * retrieve a ReturnRequest by id
      */
     OMSReturnRequest getReturnRequest(Long id) throws ApiException;
+    
+    Long createReturnRequestPositionCustomAttribute(OMSOrder order, Long returnRequestId, Long returnRequestPositionId, OMSWriteCustomAttribute customAttribute) throws ApiException;
+    void deleteReturnRequestPositionCustomAttribute(OMSOrder order, Long returnRequestId, Long returnRequestPositionId, Long customAttributeId) throws ApiException;
+
 }

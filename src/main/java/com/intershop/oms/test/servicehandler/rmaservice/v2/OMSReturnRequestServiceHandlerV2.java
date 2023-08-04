@@ -20,6 +20,7 @@ import com.intershop.oms.test.businessobject.rma.OMSReadReturnRequest;
 import com.intershop.oms.test.businessobject.rma.OMSReadReturnRequestPosition;
 import com.intershop.oms.test.businessobject.rma.OMSReturnableData;
 import com.intershop.oms.test.businessobject.rma.OMSShopReturnReason;
+import com.intershop.oms.test.businessobject.rma.OMSWriteCustomAttribute;
 import com.intershop.oms.test.businessobject.rma.OMSWriteReturnRequest;
 import com.intershop.oms.test.businessobject.rma.OMSWriteReturnRequestPosition;
 import com.intershop.oms.test.configuration.ServiceConfiguration;
@@ -59,7 +60,7 @@ public class OMSReturnRequestServiceHandlerV2 extends RESTServiceHandler
     @Override
     public String sendFullReturnRequest(OMSOrder order) throws ApiException
     {
-        log.info("Sending full return request for: " + order.toString());
+        log.info("Sending full return request for: {}", order);
         Collection<OMSWriteReturnRequestPosition> returnRequestPositions = dbHandler
                         .getReturnRequestPositionsForOrder(order);
         return sendReturnRequest(order.getShopName(), order.getShopOrderNumber(), returnRequestPositions);
@@ -116,18 +117,32 @@ public class OMSReturnRequestServiceHandlerV2 extends RESTServiceHandler
     @Override
     public OMSReturnRequest createReturnRequest(OMSReturnRequest returnRequest, Integer targetState)
     {
-        throw new RuntimeException("not implemented before V2_11");
+        throw new RuntimeException("not supported before V2_11");
     }
 
     @Override
     public OMSReturnRequest getReturnRequest(Long id) throws ApiException
     {
-        throw new RuntimeException("not implemented before V2_11");
+        throw new RuntimeException("not supported before V2_11");
     }
 
     @Override
     protected Collection<Object> unwrapApiClient()
     {
         return Set.of(shopApi);
+    }
+
+    @Override
+    public Long createReturnRequestPositionCustomAttribute(OMSOrder order, Long returnRequestId,
+                    Long returnRequestPositionId, OMSWriteCustomAttribute customAttribute) throws ApiException
+    {
+        throw new RuntimeException("not supported before V2_12");
+    }
+
+    @Override
+    public void deleteReturnRequestPositionCustomAttribute(OMSOrder order, Long returnRequestId,
+                    Long returnRequestPositionId, Long customAttributeId) throws ApiException
+    {
+        throw new RuntimeException("not supported before V2_12");
     }
 }

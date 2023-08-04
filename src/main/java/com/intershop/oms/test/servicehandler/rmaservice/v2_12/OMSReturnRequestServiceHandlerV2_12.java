@@ -23,6 +23,7 @@ import com.intershop.oms.rest.rma.v2_12.model.ReadReturnRequestItem;
 import com.intershop.oms.rest.rma.v2_12.model.ReadReturnRequestPosition;
 import com.intershop.oms.rest.rma.v2_12.model.ReturnableData;
 import com.intershop.oms.rest.rma.v2_12.model.ShopReturnReason;
+import com.intershop.oms.rest.rma.v2_12.model.WriteCustomAttribute;
 import com.intershop.oms.rest.rma.v2_12.model.WriteReturnRequest;
 import com.intershop.oms.rest.shared.ApiException;
 import com.intershop.oms.rest.shared.ApiResponse;
@@ -32,11 +33,13 @@ import com.intershop.oms.test.businessobject.rma.OMSReadReturnRequestPosition;
 import com.intershop.oms.test.businessobject.rma.OMSReturnRequest;
 import com.intershop.oms.test.businessobject.rma.OMSReturnableData;
 import com.intershop.oms.test.businessobject.rma.OMSShopReturnReason;
+import com.intershop.oms.test.businessobject.rma.OMSWriteCustomAttribute;
 import com.intershop.oms.test.businessobject.rma.OMSWriteReturnRequest;
 import com.intershop.oms.test.businessobject.rma.OMSWriteReturnRequestPosition;
 import com.intershop.oms.test.configuration.ServiceConfiguration;
 import com.intershop.oms.test.servicehandler.RESTServiceHandler;
 import com.intershop.oms.test.servicehandler.omsdb.OMSDbHandler;
+import com.intershop.oms.test.servicehandler.rmaservice.v2_12.mapping.CustomAttributeMapper;
 import com.intershop.oms.test.servicehandler.rmaservice.v2_12.mapping.ReadReturnRequestMapper;
 import com.intershop.oms.test.servicehandler.rmaservice.v2_12.mapping.ReadReturnRequestPositionMapper;
 import com.intershop.oms.test.servicehandler.rmaservice.v2_12.mapping.ReturnRequestMapper;
@@ -64,19 +67,17 @@ public class OMSReturnRequestServiceHandlerV2_12 extends RESTServiceHandler
     {
         OMSWriteReturnRequest omsWriteReturnRequest = new OMSWriteReturnRequest(shopOrderNo, returnRequestPositions);
 
-        ApiResponse<Void> response;
-
         WriteReturnRequest writeReturnRequest = WriteReturnRequestMapper.INSTANCE
                         .toApiWriteReturnRequest(omsWriteReturnRequest);
 
-        response = shopApi.createReturnRequestWithHttpInfo(shopOrderNo, shopName, writeReturnRequest);
+        ApiResponse<Void> response = shopApi.createReturnRequestWithHttpInfo(shopOrderNo, shopName, writeReturnRequest);
         return response.getHeaders().get(HTTP_HEADER_LOCATION).get(0);
     }
 
     @Override
     public String sendFullReturnRequest(OMSOrder order) throws ApiException
     {
-        log.info("Sending full return request for: " + order.toString());
+        log.info("Sending full return request for: {}", order);
         Collection<OMSWriteReturnRequestPosition> returnRequestPositions = dbHandler
                         .getReturnRequestPositionsForOrder(order);
         return sendReturnRequest(order.getShopName(), order.getShopOrderNumber(), returnRequestPositions);
@@ -107,10 +108,9 @@ public class OMSReturnRequestServiceHandlerV2_12 extends RESTServiceHandler
             ReadReturnRequestPositionMapper.INSTANCE.fromApiReadReturnRequestPositionList(returnRequestPositions,
                             omsReturnRequestPositions);
         }
-        catch(ApiException e)
+        catch (ApiException e)
         {
-            log.error("Request failed with status " + e.getCode() + " and response body '" + e.getResponseBody() + "'",
-                            e);
+            log.error("Request failed with status " + e.getCode() + " and response body '" + e.getResponseBody() + "'", e);
             throw e;
         }
         return omsReturnRequestPositions;
@@ -211,8 +211,7 @@ public class OMSReturnRequestServiceHandlerV2_12 extends RESTServiceHandler
         List<ReadCustomAttribute> customAttributes = shopApi.getCustomAttributes(id, shopOrderNo, shopName);
         List<ReadPickupAddress> pickupAddresses = shopApi.getReturnRequestPickupAddresses(id, shopOrderNo, shopName);
         return ReturnRequestMapper.INSTANCE.fromApiReturnRequest(rReq, posToItems, contactPersons, customAttributes,
-
-                        pickupAddresses.size() > 0 ? pickupAddresses.get(0) : null);
+                        pickupAddresses.isEmpty() ? null : pickupAddresses.get(0));
 
     }
 
@@ -220,5 +219,21 @@ public class OMSReturnRequestServiceHandlerV2_12 extends RESTServiceHandler
     protected Collection<Object> unwrapApiClient()
     {
         return Set.of(shopApi);
+    }
+
+    @Override
+    public Long createReturnRequestPositionCustomAttribute(OMSOrder order, Long returnRequestId,
+                    Long returnRequestPositionId, OMSWriteCustomAttribute customAttribute) throws ApiException
+    {
+        WriteCustomAttribute ca = CustomAttributeMapper.INSTANCE.toApiCustomAttribute(customAttribute);
+        ApiResponse<Void> response = shopApi.createPositionCustomAttributeWithHttpInfo(returnRequestPositionId, returnRequestId, order.getShopOrderNumber(), order.getShopName(), ca);
+        return parseIdFromLocation(response.getHeaders().get(HTTP_HEADER_LOCATION).get(0));
+    }
+
+    @Override
+    public void deleteReturnRequestPositionCustomAttribute(OMSOrder order, Long returnRequestId,
+                    Long returnRequestPositionId, Long customAttributeId) throws ApiException
+    {
+        shopApi.deletePositionCustomAttribute(customAttributeId, returnRequestPositionId, returnRequestId, order.getShopOrderNumber(), order.getShopName());
     }
 }
