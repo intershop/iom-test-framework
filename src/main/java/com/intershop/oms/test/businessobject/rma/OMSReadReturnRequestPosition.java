@@ -1,7 +1,10 @@
 package com.intershop.oms.test.businessobject.rma;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 import com.intershop.oms.test.businessobject.OMSLink;
@@ -29,6 +32,16 @@ public class OMSReadReturnRequestPosition extends OMSBusinessObject
     private String supplierProductNumber;
     private List<OMSReadCustomAttribute> customAttributes = new ArrayList<>();
 
+    public Map<String, String> getCustomAttributesAsMap()
+    {
+        return customAttributes.stream()
+                        .collect(
+                                Collectors.toMap(
+                                                OMSReadCustomAttribute::getKey,
+                                                OMSReadCustomAttribute::getValue,
+                                                (t, u) -> t, LinkedHashMap::new));
+    }
+    
     /**
      * @deprecated use set...()
      */
