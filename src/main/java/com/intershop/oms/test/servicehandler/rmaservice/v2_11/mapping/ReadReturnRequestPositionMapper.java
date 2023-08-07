@@ -17,6 +17,7 @@ public interface ReadReturnRequestPositionMapper
 {
     ReadReturnRequestPositionMapper INSTANCE = Mappers.getMapper(ReadReturnRequestPositionMapper.class);
 
+    @Mapping(target = "customAttributesAsMap", ignore = true)
     @Mapping(target = "customAttributes", ignore = true) // introduced in 2.12
     OMSReadReturnRequestPosition fromApiReadReturnRequestPosition(ReadReturnRequestPosition readReturnRequestPosition);
 
