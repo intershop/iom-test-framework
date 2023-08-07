@@ -212,7 +212,6 @@ public class OMSReturnRequestServiceHandlerV2_12 extends RESTServiceHandler
         List<ReadPickupAddress> pickupAddresses = shopApi.getReturnRequestPickupAddresses(id, shopOrderNo, shopName);
         return ReturnRequestMapper.INSTANCE.fromApiReturnRequest(rReq, posToItems, contactPersons, customAttributes,
                         pickupAddresses.isEmpty() ? null : pickupAddresses.get(0));
-
     }
 
     @Override

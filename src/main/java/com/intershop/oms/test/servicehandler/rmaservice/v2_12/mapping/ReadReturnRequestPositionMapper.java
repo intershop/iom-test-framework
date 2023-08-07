@@ -11,7 +11,7 @@ import org.mapstruct.factory.Mappers;
 import com.intershop.oms.rest.rma.v2_12.model.ReadReturnRequestPosition;
 import com.intershop.oms.test.businessobject.rma.OMSReadReturnRequestPosition;
 
-@Mapper(uses= {CustomAttributesMapper.class} )
+@Mapper(uses= {CustomAttributePositionMapper.class} )
 public interface ReadReturnRequestPositionMapper
 {
     ReadReturnRequestPositionMapper INSTANCE = Mappers.getMapper(ReadReturnRequestPositionMapper.class);
