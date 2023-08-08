@@ -357,6 +357,56 @@ paths:
           description: Not Found
         "406":
           description: Not Acceptable
+  /shops/{shopName}/orders/{shopOrderNumber}/return-requests/{returnRequestId}/positions/{returnRequestPositionId}:
+    get:
+      tags:
+      - Shop
+      summary: Get a return request position
+      description: "Returns a return request position for a given returnRequestId,\
+        \ shopName, shopOrderNumber and a returnRequestPositionId."
+      operationId: getReturnRequestPosition
+      parameters:
+      - name: returnRequestPositionId
+        in: path
+        description: The return request position id of the related return request
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: returnRequestId
+        in: path
+        description: The return request id of the related order
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: shopOrderNumber
+        in: path
+        description: The order number of the shop
+        required: true
+        schema:
+          type: string
+      - name: shopName
+        in: path
+        description: The shop name
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/vnd.intershop.return-request-position.v1+json:
+              schema:
+                $ref: '#/components/schemas/ReadReturnRequestPosition'
+        "401":
+          description: Authentication information is missing or invalid
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "406":
+          description: Not Acceptable
   ? /shops/{shopName}/orders/{shopOrderNumber}/return-requests/{returnRequestId}/positions/{returnRequestPositionId}/custom-attributes
   : get:
       tags:
@@ -364,7 +414,7 @@ paths:
       summary: List the return request position custom attributes
       description: "Returns a list of custom attributes of a return request position\
         \ for a given returnRequestPositionId, shopName and shopOrderNumber."
-      operationId: getPositionCustomAttributes
+      operationId: getReturnRequestPositionCustomAttributes
       parameters:
       - name: returnRequestPositionId
         in: path
@@ -474,18 +524,17 @@ paths:
         "406":
           description: Not Acceptable
   ? /shops/{shopName}/orders/{shopOrderNumber}/return-requests/{returnRequestId}/positions/{returnRequestPositionId}/custom-attributes/{customAttributeId}
-  : delete:
+  : get:
       tags:
       - Shop
-      summary: Delete a specific custom attribute of a return request position
-      description: "Delete a custom attribute for a given returnRequestId, shopName,\
-        \ shopOrderNumber, returnRequestPositionId, and a customAttributeId."
-      operationId: deletePositionCustomAttribute
+      summary: Get a custom attribute of a return request position
+      description: "Returns a custom attribute of a return request position for a\
+        \ given returnRequestId, shopName, shopOrderNumber and a returnRequestPositionId."
+      operationId: getReturnRequestPositionCustomAttribute
       parameters:
       - name: customAttributeId
         in: path
-        description: The id of the custom attribute of the related return request
-          position
+        description: The id of the custom attribute of the return request position
         required: true
         schema:
           type: integer
@@ -531,15 +580,22 @@ paths:
           description: Not Found
         "406":
           description: Not Acceptable
-  /shops/{shopName}/orders/{shopOrderNumber}/return-requests/{returnRequestId}/positions/{returnRequestPositionId}:
-    get:
+    delete:
       tags:
       - Shop
-      summary: Get a return request position
-      description: "Returns a return request position for a given returnRequestId,\
-        \ shopName, shopOrderNumber and a returnRequestPositionId."
-      operationId: getReturnRequestPosition
+      summary: Delete a specific custom attribute of a return request position
+      description: "Delete a custom attribute for a given returnRequestId, shopName,\
+        \ shopOrderNumber, returnRequestPositionId, and a customAttributeId."
+      operationId: deletePositionCustomAttribute
       parameters:
+      - name: customAttributeId
+        in: path
+        description: The id of the custom attribute of the related return request
+          position
+        required: true
+        schema:
+          type: integer
+          format: int64
       - name: returnRequestPositionId
         in: path
         description: The return request position id of the related return request
@@ -569,10 +625,6 @@ paths:
       responses:
         "200":
           description: OK
-          content:
-            application/vnd.intershop.return-request-position.v1+json:
-              schema:
-                $ref: '#/components/schemas/ReadReturnRequestPosition'
         "401":
           description: Authentication information is missing or invalid
         "403":

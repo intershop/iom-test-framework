@@ -18,6 +18,7 @@ import com.intershop.oms.rest.rma.v2_10.model.WriteReturnRequest;
 import com.intershop.oms.rest.shared.ApiException;
 import com.intershop.oms.rest.shared.ApiResponse;
 import com.intershop.oms.test.businessobject.order.OMSOrder;
+import com.intershop.oms.test.businessobject.rma.OMSReadCustomAttribute;
 import com.intershop.oms.test.businessobject.rma.OMSReadReturnRequest;
 import com.intershop.oms.test.businessobject.rma.OMSReadReturnRequestPosition;
 import com.intershop.oms.test.businessobject.rma.OMSReturnableData;
@@ -131,13 +132,13 @@ public class OMSReturnRequestServiceHandlerV2_10 extends RESTServiceHandler
     @Override
     public OMSReturnRequest createReturnRequest(OMSReturnRequest returnRequest, Integer targetState)
     {
-        throw new RuntimeException("not implemented before V2_11");
+        throw new RuntimeException("not supported before V2_11");
     }
 
     @Override
     public OMSReturnRequest getReturnRequest(Long id) throws ApiException
     {
-        throw new RuntimeException("not implemented before V2_11");
+        throw new RuntimeException("not supported before V2_11");
     }
 
 
@@ -147,6 +148,13 @@ public class OMSReturnRequestServiceHandlerV2_10 extends RESTServiceHandler
         return Set.of(shopApi);
     }
 
+    @Override
+    public OMSReadCustomAttribute getReturnRequestPositionCustomAttribute(OMSOrder order, Long returnRequestId,
+                    Long returnRequestPositionId, Long customAttributeId) throws ApiException
+    {
+        throw new RuntimeException("not supported before V2_12");
+    }
+    
     @Override
     public Long createReturnRequestPositionCustomAttribute(OMSOrder order, Long returnRequestId,
                     Long returnRequestPositionId, OMSWriteCustomAttribute customAttribute) throws ApiException

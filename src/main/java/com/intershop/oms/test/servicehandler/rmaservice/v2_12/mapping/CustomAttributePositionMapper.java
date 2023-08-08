@@ -17,6 +17,8 @@ public interface CustomAttributePositionMapper
 {
     CustomAttributePositionMapper INSTANCE = Mappers.getMapper(CustomAttributePositionMapper.class);
 
+    OMSReadCustomAttribute fromApiReadCustomAttribute(ReadCustomAttribute customAttributes);
+    
     List<OMSReadCustomAttribute> mapReadCustomAttributes(List<ReadCustomAttribute> customAttributes);
 
     default Map<String, String> mapWriteCustomAttributes(List<WriteCustomAttribute> customAttributes)

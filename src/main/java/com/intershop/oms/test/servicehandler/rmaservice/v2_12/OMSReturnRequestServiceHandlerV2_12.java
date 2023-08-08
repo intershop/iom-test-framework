@@ -28,6 +28,7 @@ import com.intershop.oms.rest.rma.v2_12.model.WriteReturnRequest;
 import com.intershop.oms.rest.shared.ApiException;
 import com.intershop.oms.rest.shared.ApiResponse;
 import com.intershop.oms.test.businessobject.order.OMSOrder;
+import com.intershop.oms.test.businessobject.rma.OMSReadCustomAttribute;
 import com.intershop.oms.test.businessobject.rma.OMSReadReturnRequest;
 import com.intershop.oms.test.businessobject.rma.OMSReadReturnRequestPosition;
 import com.intershop.oms.test.businessobject.rma.OMSReturnRequest;
@@ -40,6 +41,7 @@ import com.intershop.oms.test.configuration.ServiceConfiguration;
 import com.intershop.oms.test.servicehandler.RESTServiceHandler;
 import com.intershop.oms.test.servicehandler.omsdb.OMSDbHandler;
 import com.intershop.oms.test.servicehandler.rmaservice.v2_12.mapping.CustomAttributeMapper;
+import com.intershop.oms.test.servicehandler.rmaservice.v2_12.mapping.CustomAttributePositionMapper;
 import com.intershop.oms.test.servicehandler.rmaservice.v2_12.mapping.ReadReturnRequestMapper;
 import com.intershop.oms.test.servicehandler.rmaservice.v2_12.mapping.ReadReturnRequestPositionMapper;
 import com.intershop.oms.test.servicehandler.rmaservice.v2_12.mapping.ReturnRequestMapper;
@@ -218,6 +220,15 @@ public class OMSReturnRequestServiceHandlerV2_12 extends RESTServiceHandler
     protected Collection<Object> unwrapApiClient()
     {
         return Set.of(shopApi);
+    }
+
+    @Override
+    public OMSReadCustomAttribute getReturnRequestPositionCustomAttribute(OMSOrder order, Long returnRequestId,
+                    Long returnRequestPositionId, Long returnRequestPositionPropertyId) throws ApiException
+    {
+        ReadCustomAttribute response = shopApi.getReturnRequestPositionCustomAttribute(returnRequestPositionPropertyId, returnRequestPositionId, returnRequestId, order.getShopOrderNumber(), order.getShopName());
+        
+        return CustomAttributePositionMapper.INSTANCE.fromApiReadCustomAttribute(response);
     }
 
     @Override

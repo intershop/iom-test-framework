@@ -27,6 +27,7 @@ import com.intershop.oms.rest.rma.v2_11.model.WriteReturnRequest;
 import com.intershop.oms.rest.shared.ApiException;
 import com.intershop.oms.rest.shared.ApiResponse;
 import com.intershop.oms.test.businessobject.order.OMSOrder;
+import com.intershop.oms.test.businessobject.rma.OMSReadCustomAttribute;
 import com.intershop.oms.test.businessobject.rma.OMSReadReturnRequest;
 import com.intershop.oms.test.businessobject.rma.OMSReadReturnRequestPosition;
 import com.intershop.oms.test.businessobject.rma.OMSReturnRequest;
@@ -223,6 +224,13 @@ public class OMSReturnRequestServiceHandlerV2_11 extends RESTServiceHandler
         return Set.of(shopApi);
     }
 
+    @Override
+    public OMSReadCustomAttribute getReturnRequestPositionCustomAttribute(OMSOrder order, Long returnRequestId,
+                    Long returnRequestPositionId, Long customAttributeId) throws ApiException
+    {
+        throw new RuntimeException("not supported before V2_12");
+    }
+    
     @Override
     public Long createReturnRequestPositionCustomAttribute(OMSOrder order, Long returnRequestId,
                     Long returnRequestPositionId, OMSWriteCustomAttribute customAttribute) throws ApiException

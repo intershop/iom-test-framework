@@ -16,6 +16,7 @@ import com.intershop.oms.rest.rma.v2.model.WriteReturnRequest;
 import com.intershop.oms.rest.shared.ApiException;
 import com.intershop.oms.rest.shared.ApiResponse;
 import com.intershop.oms.test.businessobject.order.OMSOrder;
+import com.intershop.oms.test.businessobject.rma.OMSReadCustomAttribute;
 import com.intershop.oms.test.businessobject.rma.OMSReadReturnRequest;
 import com.intershop.oms.test.businessobject.rma.OMSReadReturnRequestPosition;
 import com.intershop.oms.test.businessobject.rma.OMSReturnableData;
@@ -103,7 +104,7 @@ public class OMSReturnRequestServiceHandlerV2 extends RESTServiceHandler
     @Override
     public OMSReturnableData getReturnableData(OMSOrder order) throws ApiException
     {
-        throw new ApiException("getReturnableData(OMSOrder order) not implemented before v2.10");
+        throw new ApiException("getReturnableData(OMSOrder order) not supported before v2.10");
     }
 
     @Override
@@ -111,7 +112,7 @@ public class OMSReturnRequestServiceHandlerV2 extends RESTServiceHandler
                     throws ApiException
     {
         throw new ApiException(
-                        "getShop2ReturnReasons(String shopName, List<String> returnTypes) not implemented before v2.10");
+                        "getShop2ReturnReasons(String shopName, List<String> returnTypes) not supported before v2.10");
     }
 
     @Override
@@ -132,6 +133,13 @@ public class OMSReturnRequestServiceHandlerV2 extends RESTServiceHandler
         return Set.of(shopApi);
     }
 
+    @Override
+    public OMSReadCustomAttribute getReturnRequestPositionCustomAttribute(OMSOrder order, Long returnRequestId,
+                    Long returnRequestPositionId, Long customAttributeId) throws ApiException
+    {
+        throw new RuntimeException("not supported before V2_12");
+    }
+    
     @Override
     public Long createReturnRequestPositionCustomAttribute(OMSOrder order, Long returnRequestId,
                     Long returnRequestPositionId, OMSWriteCustomAttribute customAttribute) throws ApiException
