@@ -148,6 +148,30 @@ public class OMSReturnRequestServiceHandlerV2_10 extends RESTServiceHandler
         return Set.of(shopApi);
     }
 
+
+    @Override
+    public List<OMSReadCustomAttribute> getReturnRequestPositionCustomAttributes(OMSOrder order, Long returnRequestId,
+                    Long returnRequestPositionId) throws ApiException
+    {
+        throw new RuntimeException("not supported before V2_12");
+    }
+    
+    @Override
+    public List<OMSReadCustomAttribute> createReturnRequestPositionCustomAttributes(OMSOrder order,
+                    Long returnRequestId, Long returnRequestPositionId, List<OMSWriteCustomAttribute> customAttributes)
+                    throws ApiException
+    {
+        throw new RuntimeException("not supported before V2_12");
+    }
+    
+    @Override
+    public List<OMSReadCustomAttribute> replaceReturnRequestPositionCustomAttributes(OMSOrder order,
+                    Long returnRequestId, Long returnRequestPositionId, List<OMSWriteCustomAttribute> customAttributes)
+                    throws ApiException
+    {
+        throw new RuntimeException("not supported before V2_12");
+    }
+    
     @Override
     public OMSReadCustomAttribute getReturnRequestPositionCustomAttribute(OMSOrder order, Long returnRequestId,
                     Long returnRequestPositionId, Long customAttributeId) throws ApiException
@@ -155,13 +179,6 @@ public class OMSReturnRequestServiceHandlerV2_10 extends RESTServiceHandler
         throw new RuntimeException("not supported before V2_12");
     }
     
-    @Override
-    public Long createReturnRequestPositionCustomAttribute(OMSOrder order, Long returnRequestId,
-                    Long returnRequestPositionId, OMSWriteCustomAttribute customAttribute) throws ApiException
-    {
-        throw new RuntimeException("not supported before V2_12");
-    }
-
     @Override
     public void deleteReturnRequestPositionCustomAttribute(OMSOrder order, Long returnRequestId,
                     Long returnRequestPositionId, Long customAttributeId) throws ApiException

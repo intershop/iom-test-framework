@@ -10,13 +10,13 @@ import java.io.OutputStream;
 import java.util.zip.GZIPInputStream;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-import jakarta.ws.rs.client.ClientRequestContext;
 import jakarta.ws.rs.client.ClientResponseContext;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.ext.WriterInterceptorContext;
@@ -85,21 +85,31 @@ public class LoggingIOStreamHandler
         }
     }
 
-    public static String readEntity(WriterInterceptorContext writerInterceptorContext) throws IOException
+    public static String readEntity(WriterInterceptorContext writerInterceptorContext, Logger log) throws IOException
     {
         OutputStream outputStream = writerInterceptorContext.getOutputStream();
 
+        log.info("Hier einmal");
+        
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         writerInterceptorContext.setOutputStream(byteArrayOutputStream);
 
+        log.info("Hier zweimal");
+
         writerInterceptorContext.proceed();
+
+        log.info("Hier zurück");
 
         byte[] byteArray = byteArrayOutputStream.toByteArray();
         outputStream.write(byteArray);
         writerInterceptorContext.setOutputStream(outputStream);
 
+        log.info("Hier weiter");
+
         String payloadBody = new String(byteArray);
         payloadBody = tryFormatJson(payloadBody);
+
+        log.info("Hier fertig");
 
         return payloadBody;
 

@@ -8,18 +8,12 @@ import java.util.stream.Collectors;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-import com.intershop.oms.rest.rma.v2_12.model.ReadCustomAttribute;
 import com.intershop.oms.rest.rma.v2_12.model.WriteCustomAttribute;
-import com.intershop.oms.test.businessobject.rma.OMSReadCustomAttribute;
 
 @Mapper
-public interface CustomAttributePositionMapper
+public interface CustomAttributePositionMapper extends CustomAttributeMapper  
 {
     CustomAttributePositionMapper INSTANCE = Mappers.getMapper(CustomAttributePositionMapper.class);
-
-    OMSReadCustomAttribute fromApiReadCustomAttribute(ReadCustomAttribute customAttributes);
-    
-    List<OMSReadCustomAttribute> mapReadCustomAttributes(List<ReadCustomAttribute> customAttributes);
 
     default Map<String, String> mapWriteCustomAttributes(List<WriteCustomAttribute> customAttributes)
     {

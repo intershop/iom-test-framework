@@ -86,7 +86,10 @@ public interface OMSReturnRequestServiceHandler extends OMSServiceHandler
      */
     OMSReturnRequest getReturnRequest(Long id) throws ApiException;
     
+    List<OMSReadCustomAttribute> getReturnRequestPositionCustomAttributes(OMSOrder order, Long returnRequestId, Long returnRequestPositionId) throws ApiException;
+    List<OMSReadCustomAttribute> replaceReturnRequestPositionCustomAttributes(OMSOrder order, Long returnRequestId, Long returnRequestPositionId, List<OMSWriteCustomAttribute> customAttributes) throws ApiException;
+    List<OMSReadCustomAttribute> createReturnRequestPositionCustomAttributes(OMSOrder order, Long returnRequestId, Long returnRequestPositionId, List<OMSWriteCustomAttribute> customAttributes) throws ApiException;
     OMSReadCustomAttribute getReturnRequestPositionCustomAttribute(OMSOrder order, Long returnRequestId, Long returnRequestPositionId, Long customAttributeId) throws ApiException;
-    Long createReturnRequestPositionCustomAttribute(OMSOrder order, Long returnRequestId, Long returnRequestPositionId, OMSWriteCustomAttribute customAttribute) throws ApiException;
     void deleteReturnRequestPositionCustomAttribute(OMSOrder order, Long returnRequestId, Long returnRequestPositionId, Long customAttributeId) throws ApiException;
+
 }

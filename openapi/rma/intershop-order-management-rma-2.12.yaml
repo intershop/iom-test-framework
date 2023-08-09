@@ -459,13 +459,14 @@ paths:
           description: Not Found
         "406":
           description: Not Acceptable
-    post:
+    put:
       tags:
       - Shop
-      summary: Create/Update custom attribute for a return request position
-      description: Create a new custom attribute or update an existing one for a return
-        request position.
-      operationId: createPositionCustomAttribute
+      summary: replace the list of return request position custom attributes
+      description: "Replaces all earlier custom attributes and returns the new list\
+        \ of custom attributes of a return request position for a given returnRequestPositionId,\
+        \ shopName and shopOrderNumber."
+      operationId: replaceReturnRequestPositionCustomAttributes
       parameters:
       - name: returnRequestPositionId
         in: path
@@ -497,18 +498,79 @@ paths:
         content:
           application/vnd.intershop.custom-attribute.v1+json:
             schema:
-              $ref: '#/components/schemas/WriteCustomAttribute'
+              type: array
+              items:
+                $ref: '#/components/schemas/WriteCustomAttribute'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/vnd.intershop.custom-attribute.v1+json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReadCustomAttribute'
+        "401":
+          description: Authentication information is missing or invalid
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "406":
+          description: Not Acceptable
+    post:
+      tags:
+      - Shop
+      summary: Create/Update custom attributes for a return request position
+      description: Create new custom attributes or update existing ones for a return
+        request position. Returns the whole new list of custom attributes for this
+        position.
+      operationId: createPositionCustomAttributes
+      parameters:
+      - name: returnRequestPositionId
+        in: path
+        description: The return request position id of the related return request
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: returnRequestId
+        in: path
+        description: The return request id of the related order
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: shopOrderNumber
+        in: path
+        description: The order number of the shop
+        required: true
+        schema:
+          type: string
+      - name: shopName
+        in: path
+        description: The shop name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/vnd.intershop.custom-attribute.v1+json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/WriteCustomAttribute'
         required: true
       responses:
         "201":
           description: Created
-          headers:
-            Location:
-              description: The path to the newly created resource
-              style: simple
+          content:
+            application/vnd.intershop.custom-attribute.v1+json:
               schema:
-                type: string
-                format: url
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReadCustomAttribute'
         "400":
           description: Bad Request
           content:

@@ -228,18 +228,36 @@ public class OMSReturnRequestServiceHandlerV2_12 extends RESTServiceHandler
     {
         ReadCustomAttribute response = shopApi.getReturnRequestPositionCustomAttribute(returnRequestPositionPropertyId, returnRequestPositionId, returnRequestId, order.getShopOrderNumber(), order.getShopName());
         
-        return CustomAttributePositionMapper.INSTANCE.fromApiReadCustomAttribute(response);
+        return CustomAttributePositionMapper.INSTANCE.fromApiCustomAttribute(response);
     }
 
     @Override
-    public Long createReturnRequestPositionCustomAttribute(OMSOrder order, Long returnRequestId,
-                    Long returnRequestPositionId, OMSWriteCustomAttribute customAttribute) throws ApiException
+    public List<OMSReadCustomAttribute> getReturnRequestPositionCustomAttributes(OMSOrder order, Long returnRequestId, Long returnRequestPositionId) throws ApiException
     {
-        WriteCustomAttribute ca = CustomAttributeMapper.INSTANCE.toApiCustomAttribute(customAttribute);
-        ApiResponse<Void> response = shopApi.createPositionCustomAttributeWithHttpInfo(returnRequestPositionId, returnRequestId, order.getShopOrderNumber(), order.getShopName(), ca);
-        return parseIdFromLocation(response.getHeaders().get(HTTP_HEADER_LOCATION).get(0));
+        List<ReadCustomAttribute> response = shopApi.getReturnRequestPositionCustomAttributes(returnRequestPositionId, returnRequestId, order.getShopOrderNumber(), order.getShopName());
+        
+        return CustomAttributePositionMapper.INSTANCE.fromApiCustomAttributes(response);
     }
 
+    @Override
+    public List<OMSReadCustomAttribute> createReturnRequestPositionCustomAttributes(OMSOrder order, Long returnRequestId, Long returnRequestPositionId, List<OMSWriteCustomAttribute> customAttributes)
+                    throws ApiException
+    {
+        List<WriteCustomAttribute> ca = CustomAttributeMapper.INSTANCE.toApiCustomAttributes(customAttributes);
+        List<ReadCustomAttribute> response = shopApi.createPositionCustomAttributes(returnRequestPositionId, returnRequestId, order.getShopOrderNumber(), order.getShopName(), ca);
+        return CustomAttributeMapper.INSTANCE.fromApiCustomAttributes(response);
+    }
+
+    @Override
+    public List<OMSReadCustomAttribute> replaceReturnRequestPositionCustomAttributes(OMSOrder order,
+                    Long returnRequestId, Long returnRequestPositionId, List<OMSWriteCustomAttribute> customAttributes)
+                    throws ApiException
+    {
+        List<WriteCustomAttribute> ca = CustomAttributeMapper.INSTANCE.toApiCustomAttributes(customAttributes);
+        List<ReadCustomAttribute> response = shopApi.replaceReturnRequestPositionCustomAttributes(returnRequestPositionId, returnRequestId, order.getShopOrderNumber(), order.getShopName(), ca);
+        return CustomAttributeMapper.INSTANCE.fromApiCustomAttributes(response);
+    }
+    
     @Override
     public void deleteReturnRequestPositionCustomAttribute(OMSOrder order, Long returnRequestId,
                     Long returnRequestPositionId, Long customAttributeId) throws ApiException
