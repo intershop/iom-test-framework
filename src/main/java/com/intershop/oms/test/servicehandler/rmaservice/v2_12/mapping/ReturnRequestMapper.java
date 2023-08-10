@@ -25,6 +25,7 @@ public interface ReturnRequestMapper
     @Mapping(source = "readReturnRequest.id", target = "id")
     @Mapping(source = "readReturnRequest.links", target = "links")
     @Mapping(source = "positionToItemMap", target = "positions")
+    @Mapping(target = "customAttributesAsMap", ignore = true)
     OMSReturnRequest fromApiReturnRequest(ReadReturnRequest readReturnRequest,
                     Map<ReadReturnRequestPosition, List<ReadReturnRequestItem>> positionToItemMap,
                     List<ContactPerson> contactPersons, List<ReadCustomAttribute> customAttributes,

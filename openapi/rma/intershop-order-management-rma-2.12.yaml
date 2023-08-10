@@ -1,18 +1,25 @@
 openapi: 3.0.1
 info:
   title: IOM RMA REST API
-  description: "The IOM RMA REST API supports programmatic access to objects related\
-    \ to the Return Merchandise Authorization (RMA) process. \n  ## Changelog \n -\
-    \ - - \n ### Version 2.12 \n* Support for custom attributes at return request\
-    \ position level. \n - - - \n ### Version 2.11 \n* A list of `WriteContactPerson`\
-    \ can be added to `WriteReturnRequest`. \n* Added undocumented refinements to\
-    \ `ContactPerson`. `lastName` and `emailAddress` are required. Optional `language`\
-    \ follows ISO-639-1. \n* Changed example of `ReadReturnRequest` and `WriteReturnRequest`.\
-    \ `type` was changed to `PICKUP` for a more consistent example. \n* Added undocumented\
-    \ constraint to `WriteApproval`. `comment` is required if `status` should be `NOT_APPROVED`.\
-    \ \n - - - \n ### Version 2.10 \n* New endpoint `returnables`, which returns all\
-    \ positions that can still be returned back. \n* New endpoint `return-reasons`,\
-    \ which returns all return reasons that are allowed for the shop. \n"
+  description: |
+    The IOM RMA REST API supports programmatic access to objects related to the Return Merchandise Authorization (RMA) process.
+
+     ## Changelog
+     - - -
+     ### Version 2.12
+     * Support for creation/adding/updating/deletion of (lists of) custom attributes at return request position level.
+     * Support for adding/updating/deletion of (lists of) custom attributes at return request base level.
+     * Support for replacing a whole RMA request.
+     - - -
+     ### Version 2.11
+     * A list of `WriteContactPerson` can be added to `WriteReturnRequest`.
+     * Added undocumented refinements to `ContactPerson`. `lastName` and `emailAddress` are required. Optional `language` follows ISO-639-1.
+     * Changed example of `ReadReturnRequest` and `WriteReturnRequest`. `type` was changed to `PICKUP` for a more consistent example.
+     * Added undocumented constraint to `WriteApproval`. `comment` is required if `status` should be `NOT_APPROVED`.
+     - - -
+     ### Version 2.10
+     * New endpoint `returnables`, which returns all positions that can still be returned back.
+     * New endpoint `return-reasons`, which returns all return reasons that are allowed for the shop.
   contact:
     name: Intershop Communications AG
     url: http://intershop.com
@@ -273,7 +280,7 @@ paths:
       - Shop
       summary: List the return request custom attributes
       description: "Returns a list of return request custom attributes for a given\
-        \ returnRequestId, shopName and shopOrderNumber."
+        \ returnRequestId, shopName, and shopOrderNumber."
       operationId: getCustomAttributes
       parameters:
       - name: returnRequestId
@@ -304,6 +311,212 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ReadCustomAttribute'
+        "401":
+          description: Authentication information is missing or invalid
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "406":
+          description: Not Acceptable
+    put:
+      tags:
+      - Shop
+      summary: replace the list of return request custom attributes
+      description: "Replaces all earlier custom attributes and returns the new list\
+        \ of custom attributes of a return request for a given returnRequestId, shopName\
+        \ and shopOrderNumber."
+      operationId: replaceReturnRequestCustomAttributes
+      parameters:
+      - name: returnRequestId
+        in: path
+        description: The return request id of the related order
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: shopOrderNumber
+        in: path
+        description: The order number of the shop
+        required: true
+        schema:
+          type: string
+      - name: shopName
+        in: path
+        description: The shop name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/vnd.intershop.custom-attribute.v1+json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/WriteCustomAttribute'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/vnd.intershop.custom-attribute.v1+json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReadCustomAttribute'
+        "401":
+          description: Authentication information is missing or invalid
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "406":
+          description: Not Acceptable
+    post:
+      tags:
+      - Shop
+      summary: Create/Update custom attributes for a return request
+      description: Create new custom attributes or update existing ones for a return
+        request. Returns the whole new list of custom attributes for this return request.
+      operationId: createCustomAttributes
+      parameters:
+      - name: returnRequestId
+        in: path
+        description: The return request id of the related order
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: shopOrderNumber
+        in: path
+        description: The order number of the shop
+        required: true
+        schema:
+          type: string
+      - name: shopName
+        in: path
+        description: The shop name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/vnd.intershop.custom-attribute.v1+json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/WriteCustomAttribute'
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/vnd.intershop.custom-attribute.v1+json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReadCustomAttribute'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorReport'
+        "401":
+          description: Authentication information is missing or invalid
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "406":
+          description: Not Acceptable
+  /shops/{shopName}/orders/{shopOrderNumber}/return-requests/{returnRequestId}/custom-attributes/{customAttributeId}:
+    get:
+      tags:
+      - Shop
+      summary: Get a custom attribute of a return request
+      description: "Returns a custom attribute of a return request for a given returnRequestId,\
+        \ shopName, and a shopOrderNumber."
+      operationId: getReturnRequestCustomAttribute
+      parameters:
+      - name: customAttributeId
+        in: path
+        description: The id of the custom attribute of the return request
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: returnRequestId
+        in: path
+        description: The return request id of the related order
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: shopOrderNumber
+        in: path
+        description: The order number of the shop
+        required: true
+        schema:
+          type: string
+      - name: shopName
+        in: path
+        description: The shop name
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/vnd.intershop.custom-attribute.v1+json:
+              schema:
+                $ref: '#/components/schemas/ReadCustomAttribute'
+        "401":
+          description: Authentication information is missing or invalid
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "406":
+          description: Not Acceptable
+    delete:
+      tags:
+      - Shop
+      summary: Delete a specific custom attribute of a return request
+      description: "Delete a custom attribute for a given returnRequestId, shopName,\
+        \ shopOrderNumber, and a customAttributeId."
+      operationId: deleteCustomAttribute
+      parameters:
+      - name: customAttributeId
+        in: path
+        description: The id of the custom attribute of the related return request
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: returnRequestId
+        in: path
+        description: The return request id of the related order
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: shopOrderNumber
+        in: path
+        description: The order number of the shop
+        required: true
+        schema:
+          type: string
+      - name: shopName
+        in: path
+        description: The shop name
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
         "401":
           description: Authentication information is missing or invalid
         "403":
@@ -413,7 +626,7 @@ paths:
       - Shop
       summary: List the return request position custom attributes
       description: "Returns a list of custom attributes of a return request position\
-        \ for a given returnRequestPositionId, shopName and shopOrderNumber."
+        \ for a given returnRequestPositionId, shopName, and shopOrderNumber."
       operationId: getReturnRequestPositionCustomAttributes
       parameters:
       - name: returnRequestPositionId
@@ -465,7 +678,7 @@ paths:
       summary: replace the list of return request position custom attributes
       description: "Replaces all earlier custom attributes and returns the new list\
         \ of custom attributes of a return request position for a given returnRequestPositionId,\
-        \ shopName and shopOrderNumber."
+        \ returnRequestId, shopName, and shopOrderNumber."
       operationId: replaceReturnRequestPositionCustomAttributes
       parameters:
       - name: returnRequestPositionId
@@ -591,7 +804,7 @@ paths:
       - Shop
       summary: Get a custom attribute of a return request position
       description: "Returns a custom attribute of a return request position for a\
-        \ given returnRequestId, shopName, shopOrderNumber and a returnRequestPositionId."
+        \ given returnRequestPositionId, returnRequestId, shopName, and a shopOrderNumber."
       operationId: getReturnRequestPositionCustomAttribute
       parameters:
       - name: customAttributeId

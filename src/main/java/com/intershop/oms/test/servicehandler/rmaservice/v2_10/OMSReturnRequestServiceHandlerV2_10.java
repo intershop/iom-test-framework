@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import com.intershop.oms.test.businessobject.rma.OMSReturnRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,9 +17,10 @@ import com.intershop.oms.rest.rma.v2_10.model.WriteReturnRequest;
 import com.intershop.oms.rest.shared.ApiException;
 import com.intershop.oms.rest.shared.ApiResponse;
 import com.intershop.oms.test.businessobject.order.OMSOrder;
-import com.intershop.oms.test.businessobject.rma.OMSReadCustomAttribute;
+import com.intershop.oms.test.businessobject.rma.OMSCustomAttribute;
 import com.intershop.oms.test.businessobject.rma.OMSReadReturnRequest;
 import com.intershop.oms.test.businessobject.rma.OMSReadReturnRequestPosition;
+import com.intershop.oms.test.businessobject.rma.OMSReturnRequest;
 import com.intershop.oms.test.businessobject.rma.OMSReturnableData;
 import com.intershop.oms.test.businessobject.rma.OMSShopReturnReason;
 import com.intershop.oms.test.businessobject.rma.OMSWriteCustomAttribute;
@@ -130,6 +130,12 @@ public class OMSReturnRequestServiceHandlerV2_10 extends RESTServiceHandler
     }
 
     @Override
+    protected Collection<Object> unwrapApiClient()
+    {
+        return Set.of(shopApi);
+    }
+
+    @Override
     public OMSReturnRequest createReturnRequest(OMSReturnRequest returnRequest, Integer targetState)
     {
         throw new RuntimeException("not supported before V2_11");
@@ -141,23 +147,15 @@ public class OMSReturnRequestServiceHandlerV2_10 extends RESTServiceHandler
         throw new RuntimeException("not supported before V2_11");
     }
 
-
     @Override
-    protected Collection<Object> unwrapApiClient()
-    {
-        return Set.of(shopApi);
-    }
-
-
-    @Override
-    public List<OMSReadCustomAttribute> getReturnRequestPositionCustomAttributes(OMSOrder order, Long returnRequestId,
+    public List<OMSCustomAttribute> getReturnRequestPositionCustomAttributes(OMSOrder order, Long returnRequestId,
                     Long returnRequestPositionId) throws ApiException
     {
         throw new RuntimeException("not supported before V2_12");
     }
     
     @Override
-    public List<OMSReadCustomAttribute> createReturnRequestPositionCustomAttributes(OMSOrder order,
+    public List<OMSCustomAttribute> createReturnRequestPositionCustomAttributes(OMSOrder order,
                     Long returnRequestId, Long returnRequestPositionId, List<OMSWriteCustomAttribute> customAttributes)
                     throws ApiException
     {
@@ -165,7 +163,7 @@ public class OMSReturnRequestServiceHandlerV2_10 extends RESTServiceHandler
     }
     
     @Override
-    public List<OMSReadCustomAttribute> replaceReturnRequestPositionCustomAttributes(OMSOrder order,
+    public List<OMSCustomAttribute> replaceReturnRequestPositionCustomAttributes(OMSOrder order,
                     Long returnRequestId, Long returnRequestPositionId, List<OMSWriteCustomAttribute> customAttributes)
                     throws ApiException
     {
@@ -173,7 +171,7 @@ public class OMSReturnRequestServiceHandlerV2_10 extends RESTServiceHandler
     }
     
     @Override
-    public OMSReadCustomAttribute getReturnRequestPositionCustomAttribute(OMSOrder order, Long returnRequestId,
+    public OMSCustomAttribute getReturnRequestPositionCustomAttribute(OMSOrder order, Long returnRequestId,
                     Long returnRequestPositionId, Long customAttributeId) throws ApiException
     {
         throw new RuntimeException("not supported before V2_12");

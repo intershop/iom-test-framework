@@ -9,7 +9,7 @@ import org.mapstruct.factory.Mappers;
 
 import com.intershop.oms.rest.rma.v2_12.model.ReadCustomAttribute;
 import com.intershop.oms.rest.rma.v2_12.model.WriteCustomAttribute;
-import com.intershop.oms.test.businessobject.rma.OMSReadCustomAttribute;
+import com.intershop.oms.test.businessobject.rma.OMSCustomAttribute;
 import com.intershop.oms.test.businessobject.rma.OMSWriteCustomAttribute;
 
 @Mapper
@@ -17,9 +17,9 @@ public interface CustomAttributeMapper
 {
     CustomAttributeMapper INSTANCE = Mappers.getMapper(CustomAttributeMapper.class);
 
-    OMSReadCustomAttribute fromApiCustomAttribute(ReadCustomAttribute writeCustomAttribute);
+    OMSCustomAttribute fromApiCustomAttribute(ReadCustomAttribute writeCustomAttribute);
 
-    List<OMSReadCustomAttribute> fromApiCustomAttributes(List<ReadCustomAttribute> response);
+    List<OMSCustomAttribute> fromApiCustomAttributes(List<ReadCustomAttribute> response);
 
     @InheritInverseConfiguration
     WriteCustomAttribute toApiCustomAttribute(OMSWriteCustomAttribute omsWriteCustomAttribute);

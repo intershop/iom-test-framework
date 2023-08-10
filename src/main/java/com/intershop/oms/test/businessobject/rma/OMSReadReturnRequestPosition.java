@@ -30,15 +30,15 @@ public class OMSReadReturnRequestPosition extends OMSBusinessObject
     private Long id;
     private String productName;
     private String supplierProductNumber;
-    private List<OMSReadCustomAttribute> customAttributes = new ArrayList<>();
+    private List<OMSCustomAttribute> customAttributes = new ArrayList<>();
 
     public Map<String, String> getCustomAttributesAsMap()
     {
         return customAttributes.stream()
                         .collect(
                                 Collectors.toMap(
-                                                OMSReadCustomAttribute::getKey,
-                                                OMSReadCustomAttribute::getValue,
+                                                OMSCustomAttribute::getKey,
+                                                OMSCustomAttribute::getValue,
                                                 (t, u) -> t, LinkedHashMap::new));
     }
     

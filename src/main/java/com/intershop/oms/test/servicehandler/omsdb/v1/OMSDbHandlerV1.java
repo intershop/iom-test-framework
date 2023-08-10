@@ -1546,7 +1546,7 @@ DELETE  FROM "StockReservationDO" r2
             reservedStock = 0L;
         }
 
-        log.info("Got reserved stock for '" + shopId + "' and '" + shopArticleNo + "': " + reservedStock);
+        log.info("Got reserved stock for '{}' and '{}': {}", shopId, shopArticleNo, reservedStock);
 
         return reservedStock;
     }
@@ -1582,13 +1582,13 @@ DELETE  FROM "StockReservationDO" r2
             }
             if (resultSet.next())
             {
-                log.error("More than one atp stock found for '" + shopId + "', '" + shopArticleNo + "', '" + supplierName + "'!");
+                log.error("More than one atp stock found for '{}', '{}', '{}'!", shopId, shopArticleNo, supplierName);
                 throw new RuntimeException("More than one atp stock found for '" + shopId + "', '" + shopArticleNo + "', '" + supplierName + "'!");
             }
         }
-        catch(SQLException sqlEx)
+        catch (SQLException sqlEx)
         {
-            log.error("SQLException getting atp stock for '" + shopId + "', '" + shopArticleNo + "', '" + supplierName + "': " + sqlEx.getMessage());
+            log.error("SQLException getting atp stock for '{}', '{}', '{}': {}", shopId, shopArticleNo, supplierName, sqlEx.getMessage());
             throw new RuntimeException(sqlEx);
         }
         finally
@@ -1607,11 +1607,11 @@ DELETE  FROM "StockReservationDO" r2
 
         if (null == atpStock)
         {
-            log.error("No atp stock found for '" + shopId + "', '" + shopArticleNo + "', '" + supplierName + "'!");
+            log.error("No atp stock found for '{}', '{}', '{}'!", shopId, shopArticleNo, supplierName);
             throw new RuntimeException("No atp stock found for '" + shopId + "', '" + shopArticleNo + "', '" + supplierName + "'!");
         }
 
-        log.info("Got atpStock: for '" + shopId + "', '" + shopArticleNo + "', '" + supplierName + "': atp.stockLevel:" + atpStock.stockLevel + " atp.blockedStock:" + atpStock.blockedStock);
+        log.info("Got atpStock: for '{}', '{}', '{}': atp.stockLevel: {}, atp.blockedStock: {}", shopId, shopArticleNo, supplierName, atpStock.stockLevel, atpStock.blockedStock);
 
         return atpStock;
     }
@@ -1627,13 +1627,12 @@ DELETE  FROM "StockReservationDO" r2
         // fill article names from the given Ids
         for (Map.Entry<OMSSupplier, Collection<OMSOrderPosition>> supplierOrderPos : supplierOrderPositions.entrySet())
         {
-            Collection<OMSDispatchPosition> supplierDisp = supplierDispatches.computeIfAbsent(supplierOrderPos.getKey(),
-                            k -> new ArrayList<>());
+            Collection<OMSDispatchPosition> supplierDisp = supplierDispatches.computeIfAbsent(supplierOrderPos.getKey(), k -> new ArrayList<>());
 
             for (OMSOrderPosition orderPos : supplierOrderPos.getValue())
             {
                 // a dispatch should use the article information used by the supplier? But then it fails "Not found"
-                log.info("getDispatchPositionsForOrder: preparing orderPos '" + orderPos.toString() + "' for supplier: " + supplierOrderPos.getKey().toString() + ":");
+                log.info("getDispatchPositionsForOrder: preparing orderPos '{}' for supplier {}:", orderPos, supplierOrderPos.getKey());
 
                 OMSProduct product;
                 if (useSupplierData)
@@ -1652,7 +1651,7 @@ DELETE  FROM "StockReservationDO" r2
                 disp.setDispatchedQuantity(orderPos.getQuantity());
                 disp.setOrderPositionNumber(orderPos.getNumber());
 
-                log.info("getDispatchPositionsForOrder: prepared dispatchPos '" + disp + "'.");
+                log.info("getDispatchPositionsForOrder: prepared dispatchPos '{}'.", disp);
 
                 supplierDisp.add(disp);
             }
@@ -1666,8 +1665,7 @@ DELETE  FROM "StockReservationDO" r2
                     boolean useSupplierData)
     {
         Map<OMSSupplier, Collection<OMSOrderResponsePosition>> supplierOrderResponses = new LinkedHashMap<>();
-        log.info("getOrderResponsePositionsForOrder: calling getOrderPositionsBySupplier for order: "
-                        + order.toString());
+        log.info("getOrderResponsePositionsForOrder: calling getOrderPositionsBySupplier for order: {}", order);
         Map<OMSSupplier, Collection<OMSOrderPosition>> supplierOrderPositions = getOrderPositionsBySupplier(order);
 
         // fill article names from the given Ids
@@ -1679,8 +1677,7 @@ DELETE  FROM "StockReservationDO" r2
             for (OMSOrderPosition orderPos : supplierOrderPos.getValue())
             {
                 // an order response should use the article information used by the supplier? But then it fails "Not found"
-                log.info("getOrderResponsePositionsForOrder: preparing orderPos '" + orderPos.toString()
-                                + "' for supplier: " + supplierOrderPos.getKey().toString());
+                log.info("getOrderResponsePositionsForOrder: preparing orderPos '{}' for supplier '{}'.", orderPos, supplierOrderPos.getKey());
 
                 OMSProduct product;
                 if (useSupplierData)
@@ -1714,7 +1711,7 @@ DELETE  FROM "StockReservationDO" r2
                 orderResp.getConfirmedDelivery().setQuantity(orderPos.getQuantity());
                 orderResp.setQuantityCanceled(0);
                 orderResp.getConfirmedDelivery().setPlannedDeliveryDate(LocalDate.now());
-                log.info("Adding order response position to order " + order.getId() + ":\n" + orderResp);
+                log.info("Adding order response position to order {}:\n{}", order.getId(), orderResp);
                 supplierOrderResp.add(orderResp);
             }
         }
@@ -1727,8 +1724,7 @@ DELETE  FROM "StockReservationDO" r2
     {
         Collection<OMSWriteReturnRequestPosition> returnRequestPositions = new ArrayList<>();
 
-        log.info("getDispatchPositionsForReturnRequest: calling getDispatchPositionsForReturnRequest for order: "
-                        + order.toString());
+        log.info("getDispatchPositionsForReturnRequest: calling getDispatchPositionsForReturnRequest for order: {}", order);
         Collection<OMSDispatchPosition> dispatchedOrderPositions = getDispatchPositionsForReturnRequest(order);
 
         // fill article number, position number from the given Ids
@@ -1753,23 +1749,21 @@ DELETE  FROM "StockReservationDO" r2
             positionsErrors.add(runDBStmtStringById(sqlStatement, positionId, "errorText"));
         }
 
-        StringBuilder output = new StringBuilder(
-                        "getReturnPositionsErrors: got error messages for return positions:\n");
+        StringBuilder output = new StringBuilder("getReturnPositionsErrors: got error messages for return positions:\n");
         int i = 0;
         for (String err : positionsErrors)
         {
             output.append("Return position ").append(positions.get(i++)).append(": ").append(err);
         }
-        log.info(output.toString());
+        log.info("{}", output);
         return positionsErrors;
     }
 
     @Override
     public String getReturnError(Long returnRef)
     {
-        String error = runDBStmtStringById("SELECT \"errorText\" FROM \"ReturnDO\" WHERE \"id\" = ?", returnRef,
-                        "errorText");
-        log.info("getDispatchError: got error messages for return: " + returnRef + ": " + error);
+        String error = runDBStmtStringById("SELECT \"errorText\" FROM \"ReturnDO\" WHERE \"id\" = ?", returnRef, "errorText");
+        log.info("getDispatchError: got error messages for return: {}: {}", returnRef, error);
         return error;
     }
 
@@ -1777,8 +1771,7 @@ DELETE  FROM "StockReservationDO" r2
     public Map<OMSSupplier, Collection<OMSOrderPosition>> getOrderPositionsBySupplier(OMSOrder order)
     {
         Map<OMSSupplier, Collection<OMSOrderPosition>> supplierOrderPositions = new LinkedHashMap<>();
-        log.info("getOrderPositionsBySupplier: calling getSupplierOrderPositionsForOrder for order: "
-                        + order.toString());
+        log.info("getOrderPositionsBySupplier: calling getSupplierOrderPositionsForOrder for order: {}", order);
         Map<Long, Collection<OMSOrderPosition>> supplierIdOrderPositions = getSupplierOrderPositionsForOrder(order);
 
         log.info("getOrderPositionsBySupplier: remapping suppliers...");
@@ -1786,11 +1779,10 @@ DELETE  FROM "StockReservationDO" r2
         // remap suppliers from their IDs
         for (Map.Entry<Long, Collection<OMSOrderPosition>> supplierDisp : supplierIdOrderPositions.entrySet())
         {
-            log.info("getOrderPositionsBySupplier: remapping supplier: " + supplierDisp.getKey());
+            log.info("getOrderPositionsBySupplier: remapping supplier: {}", supplierDisp.getKey());
             OMSSupplier omsSupplier = getOMSSupplierById(supplierDisp.getKey());
             supplierOrderPositions.put(omsSupplier, supplierDisp.getValue());
-            log.info("getOrderPositionsBySupplier: remapping supplier: " + supplierDisp.getKey() + " to "
-                            + omsSupplier);
+            log.info("getOrderPositionsBySupplier: remapping supplier: {} to {}", supplierDisp.getKey(), omsSupplier);
         }
 
         return supplierOrderPositions;
@@ -1820,7 +1812,7 @@ DELETE  FROM "StockReservationDO" r2
                 reservedStock = 0L;
             }
         }
-        catch(SQLException sqlEx)
+        catch (SQLException sqlEx)
         {
             log.error("SQLException getting reserved stock for reservationId '{}' and article '{}'! {}", reservationId, article.getShopArticleNo(), sqlEx.getMessage());
             throw new RuntimeException(sqlEx);
@@ -1869,7 +1861,10 @@ DELETE  FROM "StockReservationDO" r2
                 {
                     resultSet.close();
                 }
-                catch(SQLException e) {}
+                catch (SQLException e)
+                {
+                    // Ignore
+                }
             }
         }
         return ret;

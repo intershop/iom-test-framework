@@ -17,7 +17,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @ToString
 @EqualsAndHashCode(callSuper = false)
-public class OMSReadCustomAttribute extends OMSBusinessObject
+public class OMSCustomAttribute extends OMSBusinessObject
 {
     private Long id;
     private String key = "Example Test Key";
