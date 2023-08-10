@@ -86,10 +86,16 @@ public interface OMSReturnRequestServiceHandler extends OMSServiceHandler
      */
     OMSReturnRequest getReturnRequest(Long id) throws ApiException;
     
+
+    List<OMSCustomAttribute> getReturnRequestCustomAttributes(OMSOrder order, Long returnRequestId) throws ApiException;
+    List<OMSCustomAttribute> createReturnRequestCustomAttributes(OMSOrder order, Long returnRequestId, List<OMSWriteCustomAttribute> customAttributes) throws ApiException;
+    List<OMSCustomAttribute> replaceReturnRequestCustomAttributes(OMSOrder order, Long returnRequestId, List<OMSWriteCustomAttribute> customAttributes) throws ApiException;
+    OMSCustomAttribute getReturnRequestCustomAttribute(OMSOrder order, Long returnRequestId, Long returnRequestPropertyId) throws ApiException;
+    void deleteReturnRequestCustomAttribute(OMSOrder order, Long returnRequestId, Long customAttributeId) throws ApiException;
+    
     List<OMSCustomAttribute> getReturnRequestPositionCustomAttributes(OMSOrder order, Long returnRequestId, Long returnRequestPositionId) throws ApiException;
     List<OMSCustomAttribute> replaceReturnRequestPositionCustomAttributes(OMSOrder order, Long returnRequestId, Long returnRequestPositionId, List<OMSWriteCustomAttribute> customAttributes) throws ApiException;
     List<OMSCustomAttribute> createReturnRequestPositionCustomAttributes(OMSOrder order, Long returnRequestId, Long returnRequestPositionId, List<OMSWriteCustomAttribute> customAttributes) throws ApiException;
     OMSCustomAttribute getReturnRequestPositionCustomAttribute(OMSOrder order, Long returnRequestId, Long returnRequestPositionId, Long customAttributeId) throws ApiException;
     void deleteReturnRequestPositionCustomAttribute(OMSOrder order, Long returnRequestId, Long returnRequestPositionId, Long customAttributeId) throws ApiException;
-
 }

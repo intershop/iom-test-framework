@@ -258,4 +258,39 @@ public class OMSReturnRequestServiceHandlerV2_11 extends RESTServiceHandler
     {
         throw new RuntimeException("not supported before V2_12");
     }
+
+    @Override
+    public List<OMSCustomAttribute> getReturnRequestCustomAttributes(OMSOrder order, Long returnRequestId)
+                    throws ApiException
+    {
+        throw new RuntimeException("not supported before V2_12");
+    }
+
+    @Override
+    public List<OMSCustomAttribute> createReturnRequestCustomAttributes(OMSOrder order, Long returnRequestId,
+                    List<OMSWriteCustomAttribute> customAttributes) throws ApiException
+    {
+        throw new RuntimeException("not supported before V2_12");
+    }
+
+    @Override
+    public List<OMSCustomAttribute> replaceReturnRequestCustomAttributes(OMSOrder order, Long returnRequestId,
+                    List<OMSWriteCustomAttribute> customAttributes) throws ApiException
+    {
+        throw new RuntimeException("not supported before V2_12");
+    }
+
+    @Override
+    public OMSCustomAttribute getReturnRequestCustomAttribute(OMSOrder order, Long returnRequestId,
+                    Long returnRequestPropertyId) throws ApiException
+    {
+        throw new RuntimeException("not supported before V2_12");
+    }
+
+    @Override
+    public void deleteReturnRequestCustomAttribute(OMSOrder order, Long returnRequestId, Long customAttributeId)
+                    throws ApiException
+    {
+        throw new RuntimeException("not supported before V2_12");
+    }
 }
