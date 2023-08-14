@@ -82,6 +82,17 @@ public interface OMSReturnRequestServiceHandler extends OMSServiceHandler
     OMSReturnRequest createReturnRequest(OMSReturnRequest returnRequest, Integer targetState) throws ApiException;
 
     /**
+     * Send a complete return request as an update to IOM, optionally waiting for it to reach a specific targetState
+     *
+     * This will keep the ID, shop, shopOrderNumber, order, RMA-number, history of the old return request.
+     *
+     * @param returnRequest the updated return request
+     * @param targetState an optional targetState (ReturnStatesDefDO.id) that has to be reached
+     *                   before returning the ReturnRequest
+     */
+    OMSReturnRequest replaceReturnRequest(OMSReturnRequest returnRequest, Integer targetState) throws ApiException;
+    
+    /**
      * retrieve a ReturnRequest by id
      */
     OMSReturnRequest getReturnRequest(Long id) throws ApiException;

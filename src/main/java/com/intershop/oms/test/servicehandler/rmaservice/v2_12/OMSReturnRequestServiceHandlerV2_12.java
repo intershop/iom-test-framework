@@ -156,6 +156,22 @@ public class OMSReturnRequestServiceHandlerV2_12 extends RESTServiceHandler
     }
 
     @Override
+    public OMSReturnRequest replaceReturnRequest(OMSReturnRequest returnRequest, Integer targetState)
+                    throws ApiException
+    {
+        WriteReturnRequest writeReturnRequest = ReturnRequestMapper.INSTANCE.toWriteReturnRequest(returnRequest);
+
+        shopApi.replaceReturnRequest(returnRequest.getId(), returnRequest.getShopOrderNumber(), returnRequest.getShopName(), writeReturnRequest);
+
+        if (targetState != null)
+        {
+            dbHandler.waitForReturnAnnouncementState(returnRequest.getId(), targetState);
+        }
+
+        return getReturnRequest(returnRequest.getId(), returnRequest.getShopOrderNumber(), returnRequest.getShopName());
+    }
+    
+    @Override
     public OMSReturnRequest getReturnRequest(Long id) throws ApiException
     {
         // we can't reference an entity via it's unique id in the API because of

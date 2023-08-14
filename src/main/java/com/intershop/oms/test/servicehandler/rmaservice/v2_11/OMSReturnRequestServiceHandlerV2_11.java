@@ -223,6 +223,13 @@ public class OMSReturnRequestServiceHandlerV2_11 extends RESTServiceHandler
     }
 
     @Override
+    public OMSReturnRequest replaceReturnRequest(OMSReturnRequest returnRequest, Integer targetState)
+                    throws ApiException
+    {
+        throw new RuntimeException("not supported before V2_12");
+    }
+    
+    @Override
     public List<OMSCustomAttribute> getReturnRequestPositionCustomAttributes(OMSOrder order, Long returnRequestId,
                     Long returnRequestPositionId) throws ApiException
     {

@@ -274,6 +274,62 @@ paths:
           description: Not Found
         "406":
           description: Not Acceptable
+    put:
+      tags:
+      - Shop
+      summary: Replace a return request
+      description: Replaces the given return request with an updated one
+      operationId: replaceReturnRequest
+      parameters:
+      - name: returnRequestId
+        in: path
+        description: The id of the return request to be replaced
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: shopOrderNumber
+        in: path
+        description: The order number of the shop
+        required: true
+        schema:
+          type: string
+      - name: shopName
+        in: path
+        description: The shop name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/vnd.intershop.return-request.v1+json:
+            schema:
+              $ref: '#/components/schemas/WriteReturnRequest'
+        required: true
+      responses:
+        "200":
+          description: Created
+          headers:
+            Location:
+              description: The path to the newly created resource
+              style: simple
+              schema:
+                type: string
+                format: url
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorReport'
+        "401":
+          description: Authentication information is missing or invalid
+        "403":
+          description: Forbidden
+        "415":
+          description: Unsupported Media Type
+        "500":
+          description: An unexpected error occured
   /shops/{shopName}/orders/{shopOrderNumber}/return-requests/{returnRequestId}/custom-attributes:
     get:
       tags:
