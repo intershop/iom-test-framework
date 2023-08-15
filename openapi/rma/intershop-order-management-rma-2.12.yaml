@@ -283,7 +283,7 @@ paths:
       parameters:
       - name: returnRequestId
         in: path
-        description: The id of the return request to be replaced
+        description: The return request id
         required: true
         schema:
           type: integer
@@ -309,13 +309,10 @@ paths:
       responses:
         "200":
           description: Created
-          headers:
-            Location:
-              description: The path to the newly created resource
-              style: simple
+          content:
+            application/vnd.intershop.return-request.v1+json:
               schema:
-                type: string
-                format: url
+                $ref: '#/components/schemas/ReadReturnRequest'
         "400":
           description: Bad Request
           content:
