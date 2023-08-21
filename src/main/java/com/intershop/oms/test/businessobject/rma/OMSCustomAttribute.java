@@ -1,6 +1,10 @@
 package com.intershop.oms.test.businessobject.rma;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
+import com.intershop.oms.test.businessobject.OMSLink;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -13,12 +17,10 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @ToString
 @EqualsAndHashCode(callSuper = false)
-public class OMSContactPerson extends OMSBusinessObject
+public class OMSCustomAttribute extends OMSBusinessObject
 {
-    private String company;
-    private String firstName;
-    private String lastName;
-    private String phoneNumber;
-    private String emailAddress;
-    private String language;
+    private Long id;
+    private String key = "Example Test Key";
+    private String value = "Example Test Value";
+    private List<OMSLink> links = new ArrayList<>();
 }

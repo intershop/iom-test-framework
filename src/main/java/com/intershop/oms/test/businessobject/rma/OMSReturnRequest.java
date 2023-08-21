@@ -12,8 +12,10 @@ import lombok.experimental.Accessors;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -28,7 +30,7 @@ public class OMSReturnRequest extends OMSBusinessObject
     private List<OMSReturnRequestPosition> positions = new ArrayList<>();
     private OMSPickupAddress pickupAddress;
     private List<OMSContactPerson> contactPersons = new ArrayList<>();
-    private Map<String, String> customAttributes = new HashMap<>();
+    private List<OMSCustomAttribute> customAttributes = new ArrayList<>();
     private Long id;
     private Date creationDate;
     private String shopOrderNumber;
@@ -68,6 +70,7 @@ public class OMSReturnRequest extends OMSBusinessObject
             return String.valueOf(value);
         }
     }
+    
     public enum BusinessStatusEnum
     {
         ACCEPTED("ACCEPTED"),
@@ -156,4 +159,13 @@ public class OMSReturnRequest extends OMSBusinessObject
         }
     }
 
+    public Map<String, String> getCustomAttributesAsMap()
+    {
+        return customAttributes.stream()
+                        .collect(
+                                Collectors.toMap(
+                                                OMSCustomAttribute::getKey,
+                                                OMSCustomAttribute::getValue,
+                                                (t, u) -> t, LinkedHashMap::new));
+    }
 }

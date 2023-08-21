@@ -61,6 +61,8 @@ public class OMSWriteReturnRequest extends OMSBusinessObject
 
     private OMSWritePickupAddress pickupAddress;
 
+    private List<OMSContactPerson> contactPersons = new ArrayList<>();
+    
     private List<OMSWriteCustomAttribute> customAttributes = null;
 
     public OMSWriteReturnRequest(String shopOrderNo, Collection<OMSWriteReturnRequestPosition> returnRequestPositions)

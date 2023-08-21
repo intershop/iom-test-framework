@@ -5,6 +5,7 @@ import java.util.List;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 
@@ -16,6 +17,8 @@ public interface ReadReturnRequestPositionMapper
 {
     ReadReturnRequestPositionMapper INSTANCE = Mappers.getMapper(ReadReturnRequestPositionMapper.class);
 
+    @Mapping(target = "customAttributesAsMap", ignore = true)
+    @Mapping(target = "customAttributes", ignore = true) // introduced in 2.12
     OMSReadReturnRequestPosition fromApiReadReturnRequestPosition(ReadReturnRequestPosition readReturnRequestPosition);
 
     @InheritInverseConfiguration

@@ -1,35 +1,51 @@
 package com.intershop.oms.test.businessobject.rma;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 import com.intershop.oms.test.businessobject.OMSLink;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
 @Getter
 @Setter
+@Accessors(chain = true)
+@ToString
+@EqualsAndHashCode(callSuper = false)
 public class OMSReadReturnRequestPosition extends OMSBusinessObject
 {
-    private List<OMSLink> links = null;
-
+    private List<OMSLink> links = new ArrayList<>();
     private Integer positionNumber;
-
     private String productNumber;
-
     private String reason;
-
     private Integer quantity;
-
     private Long id;
-
     private String productName;
-
     private String supplierProductNumber;
+    private List<OMSCustomAttribute> customAttributes = new ArrayList<>();
 
+    public Map<String, String> getCustomAttributesAsMap()
+    {
+        return customAttributes.stream()
+                        .collect(
+                                Collectors.toMap(
+                                                OMSCustomAttribute::getKey,
+                                                OMSCustomAttribute::getValue,
+                                                (t, u) -> t, LinkedHashMap::new));
+    }
+    
+    /**
+     * @deprecated use set...()
+     */
+    @Deprecated(forRemoval = true, since= "6.0.0")
     public OMSReadReturnRequestPosition links(List<OMSLink> links)
     {
         this.links = links;
@@ -38,98 +54,77 @@ public class OMSReadReturnRequestPosition extends OMSBusinessObject
 
     public OMSReadReturnRequestPosition addLinksItem(OMSLink linksItem)
     {
-        if (this.links == null)
-        {
-            this.links = new ArrayList<>();
-        }
-        this.links.add(linksItem);
+        links.add(linksItem);
         return this;
     }
 
+    /**
+     * @deprecated use set...()
+     */
+    @Deprecated(forRemoval = true, since= "6.0.0")
     public OMSReadReturnRequestPosition positionNumber(Integer positionNumber)
     {
         this.positionNumber = positionNumber;
         return this;
     }
 
+    /**
+     * @deprecated use set...()
+     */
+    @Deprecated(forRemoval = true, since= "6.0.0")
     public OMSReadReturnRequestPosition productNumber(String productNumber)
     {
         this.productNumber = productNumber;
         return this;
     }
 
+    /**
+     * @deprecated use set...()
+     */
+    @Deprecated(forRemoval = true, since= "6.0.0")
     public OMSReadReturnRequestPosition reason(String reason)
     {
         this.reason = reason;
         return this;
     }
 
+    /**
+     * @deprecated use set...()
+     */
+    @Deprecated(forRemoval = true, since= "6.0.0")
     public OMSReadReturnRequestPosition quantity(Integer quantity)
     {
         this.quantity = quantity;
         return this;
     }
 
+    /**
+     * @deprecated use set...()
+     */
+    @Deprecated(forRemoval = true, since= "6.0.0")
     public OMSReadReturnRequestPosition id(Long id)
     {
         this.id = id;
         return this;
     }
 
+    /**
+     * @deprecated use set...()
+     */
+    @Deprecated(forRemoval = true, since= "6.0.0")
     public OMSReadReturnRequestPosition productName(String productName)
     {
         this.productName = productName;
         return this;
     }
 
+    /**
+     * @deprecated use set...()
+     */
+    @Deprecated(forRemoval = true, since= "6.0.0")
     public OMSReadReturnRequestPosition supplierProductNumber(String supplierProductNumber)
     {
         this.supplierProductNumber = supplierProductNumber;
         return this;
-    }
-
-    @Override
-    public boolean equals(java.lang.Object o)
-    {
-        if (this == o)
-        {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass())
-        {
-            return false;
-        }
-        OMSReadReturnRequestPosition readReturnRequestPosition = (OMSReadReturnRequestPosition) o;
-        return Objects.equals(this.links, readReturnRequestPosition.links) &&
-                        Objects.equals(this.positionNumber, readReturnRequestPosition.positionNumber) &&
-                        Objects.equals(this.productNumber, readReturnRequestPosition.productNumber) &&
-                        Objects.equals(this.reason, readReturnRequestPosition.reason) &&
-                        Objects.equals(this.quantity, readReturnRequestPosition.quantity) &&
-                        Objects.equals(this.id, readReturnRequestPosition.id) &&
-                        Objects.equals(this.productName, readReturnRequestPosition.productName) &&
-                        Objects.equals(this.supplierProductNumber, readReturnRequestPosition.supplierProductNumber);
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(links, positionNumber, productNumber, reason, quantity, id, productName, supplierProductNumber);
-    }
-
-    @Override
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class OMSReadReturnRequestPosition {\n");
-        sb.append("    links: ").append(toIndentedString(links)).append("\n");
-        sb.append("    positionNumber: ").append(toIndentedString(positionNumber)).append("\n");
-        sb.append("    productNumber: ").append(toIndentedString(productNumber)).append("\n");
-        sb.append("    reason: ").append(toIndentedString(reason)).append("\n");
-        sb.append("    quantity: ").append(toIndentedString(quantity)).append("\n");
-        sb.append("    id: ").append(toIndentedString(id)).append("\n");
-        sb.append("    productName: ").append(toIndentedString(productName)).append("\n");
-        sb.append("    supplierProductNumber: ").append(toIndentedString(supplierProductNumber)).append("\n");
-        sb.append("}");
-        return sb.toString();
     }
 }

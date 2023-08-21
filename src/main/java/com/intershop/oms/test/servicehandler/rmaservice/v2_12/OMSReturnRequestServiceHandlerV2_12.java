@@ -1,4 +1,4 @@
-package com.intershop.oms.test.servicehandler.rmaservice.v2_11;
+package com.intershop.oms.test.servicehandler.rmaservice.v2_12;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,16 +14,17 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.intershop.oms.rest.rma.v2_11.api.ShopApi;
-import com.intershop.oms.rest.rma.v2_11.model.ContactPerson;
-import com.intershop.oms.rest.rma.v2_11.model.ReadCustomAttribute;
-import com.intershop.oms.rest.rma.v2_11.model.ReadPickupAddress;
-import com.intershop.oms.rest.rma.v2_11.model.ReadReturnRequest;
-import com.intershop.oms.rest.rma.v2_11.model.ReadReturnRequestItem;
-import com.intershop.oms.rest.rma.v2_11.model.ReadReturnRequestPosition;
-import com.intershop.oms.rest.rma.v2_11.model.ReturnableData;
-import com.intershop.oms.rest.rma.v2_11.model.ShopReturnReason;
-import com.intershop.oms.rest.rma.v2_11.model.WriteReturnRequest;
+import com.intershop.oms.rest.rma.v2_12.api.ShopApi;
+import com.intershop.oms.rest.rma.v2_12.model.ContactPerson;
+import com.intershop.oms.rest.rma.v2_12.model.ReadCustomAttribute;
+import com.intershop.oms.rest.rma.v2_12.model.ReadPickupAddress;
+import com.intershop.oms.rest.rma.v2_12.model.ReadReturnRequest;
+import com.intershop.oms.rest.rma.v2_12.model.ReadReturnRequestItem;
+import com.intershop.oms.rest.rma.v2_12.model.ReadReturnRequestPosition;
+import com.intershop.oms.rest.rma.v2_12.model.ReturnableData;
+import com.intershop.oms.rest.rma.v2_12.model.ShopReturnReason;
+import com.intershop.oms.rest.rma.v2_12.model.WriteCustomAttribute;
+import com.intershop.oms.rest.rma.v2_12.model.WriteReturnRequest;
 import com.intershop.oms.rest.shared.ApiException;
 import com.intershop.oms.rest.shared.ApiResponse;
 import com.intershop.oms.test.businessobject.order.OMSOrder;
@@ -39,21 +40,22 @@ import com.intershop.oms.test.businessobject.rma.OMSWriteReturnRequestPosition;
 import com.intershop.oms.test.configuration.ServiceConfiguration;
 import com.intershop.oms.test.servicehandler.RESTServiceHandler;
 import com.intershop.oms.test.servicehandler.omsdb.OMSDbHandler;
-import com.intershop.oms.test.servicehandler.rmaservice.v2_11.mapping.ReadReturnRequestMapper;
-import com.intershop.oms.test.servicehandler.rmaservice.v2_11.mapping.ReadReturnRequestPositionMapper;
-import com.intershop.oms.test.servicehandler.rmaservice.v2_11.mapping.ReturnRequestMapper;
-import com.intershop.oms.test.servicehandler.rmaservice.v2_11.mapping.ReturnableDataMapper;
-import com.intershop.oms.test.servicehandler.rmaservice.v2_11.mapping.ShopReturnReasonMapper;
-import com.intershop.oms.test.servicehandler.rmaservice.v2_11.mapping.WriteReturnRequestMapper;
+import com.intershop.oms.test.servicehandler.rmaservice.v2_12.mapping.CustomAttributeMapper;
+import com.intershop.oms.test.servicehandler.rmaservice.v2_12.mapping.ReadReturnRequestMapper;
+import com.intershop.oms.test.servicehandler.rmaservice.v2_12.mapping.ReadReturnRequestPositionMapper;
+import com.intershop.oms.test.servicehandler.rmaservice.v2_12.mapping.ReturnRequestMapper;
+import com.intershop.oms.test.servicehandler.rmaservice.v2_12.mapping.ReturnableDataMapper;
+import com.intershop.oms.test.servicehandler.rmaservice.v2_12.mapping.ShopReturnReasonMapper;
+import com.intershop.oms.test.servicehandler.rmaservice.v2_12.mapping.WriteReturnRequestMapper;
 
-public class OMSReturnRequestServiceHandlerV2_11 extends RESTServiceHandler
+public class OMSReturnRequestServiceHandlerV2_12 extends RESTServiceHandler
                 implements com.intershop.oms.test.servicehandler.rmaservice.OMSReturnRequestServiceHandler
 {
-    private static final Logger log = LoggerFactory.getLogger(OMSReturnRequestServiceHandlerV2_11.class);
+    private static final Logger log = LoggerFactory.getLogger(OMSReturnRequestServiceHandlerV2_12.class);
     private final ShopApi shopApi;
     private final OMSDbHandler dbHandler;
 
-    OMSReturnRequestServiceHandlerV2_11(ServiceConfiguration serviceConfiguration, OMSDbHandler dbHandler)
+    OMSReturnRequestServiceHandlerV2_12(ServiceConfiguration serviceConfiguration, OMSDbHandler dbHandler)
     {
         super(serviceConfiguration, "/rest/rma", log);
         this.shopApi = new ShopApi(apiClient);
@@ -66,12 +68,10 @@ public class OMSReturnRequestServiceHandlerV2_11 extends RESTServiceHandler
     {
         OMSWriteReturnRequest omsWriteReturnRequest = new OMSWriteReturnRequest(shopOrderNo, returnRequestPositions);
 
-        ApiResponse<Void> response;
-
         WriteReturnRequest writeReturnRequest = WriteReturnRequestMapper.INSTANCE
                         .toApiWriteReturnRequest(omsWriteReturnRequest);
 
-        response = shopApi.createReturnRequestWithHttpInfo(shopOrderNo, shopName, writeReturnRequest);
+        ApiResponse<Void> response = shopApi.createReturnRequestWithHttpInfo(shopOrderNo, shopName, writeReturnRequest);
         return response.getHeaders().get(HTTP_HEADER_LOCATION).get(0);
     }
 
@@ -109,10 +109,9 @@ public class OMSReturnRequestServiceHandlerV2_11 extends RESTServiceHandler
             ReadReturnRequestPositionMapper.INSTANCE.fromApiReadReturnRequestPositionList(returnRequestPositions,
                             omsReturnRequestPositions);
         }
-        catch(ApiException e)
+        catch (ApiException e)
         {
-            log.error("Request failed with status " + e.getCode() + " and response body '" + e.getResponseBody() + "'",
-                            e);
+            log.error("Request failed with status " + e.getCode() + " and response body '" + e.getResponseBody() + "'", e);
             throw e;
         }
         return omsReturnRequestPositions;
@@ -156,6 +155,22 @@ public class OMSReturnRequestServiceHandlerV2_11 extends RESTServiceHandler
         return getReturnRequest(id, returnRequest.getShopOrderNumber(), returnRequest.getShopName());
     }
 
+    @Override
+    public OMSReturnRequest replaceReturnRequest(OMSReturnRequest returnRequest, Integer targetState)
+                    throws ApiException
+    {
+        WriteReturnRequest writeReturnRequest = ReturnRequestMapper.INSTANCE.toWriteReturnRequest(returnRequest);
+
+        shopApi.replaceReturnRequest(returnRequest.getId(), returnRequest.getShopOrderNumber(), returnRequest.getShopName(), writeReturnRequest);
+
+        if (targetState != null)
+        {
+            dbHandler.waitForReturnAnnouncementState(returnRequest.getId(), targetState);
+        }
+
+        return getReturnRequest(returnRequest.getId(), returnRequest.getShopOrderNumber(), returnRequest.getShopName());
+    }
+    
     @Override
     public OMSReturnRequest getReturnRequest(Long id) throws ApiException
     {
@@ -213,7 +228,7 @@ public class OMSReturnRequestServiceHandlerV2_11 extends RESTServiceHandler
         List<ReadCustomAttribute> customAttributes = shopApi.getCustomAttributes(id, shopOrderNo, shopName);
         List<ReadPickupAddress> pickupAddresses = shopApi.getReturnRequestPickupAddresses(id, shopOrderNo, shopName);
         return ReturnRequestMapper.INSTANCE.fromApiReturnRequest(rReq, posToItems, contactPersons, customAttributes,
-                        pickupAddresses.size() > 0 ? pickupAddresses.get(0) : null);
+                        pickupAddresses.isEmpty() ? null : pickupAddresses.get(0));
     }
 
     @Override
@@ -223,81 +238,83 @@ public class OMSReturnRequestServiceHandlerV2_11 extends RESTServiceHandler
     }
 
     @Override
-    public OMSReturnRequest replaceReturnRequest(OMSReturnRequest returnRequest, Integer targetState)
+    public OMSCustomAttribute getReturnRequestPositionCustomAttribute(OMSOrder order, Long returnRequestId,
+                    Long returnRequestPositionId, Long returnRequestPositionPropertyId) throws ApiException
+    {
+        ReadCustomAttribute response = shopApi.getReturnRequestPositionCustomAttribute(returnRequestPositionPropertyId, returnRequestPositionId, returnRequestId, order.getShopOrderNumber(), order.getShopName());
+        
+        return CustomAttributeMapper.INSTANCE.fromApiCustomAttribute(response);
+    }
+
+    @Override
+    public List<OMSCustomAttribute> getReturnRequestPositionCustomAttributes(OMSOrder order, Long returnRequestId, Long returnRequestPositionId) throws ApiException
+    {
+        List<ReadCustomAttribute> response = shopApi.getReturnRequestPositionCustomAttributes(returnRequestPositionId, returnRequestId, order.getShopOrderNumber(), order.getShopName());
+        
+        return CustomAttributeMapper.INSTANCE.fromApiCustomAttributes(response);
+    }
+
+    @Override
+    public List<OMSCustomAttribute> createReturnRequestPositionCustomAttributes(OMSOrder order, Long returnRequestId, Long returnRequestPositionId, List<OMSWriteCustomAttribute> customAttributes)
                     throws ApiException
     {
-        throw new RuntimeException("not supported before V2_12");
+        List<WriteCustomAttribute> ca = CustomAttributeMapper.INSTANCE.toApiCustomAttributes(customAttributes);
+        List<ReadCustomAttribute> response = shopApi.createPositionCustomAttributes(returnRequestPositionId, returnRequestId, order.getShopOrderNumber(), order.getShopName(), ca);
+        return CustomAttributeMapper.INSTANCE.fromApiCustomAttributes(response);
     }
-    
-    @Override
-    public List<OMSCustomAttribute> getReturnRequestPositionCustomAttributes(OMSOrder order, Long returnRequestId,
-                    Long returnRequestPositionId) throws ApiException
-    {
-        throw new RuntimeException("not supported before V2_12");
-    }
-    
-    @Override
-    public List<OMSCustomAttribute> createReturnRequestPositionCustomAttributes(OMSOrder order,
-                    Long returnRequestId, Long returnRequestPositionId, List<OMSWriteCustomAttribute> customAttributes)
-                    throws ApiException
-    {
-        throw new RuntimeException("not supported before V2_12");
-    }
-    
+
     @Override
     public List<OMSCustomAttribute> replaceReturnRequestPositionCustomAttributes(OMSOrder order,
                     Long returnRequestId, Long returnRequestPositionId, List<OMSWriteCustomAttribute> customAttributes)
                     throws ApiException
     {
-        throw new RuntimeException("not supported before V2_12");
-    }
-    
-    @Override
-    public OMSCustomAttribute getReturnRequestPositionCustomAttribute(OMSOrder order, Long returnRequestId,
-                    Long returnRequestPositionId, Long customAttributeId) throws ApiException
-    {
-        throw new RuntimeException("not supported before V2_12");
+        List<WriteCustomAttribute> ca = CustomAttributeMapper.INSTANCE.toApiCustomAttributes(customAttributes);
+        List<ReadCustomAttribute> response = shopApi.replaceReturnRequestPositionCustomAttributes(returnRequestPositionId, returnRequestId, order.getShopOrderNumber(), order.getShopName(), ca);
+        return CustomAttributeMapper.INSTANCE.fromApiCustomAttributes(response);
     }
     
     @Override
     public void deleteReturnRequestPositionCustomAttribute(OMSOrder order, Long returnRequestId,
                     Long returnRequestPositionId, Long customAttributeId) throws ApiException
     {
-        throw new RuntimeException("not supported before V2_12");
+        shopApi.deletePositionCustomAttribute(customAttributeId, returnRequestPositionId, returnRequestId, order.getShopOrderNumber(), order.getShopName());
     }
 
     @Override
-    public List<OMSCustomAttribute> getReturnRequestCustomAttributes(OMSOrder order, Long returnRequestId)
-                    throws ApiException
+    public OMSCustomAttribute getReturnRequestCustomAttribute(OMSOrder order, Long returnRequestId, Long returnRequestPropertyId) throws ApiException
     {
-        throw new RuntimeException("not supported before V2_12");
+        ReadCustomAttribute response = shopApi.getReturnRequestCustomAttribute(returnRequestPropertyId, returnRequestId, order.getShopOrderNumber(), order.getShopName());
+        
+        return CustomAttributeMapper.INSTANCE.fromApiCustomAttribute(response);
     }
 
     @Override
-    public List<OMSCustomAttribute> createReturnRequestCustomAttributes(OMSOrder order, Long returnRequestId,
-                    List<OMSWriteCustomAttribute> customAttributes) throws ApiException
+    public List<OMSCustomAttribute> getReturnRequestCustomAttributes(OMSOrder order, Long returnRequestId) throws ApiException
     {
-        throw new RuntimeException("not supported before V2_12");
+        List<ReadCustomAttribute> response = shopApi.getCustomAttributes(returnRequestId, order.getShopOrderNumber(), order.getShopName());
+        
+        return CustomAttributeMapper.INSTANCE.fromApiCustomAttributes(response);
     }
 
     @Override
-    public List<OMSCustomAttribute> replaceReturnRequestCustomAttributes(OMSOrder order, Long returnRequestId,
-                    List<OMSWriteCustomAttribute> customAttributes) throws ApiException
+    public List<OMSCustomAttribute> createReturnRequestCustomAttributes(OMSOrder order, Long returnRequestId, List<OMSWriteCustomAttribute> customAttributes) throws ApiException
     {
-        throw new RuntimeException("not supported before V2_12");
+        List<WriteCustomAttribute> ca = CustomAttributeMapper.INSTANCE.toApiCustomAttributes(customAttributes);
+        List<ReadCustomAttribute> response = shopApi.createCustomAttributes(returnRequestId, order.getShopOrderNumber(), order.getShopName(), ca);
+        return CustomAttributeMapper.INSTANCE.fromApiCustomAttributes(response);
     }
 
     @Override
-    public OMSCustomAttribute getReturnRequestCustomAttribute(OMSOrder order, Long returnRequestId,
-                    Long returnRequestPropertyId) throws ApiException
+    public List<OMSCustomAttribute> replaceReturnRequestCustomAttributes(OMSOrder order, Long returnRequestId, List<OMSWriteCustomAttribute> customAttributes) throws ApiException
     {
-        throw new RuntimeException("not supported before V2_12");
+        List<WriteCustomAttribute> ca = CustomAttributeMapper.INSTANCE.toApiCustomAttributes(customAttributes);
+        List<ReadCustomAttribute> response = shopApi.replaceReturnRequestCustomAttributes(returnRequestId, order.getShopOrderNumber(), order.getShopName(), ca);
+        return CustomAttributeMapper.INSTANCE.fromApiCustomAttributes(response);
     }
-
+    
     @Override
-    public void deleteReturnRequestCustomAttribute(OMSOrder order, Long returnRequestId, Long customAttributeId)
-                    throws ApiException
+    public void deleteReturnRequestCustomAttribute(OMSOrder order, Long returnRequestId, Long customAttributeId) throws ApiException
     {
-        throw new RuntimeException("not supported before V2_12");
+        shopApi.deleteCustomAttribute(customAttributeId, returnRequestId, order.getShopOrderNumber(), order.getShopName());
     }
 }

@@ -97,13 +97,11 @@ public class OMSSupplierServiceHandlerV2_11 extends RESTServiceHandler
         log.info("Sending dispatch positions for: {}", order);
 
         Collection<String> dispatchLocations = new ArrayList<>();
-        for (Map.Entry<OMSSupplier, Collection<OMSDispatchPosition>> supplierDispatchPosition : supplierDispatchPositions
-                        .entrySet())
+        for (Map.Entry<OMSSupplier, Collection<OMSDispatchPosition>> supplierDispatchPosition : supplierDispatchPositions.entrySet())
         {
             OMSShop shop = order.getShop();
             OMSSupplier supplier = supplierDispatchPosition.getKey();
-            OMSDispatch dispatch = SupplierServiceUtil.prepareDispatch(shop, supplier, order.getShopOrderNumber(),
-                            supplierDispatchPosition.getValue(), messageId);
+            OMSDispatch dispatch = SupplierServiceUtil.prepareDispatch(shop, supplier, order.getShopOrderNumber(), supplierDispatchPosition.getValue(), messageId);
             dispatchLocations.add(sendDispatch(dispatch));
         }
 

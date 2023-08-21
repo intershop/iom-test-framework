@@ -1,7 +1,9 @@
 package com.intershop.oms.test.businessobject.rma;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
@@ -31,6 +33,7 @@ public class OMSReturnRequestPosition extends OMSBusinessObject
     private String productName;
     private String supplierProductNumber;
     private List<OMSReturnRequestItem> items;
+    private Map<String, String> customAttributes = new HashMap<>();
 
     public static OMSReturnRequestPosition fromDispatchPosition(OMSDispatchPosition dispatchPosition)
     {

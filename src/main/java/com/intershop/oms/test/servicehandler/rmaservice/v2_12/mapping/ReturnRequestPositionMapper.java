@@ -1,4 +1,4 @@
-package com.intershop.oms.test.servicehandler.rmaservice.v2_11.mapping;
+package com.intershop.oms.test.servicehandler.rmaservice.v2_12.mapping;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,22 +6,22 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-import com.intershop.oms.rest.rma.v2_11.model.ReadReturnRequestItem;
-import com.intershop.oms.rest.rma.v2_11.model.ReadReturnRequestPosition;
+import com.intershop.oms.rest.rma.v2_12.model.ReadReturnRequestItem;
+import com.intershop.oms.rest.rma.v2_12.model.ReadReturnRequestPosition;
 import com.intershop.oms.test.businessobject.rma.OMSReturnRequestPosition;
 
-@Mapper
+@Mapper(uses= {CustomAttributesMapper.class} )
 public interface ReturnRequestPositionMapper
 {
     ReturnRequestPositionMapper INSTANCE = Mappers.getMapper(ReturnRequestPositionMapper.class);
 
-    @Mapping(target = "customAttributes", ignore = true) // introduced in 2.12
-    OMSReturnRequestPosition fromApiReadReturnRequestPosition(ReadReturnRequestPosition readReturnRequestPosition, List<ReadReturnRequestItem> items);
+    OMSReturnRequestPosition fromApiReadReturnRequestPosition(ReadReturnRequestPosition readReturnRequestPosition,
+                    List<ReadReturnRequestItem> items);
 
-    default List<OMSReturnRequestPosition> fromApiPositionItemMapping(Map<ReadReturnRequestPosition, List<ReadReturnRequestItem>> positionToItemMap)
+    default ArrayList<OMSReturnRequestPosition> fromApiPositionItemMapping(
+                    Map<ReadReturnRequestPosition, List<ReadReturnRequestItem>> positionToItemMap)
     {
         return positionToItemMap.entrySet().stream()
                         .map(entry -> fromApiReadReturnRequestPosition(entry.getKey(), entry.getValue()))
