@@ -1,5 +1,12 @@
 package com.intershop.oms.test.businessobject.rma;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 import com.intershop.oms.test.businessobject.OMSLink;
 
@@ -8,14 +15,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
