@@ -13,11 +13,11 @@ import org.slf4j.LoggerFactory;
 
 import com.intershop.oms.rest.order.v2_1.api.OrderApi;
 import com.intershop.oms.rest.order.v2_1.model.Order;
-import com.intershop.oms.rest.order.v2_4.model.LatestOrderStateCollectionContainer;
 import com.intershop.oms.rest.shared.ApiException;
 import com.intershop.oms.rest.shared.ApiResponse;
 import com.intershop.oms.test.businessobject.order.OMSChangeRequest;
 import com.intershop.oms.test.businessobject.order.OMSOrder;
+import com.intershop.oms.test.businessobject.orderstate.OMSLatestOrderStateCollectionContainer;
 import com.intershop.oms.test.businessobject.orderstate.OMSOrderFilter;
 import com.intershop.oms.test.businessobject.orderstate.OMSOrderStateCollectionContainer;
 import com.intershop.oms.test.configuration.ServiceConfiguration;
@@ -183,7 +183,7 @@ class OMSOrderServiceHandlerV2_1 extends RESTServiceHandler
     }
     
     @Override
-    public LatestOrderStateCollectionContainer getModifiedOrderStates(Long shopId, OffsetDateTime modifiedSince,
+    public OMSLatestOrderStateCollectionContainer getModifiedOrderStates(Long shopId, OffsetDateTime modifiedSince,
                     Long minCursor, Integer limit) throws ApiException
     {
         throw new RuntimeException("Method not supported for version < 2.4!");

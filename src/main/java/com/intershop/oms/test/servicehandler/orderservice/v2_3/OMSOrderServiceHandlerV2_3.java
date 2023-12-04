@@ -19,12 +19,12 @@ import com.intershop.oms.rest.order.v2_3.model.ChangeRequestView;
 import com.intershop.oms.rest.order.v2_3.model.Order;
 import com.intershop.oms.rest.order.v2_3.model.OrderPositionReturned;
 import com.intershop.oms.rest.order.v2_3.model.OrderStateCollectionContainer;
-import com.intershop.oms.rest.order.v2_4.model.LatestOrderStateCollectionContainer;
 import com.intershop.oms.rest.shared.ApiException;
 import com.intershop.oms.rest.shared.ApiResponse;
 import com.intershop.oms.test.businessobject.OMSShop;
 import com.intershop.oms.test.businessobject.order.OMSChangeRequest;
 import com.intershop.oms.test.businessobject.order.OMSOrder;
+import com.intershop.oms.test.businessobject.orderstate.OMSLatestOrderStateCollectionContainer;
 import com.intershop.oms.test.businessobject.orderstate.OMSOrderFilter;
 import com.intershop.oms.test.businessobject.orderstate.OMSOrderStateCollectionContainer;
 import com.intershop.oms.test.configuration.ServiceConfiguration;
@@ -266,7 +266,7 @@ class OMSOrderServiceHandlerV2_3 extends RESTServiceHandler implements OMSOrderS
     }
     
     @Override
-    public LatestOrderStateCollectionContainer getModifiedOrderStates(Long shopId, OffsetDateTime modifiedSince,
+    public OMSLatestOrderStateCollectionContainer getModifiedOrderStates(Long shopId, OffsetDateTime modifiedSince,
                     Long minCursor, Integer limit) throws ApiException
     {
         throw new RuntimeException("Method not supported for version < 2.4!");

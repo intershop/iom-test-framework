@@ -637,12 +637,12 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
                 out.append("- Failed (success on expected failure): ").append(query).append("\n");
             }
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             if (assertTrue)
             {
                 check = false;
-                out.append("+ Failed: ").append(query).append("\n").append(e).append("\n");
+                out.append("+ Failed runDBStmt: ").append(query).append("\n").append(e).append("\n");
             }
             else
             {
@@ -652,11 +652,11 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
 
         if (check)
         {
-            log.info(out.toString());
+            log.info("{}", out);
         }
         else
         {
-            log.error(out.toString());
+            log.error("{}", out);
         }
         return check;
     }
@@ -687,11 +687,11 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
             }
 
             sqlStatement.executeUpdate();
-            log.info("updated: " + query);
+            log.info("updated: {}", query);
         }
         catch(Exception e)
         {
-            log.error("+ Failed: " + query + "\n" + e + "\n");
+            log.error("+ Failed runDBUpdate: {}\n{}\n", query, e);
             return false;
         }
         return true;
@@ -704,11 +704,11 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.executeUpdate();
-            log.info("updated: " + query);
+            log.info("updated: {}", query);
         }
         catch(Exception e)
         {
-            log.error("+ Failed: " + query + "\n" + e + "\n");
+            log.error("+ Failed runDBUpdate: {}\n{}\n", query, e);
             return false;
         }
         return true;
@@ -757,17 +757,16 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
                         PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.setLong(1, shop.getId());
-            log.info("Calling '" + sqlStatement + "'.");
+            log.info("Calling '{}'.", sqlStatement);
             resultSet = sqlStatement.executeQuery();
             while(resultSet.next())
             {
                 supplierRefs.add(resultSet.getLong("supplierRef"));
             }
         }
-        catch(SQLException sqlEx)
+        catch (SQLException sqlEx)
         {
-            log.error("SQLException getting supplier refs for shop '" + shop.getName() + "' (" + shop.getId() + ")!"
-                            + sqlEx.getMessage());
+            log.error("SQLException getting supplier refs for shop '{}' ({})!: {}", shop.getName(), shop.getId(), sqlEx.getMessage());
             throw new RuntimeException(sqlEx);
         }
         finally
@@ -786,7 +785,7 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
 
         if (supplierRefs.isEmpty())
         {
-            log.error("No suppliers found for shop '" + shop.getName() + "' (" + shop.getId() + ")!");
+            log.error("No suppliers found for shop '{}' ({})!", shop.getName(), shop.getId());
             throw new RuntimeException("No suppliers found for shop '" + shop.getName() + "' (" + shop.getId() + ")!");
 
         }

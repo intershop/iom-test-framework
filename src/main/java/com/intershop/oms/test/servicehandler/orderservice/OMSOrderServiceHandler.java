@@ -6,11 +6,11 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import com.intershop.oms.rest.order.v2_4.model.LatestOrderStateCollectionContainer;
 import com.intershop.oms.rest.shared.ApiException;
 import com.intershop.oms.rest.shared.ApiResponse;
 import com.intershop.oms.test.businessobject.order.OMSChangeRequest;
 import com.intershop.oms.test.businessobject.order.OMSOrder;
+import com.intershop.oms.test.businessobject.orderstate.OMSLatestOrderStateCollectionContainer;
 import com.intershop.oms.test.businessobject.orderstate.OMSOrderFilter;
 import com.intershop.oms.test.businessobject.orderstate.OMSOrderStateCollectionContainer;
 import com.intershop.oms.test.servicehandler.OMSServiceHandler;
@@ -52,7 +52,7 @@ public interface OMSOrderServiceHandler extends OMSServiceHandler
 
     /**
      * Create multiple orders, optionally waiting for them to reach a target status.<br/>
-     * This method will create all order first, then wait for the target status, to optimize throughput in certain
+     * This method will create all orders first, then wait for the target status, to optimize throughput in certain
      * configuration scenarios.<br/>
      * <b>Impl Note:</b> currently the default integration will not return the up-to-date order status,
      * only the OMSOrder from the initial request, extended by the orderId. Will be fixed in a future iteration.
@@ -164,6 +164,6 @@ public interface OMSOrderServiceHandler extends OMSServiceHandler
          <tr><td> 500 </td><td> An unexpected error occured </td><td>  -  </td></tr>
        </table>
      */
-    public LatestOrderStateCollectionContainer getModifiedOrderStates(Long shopId, OffsetDateTime modifiedSince,
+    public OMSLatestOrderStateCollectionContainer getModifiedOrderStates(Long shopId, OffsetDateTime modifiedSince,
                     Long minCursor, Integer limit) throws ApiException;
 }

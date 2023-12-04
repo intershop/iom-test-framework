@@ -25,6 +25,7 @@ import com.intershop.oms.rest.shared.ApiResponse;
 import com.intershop.oms.test.businessobject.OMSShop;
 import com.intershop.oms.test.businessobject.order.OMSChangeRequest;
 import com.intershop.oms.test.businessobject.order.OMSOrder;
+import com.intershop.oms.test.businessobject.orderstate.OMSLatestOrderStateCollectionContainer;
 import com.intershop.oms.test.businessobject.orderstate.OMSOrderFilter;
 import com.intershop.oms.test.businessobject.orderstate.OMSOrderStateCollectionContainer;
 import com.intershop.oms.test.configuration.ServiceConfiguration;
@@ -33,6 +34,7 @@ import com.intershop.oms.test.servicehandler.omsdb.OMSDbHandler;
 import com.intershop.oms.test.servicehandler.orderservice.OMSOrderServiceHandler;
 import com.intershop.oms.test.servicehandler.orderservice.v2_4.mapping.ChangeRequestCreateMapper;
 import com.intershop.oms.test.servicehandler.orderservice.v2_4.mapping.ChangeRequestViewMapper;
+import com.intershop.oms.test.servicehandler.orderservice.v2_4.mapping.LatestOrderStateCollectionContainerMapper;
 import com.intershop.oms.test.servicehandler.orderservice.v2_4.mapping.OrderMapper;
 import com.intershop.oms.test.servicehandler.orderservice.v2_4.mapping.OrderPositionReturnedMixIn;
 import com.intershop.oms.test.servicehandler.orderservice.v2_4.mapping.OrderStateCollectionContainerMapper;
@@ -266,11 +268,11 @@ class OMSOrderServiceHandlerV2_4 extends RESTServiceHandler implements OMSOrderS
     }
     
     @Override
-    public LatestOrderStateCollectionContainer getModifiedOrderStates(Long shopId, OffsetDateTime modifiedSince,
+    public OMSLatestOrderStateCollectionContainer getModifiedOrderStates(Long shopId, OffsetDateTime modifiedSince,
                     Long minCursor, Integer limit) throws ApiException
     {
         ApiResponse<LatestOrderStateCollectionContainer> response = orderStateApi.getModifiedOrderStatesWithHttpInfo(
                         shopId, modifiedSince, minCursor, limit);
-        return response.getData();
+        return LatestOrderStateCollectionContainerMapper.INSTANCE.fromApiLatestOrderStateCollectionContainer(response.getData());
     }
 }
