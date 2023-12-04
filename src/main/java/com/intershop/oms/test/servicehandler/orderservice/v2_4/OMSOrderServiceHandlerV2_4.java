@@ -241,27 +241,6 @@ class OMSOrderServiceHandlerV2_4 extends RESTServiceHandler implements OMSOrderS
     }
 
     @Override
-    public OMSOrder createOrder(String user, String password, OMSOrder orderData)
-    {
-        log.info("Create order called in service handler version >= 2.2 ---- doing nothing, anymore!");
-        return orderData;
-    }
-
-    @Override
-    public Long sendOrder(String host, String port, OMSOrder order, int expectedEndState) throws ApiException
-    {
-        sendOrder(order, expectedEndState);
-        return order.getId();
-    }
-
-    @Override
-    public Long sendOrder(String host, String port, OMSOrder order) throws ApiException
-    {
-        sendOrder(order);
-        return order.getId();
-    }
-
-    @Override
     protected Collection<Object> unwrapApiClient()
     {
         return Set.of(orderApi, orderStateApi);

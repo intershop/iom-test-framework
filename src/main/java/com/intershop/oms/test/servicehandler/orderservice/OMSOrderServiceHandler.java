@@ -137,38 +137,6 @@ public interface OMSOrderServiceHandler extends OMSServiceHandler
         return getOrderChangeRequests(shopId, shopOrderNumber, new ArrayList<>());
     }
 
-    /**
-     * creates an order
-     *
-     * @deprecated only for compatibility with the old SOAP-Service --- will be removed after removing the SOAP-Service
-     */
-    @Deprecated
-    OMSOrder createOrder(String user, String password, OMSOrder orderData);
-
-    /**
-     * sends an order
-     *
-     * @param expectedEndState wait for the order to be in the given state before returning
-     *
-     * @return the orderId
-     * @throws ApiException
-     *
-     * @deprecated only for compatibility with the old SOAP-Service --- will be removed after removing the SOAP-Service
-     */
-    @Deprecated
-    Long sendOrder(String host, String port, OMSOrder order, int expectedEndState) throws ApiException;
-
-    /**
-     * sends an order
-     *
-     * @return  the orderId
-     * @throws ApiException
-     *
-     * @deprecated only for compatibility with the old SOAP-Service --- will be removed after removing the SOAP-Service
-     */
-    @Deprecated
-    Long sendOrder(String host, String port, OMSOrder order) throws ApiException;
-
     @Experimental("Proposed to be replaced by a method returning Collection<OMSOrder / OMSOrderState>")
     // FIXME: Proposal = return Collection<OMSOrder> instead..?
     // Note: Currently this doesn't make sense because those classes are too
