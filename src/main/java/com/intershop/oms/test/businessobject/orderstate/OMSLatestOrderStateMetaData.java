@@ -12,6 +12,9 @@ import lombok.Setter;
 public class OMSLatestOrderStateMetaData extends OMSBusinessObject
 {
     private Long totalCount = null;
+    private Integer pageSize;
+    private Long minCursor;
+    private Long maxCursor;
 
     public OMSLatestOrderStateMetaData totalCount(Long totalCount)
     {
@@ -31,13 +34,16 @@ public class OMSLatestOrderStateMetaData extends OMSBusinessObject
             return false;
         }
         OMSLatestOrderStateMetaData collectionMetaData = (OMSLatestOrderStateMetaData) o;
-        return Objects.equals(this.totalCount, collectionMetaData.totalCount);
+        return Objects.equals(this.totalCount, collectionMetaData.totalCount) &&
+                        Objects.equals(this.pageSize, collectionMetaData.pageSize) &&
+                        Objects.equals(this.minCursor, collectionMetaData.minCursor) &&
+                        Objects.equals(this.maxCursor, collectionMetaData.maxCursor);
     }
 
     @Override
     public int hashCode()
     {
-        return java.util.Objects.hash(totalCount);
+        return java.util.Objects.hash(totalCount, pageSize, minCursor, maxCursor);
     }
 
     @Override
@@ -46,6 +52,9 @@ public class OMSLatestOrderStateMetaData extends OMSBusinessObject
         StringBuilder sb = new StringBuilder();
         sb.append("class CollectionMetaData {\n");
         sb.append("    totalCount: ").append(toIndentedString(totalCount)).append("\n");
+        sb.append("    pageSize: ").append(toIndentedString(pageSize)).append("\n");
+        sb.append("    minCursor: ").append(toIndentedString(minCursor)).append("\n");
+        sb.append("    maxCursor: ").append(toIndentedString(maxCursor)).append("\n");
         sb.append("}");
         return sb.toString();
     }
