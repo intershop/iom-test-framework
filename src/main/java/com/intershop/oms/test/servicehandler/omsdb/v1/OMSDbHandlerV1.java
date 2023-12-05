@@ -3969,10 +3969,19 @@ DELETE  FROM "StockReservationDO" r2
     @Deprecated
     private boolean getDBLock(int lockId, int timeout, DBLockType rw)
     {
-        if (null==lockingConnection || !lockingConnection.isValid(timeout))
+        try 
         {
-            lockingConnection = getConnection();
+            if (null==lockingConnection || !lockingConnection.isValid(timeout))
+            {
+                lockingConnection = getConnection();
+            }
         }
+        catch (SQLException sqlEx)
+        {
+            log.error("Could not get lock: {}\n{}", sqlEx.getMessage(), sqlEx);
+            return false;
+        }
+        
         String statement = null;
         if (rw.equals(DBLockType.R))
         {
