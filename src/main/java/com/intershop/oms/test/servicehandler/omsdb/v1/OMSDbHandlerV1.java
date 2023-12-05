@@ -65,7 +65,7 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
 
     // tl;dr that locking mechanism is NOT THREAD SAFE and can only be used in
     // single threaded test environments
-    private Connection instanceConnection;
+    private Connection lockingConnection =null;
 
     public OMSDbHandlerV1(ServiceConfiguration configuration)
     {
@@ -89,7 +89,9 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
                 ds.setUsername(aDbUser);
                 ds.setPassword(aDbPass);
                 ds.setMaximumPoolSize(30);
-                
+                ds.setKeepaliveTime(120000); //shoud help maintain locking connections alive
+                ds.setIdleTimeout(900000 ); //15 minutes. The default of 10 minutes might be too small in some tests
+                //ds.setConnectionTimeout(30000); //30 seconds. This is the default and should be sufficient
 
                 if (aForceSsl)
                 {
@@ -105,7 +107,7 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
                 dsInitialized = true;
             }
         }
-        instanceConnection = getConnection();
+
 
     }
 
@@ -1000,7 +1002,8 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
     @Override
     public String getShopName(long shopId)
     {
-        try (PreparedStatement stmt = instanceConnection.prepareStatement(
+        try (Connection connection = getConnection();
+                        PreparedStatement stmt = connection.prepareStatement(
                         "SELECT \"shopName\" FROM oms.\"ShopDO\" WHERE id = ?"))
         {
             stmt.setLong(1, shopId);
@@ -2009,7 +2012,8 @@ DELETE  FROM "StockReservationDO" r2
         String query = "SELECT name FROM oms.\"SupplierDO\" WHERE id = ?";
         ResultSet resultSet = null;
 
-        try (PreparedStatement sqlStatement = instanceConnection.prepareStatement(query))
+        try (Connection connection = getConnection();
+             PreparedStatement sqlStatement = connection.prepareStatement(query))
         {
             sqlStatement.setLong(1, supplierId);
             resultSet = sqlStatement.executeQuery();
@@ -3945,7 +3949,7 @@ DELETE  FROM "StockReservationDO" r2
             throw new RuntimeException("Unknown lock type '" + rw + "' found! Supported are 'W' and 'R'.");
         }
 
-        try (PreparedStatement sqlStatement  = instanceConnection.prepareStatement(statement))
+        try (PreparedStatement sqlStatement  = lockingConnection.prepareStatement(statement))
         {
             sqlStatement.execute();
             log.info("released gebTest {} lock {}\n", rw, lockId);
@@ -3965,6 +3969,10 @@ DELETE  FROM "StockReservationDO" r2
     @Deprecated
     private boolean getDBLock(int lockId, int timeout, DBLockType rw)
     {
+        if (null==lockingConnection || !lockingConnection.isValid(timeout))
+        {
+            lockingConnection = getConnection();
+        }
         String statement = null;
         if (rw.equals(DBLockType.R))
         {
@@ -3979,8 +3987,8 @@ DELETE  FROM "StockReservationDO" r2
             throw new RuntimeException("Unknown lock type '"+rw+"' found! Supported are 'W' and 'R'.");
         }
 
-        try (PreparedStatement sqlStatement  = instanceConnection.prepareStatement("SET statement_timeout='" + timeout + "s'");
-             PreparedStatement sqlStatement2 = instanceConnection.prepareStatement(statement))
+        try (PreparedStatement sqlStatement  = lockingConnection.prepareStatement("SET statement_timeout='" + timeout + "s'");
+             PreparedStatement sqlStatement2 = lockingConnection.prepareStatement(statement))
         {
             sqlStatement.executeUpdate();
             sqlStatement2.execute();
@@ -4214,7 +4222,7 @@ DELETE  FROM "StockReservationDO" r2
         }
         catch(SQLException e)
         {
-            throw new RuntimeException("error while getting connection from the pool", e);
+            throw new RuntimeException("error while getting connection from the pool: " + e.getMessage(), e);
         }
     }
 
