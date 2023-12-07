@@ -40,92 +40,35 @@ class OMSOrderServiceHandlerV2_1 extends RESTServiceHandler
         this.orderApi = new OrderApi(apiClient);
     }
 
-    /**
-     * sends an order
-     *
-     * @param host
-     * @param port
-     * @param order
-     * @param expectedEndState
-     *            wait for the order to be in the given state before returning
-     *
-     * @return the orderId
-     * @throws ApiException
-     */
     @Override
-    public Long sendOrder(OMSOrder omsOrder, int expectedEndState) throws ApiException
+    public List<OMSOrder> createOrders(List<OMSOrder> omsOrders, Integer targetState) throws ApiException
     {
-        Long omsOrderCreatedId = sendOrder(omsOrder);
-
-        assert dbHandler.waitForOrderState(omsOrderCreatedId, expectedEndState);
-
-        return omsOrderCreatedId;
-    }
-
-    /**
-     * sends a list of orders
-     *
-     * @param host
-     * @param port
-     * @param order
-     * @param expectedEndState
-     *            wait for the order to be in the given state before returning
-     *
-     * @return the orderIds
-     * @throws ApiException
-     */
-    public List<Long> sendOrders(List<OMSOrder> omsOrders, int expectedEndState) throws ApiException
-    {
-        List<Long> omsOrderCreatedIds = new ArrayList<Long>();
+        List<OMSOrder> omsOrdersCreated = new ArrayList<>();
 
         for (OMSOrder omsOrder: omsOrders)
         {
-            Long orderId = sendOrder(omsOrder);
-            omsOrderCreatedIds.add(orderId);
+            Long shopId = omsOrder.getShopId();
+
+            Order order = OrderMapper.INSTANCE.toApiOrder(omsOrder);
+            orderApi.createOrder(shopId, order);
+            long orderId = dbHandler.getOrderId(shopId, omsOrder.getShopOrderNumber());
+            omsOrder.setId(orderId);
+            omsOrdersCreated.add(omsOrder);
         }
 
-        for (Long orderId: omsOrderCreatedIds)
+        for (OMSOrder o : omsOrdersCreated)
         {
-            assert dbHandler.waitForOrderState(orderId, expectedEndState);
+            assert dbHandler.waitForOrderState(o.getId(), targetState);
         }
 
-        return omsOrderCreatedIds;
+        return omsOrdersCreated;
     }
 
-
-    /**
-     * sends an order
-     *
-     * @param host
-     * @param port
-     * @param order
-     * @return the orderId
-     * @throws ApiException
-     */
-    public Long sendOrder(OMSOrder omsOrder) throws ApiException
-    {
-        Long shopId = omsOrder.getShopId();
-
-        Order order = OrderMapper.INSTANCE.toApiOrder(omsOrder);
-
-        orderApi.createOrder(shopId, order);
-        long orderId = dbHandler.getOrderId(shopId, omsOrder.getShopOrderNumber());
-        omsOrder.setId(orderId);
-        return orderId;
-    }
 
     @Override
     public ApiResponse<OMSOrder> createOrder(Long shopId, OMSOrder omsOrder) throws ApiException
     {
         throw new RuntimeException("Method not yet implemented for 2.1!");
-    }
-
-    @Override
-    //this just calls sendOrders(List<OMSOrder>, int) in order to be upwards-compatible with tests from OrderServiceSpec
-    public List<OMSOrder> createOrders(List<OMSOrder> omsOrders, Integer targetState) throws ApiException
-    {
-        sendOrders(omsOrders, targetState);
-        return omsOrders;
     }
 
     @Override

@@ -20,17 +20,6 @@ import com.intershop.oms.test.util.OMSSearchParams;
 public interface OMSOrderServiceHandler extends OMSServiceHandler
 {
     /**
-     * creates an order and waits until at least the expectedEndState is reached
-     *
-     * for the current timeout handling  have a look into DBHandler
-     *
-     * @return the ID of the created order
-     * @throws ApiException
-     */
-    @Deprecated(forRemoval = true, since = "4.0.0")
-    Long sendOrder(OMSOrder order, int expectedEndState) throws ApiException;
-
-    /**
      * Creates an order.
      *
      * Note, that the response currently doesn't return data, so the field will be null.

@@ -46,48 +46,6 @@ class OMSOrderServiceHandlerV2_2 extends RESTServiceHandler implements OMSOrderS
         this.orderApi = new OrderApi(apiClient);
     }
 
-    /**
-     * sends an order
-     *
-     * @param expectedEndState
-     *            wait for the order to be in the given state before returning
-     * @return the orderId
-     * @throws ApiException
-     */
-    @Override
-    public Long sendOrder(OMSOrder omsOrder, int expectedEndState) throws ApiException
-    {
-        Long omsOrderCreatedId = sendOrder(omsOrder);
-
-        assert dbHandler.waitForOrderState(omsOrderCreatedId, expectedEndState);
-
-        return omsOrderCreatedId;
-    }
-
-    /**
-     * sends an order
-     *
-     * @return the orderId
-     * @throws ApiException
-     */
-    public Long sendOrder(OMSOrder omsOrder) throws ApiException
-    {
-        Long shopId = omsOrder.getShopId();
-        if (shopId == null)
-        {
-            throw new RuntimeException("shopId not set!");
-        }
-
-        Order order = OrderMapper.INSTANCE.toApiOrder(omsOrder);
-
-        orderApi.getApiClient().setReadTimeout(300000);
-        orderApi.createOrder(shopId, order);
-
-        long orderId = dbHandler.getOrderId(shopId, omsOrder.getShopOrderNumber());
-        omsOrder.setId(orderId);
-        return orderId;
-    }
-
     @Override
     public Long sendOrderChangeRequest(Long shopId, String shopOrderNumber, OMSChangeRequest orderChangeRequest,
                     int expectedEndState) throws ApiException
