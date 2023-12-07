@@ -105,6 +105,7 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
                 flyway.migrate();
 
                 dsInitialized = true;
+                runDBStmt ("select testcases.log_pg_config('postgres configuration seen by the IOM Test Framework on pool initialization')",true);
             }
         }
 
