@@ -62,23 +62,4 @@ public class OMSListPrice extends OMSBusinessObject
             return setListPrice((BigDecimal)null);
         }
     }
-
-    @Deprecated(since = "4.5.0", forRemoval = true)
-    public OMSListPrice amount(BigDecimal amount)
-    {
-        return setAmount(amount);
-    }
-    
-    @Deprecated(since = "4.5.0", forRemoval = true)
-    public OMSListPrice amountDiscounted(BigDecimal amount)
-    {
-        return setAmountDiscounted(amount);
-    }
-    
-    @Deprecated(since = "4.5.0", forRemoval = true)
-    public OMSListPrice listPrice(BigDecimal amount)
-    {
-        return setListPrice(amount);
-    }
-    
 }

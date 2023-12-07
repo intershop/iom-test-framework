@@ -27,30 +27,6 @@ public class OMSSumPrice extends OMSBusinessObject
 
     private List<OMSPromotion> promotions = new ArrayList<>();
 
-    @Deprecated(since = "5.0.0", forRemoval = true)
-    public OMSSumPrice net(OMSPrice net)
-    {
-        return setNet(net);
-    }
-
-    @Deprecated(since = "5.0.0", forRemoval = true)
-    public OMSSumPrice gross(OMSPrice gross)
-    {
-        return setGross(gross);
-    }
-
-    @Deprecated(since = "5.0.0", forRemoval = true)
-    public OMSSumPrice taxes(List<OMSTax> taxes)
-    {
-        return setTaxes(taxes);
-    }
-
-    @Deprecated(since = "5.0.0", forRemoval = true)
-    public OMSSumPrice promotions(List<OMSPromotion> promotions)
-    {
-        return setPromotions(promotions);
-    }
-    
     public OMSSumPrice addTaxesItem(OMSTax taxesItem)
     {
         taxes.add(taxesItem);
