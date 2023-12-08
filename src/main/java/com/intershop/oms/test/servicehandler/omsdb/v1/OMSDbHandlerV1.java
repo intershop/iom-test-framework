@@ -3228,6 +3228,13 @@ DELETE  FROM "StockReservationDO" r2
                 if (countRetry > 0)
                 {
                     Thread.sleep(retryDelay);
+                    countRetry = countRetry + 1;
+                    if (!connection.isValid(0) )
+                    {
+                        log.error("An Hikari pool connetion isn't valid anymore while waiting for an object state, after " + countRetry + " attempts");
+                        throw new RuntimeException(
+                                        "An Hikari pool connetion isn't valid anymore while waiting for an object state, after " + countRetry + " attempts");
+                    }
                 }
                 resultSet = sqlStatement.executeQuery();
                 if (resultSet.next())
