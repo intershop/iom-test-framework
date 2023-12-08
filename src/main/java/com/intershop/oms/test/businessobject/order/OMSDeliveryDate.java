@@ -60,22 +60,4 @@ public class OMSDeliveryDate extends OMSBusinessObject
     private String name;
 
     private OffsetDateTime desiredDeliveryDate;
-
-    @Deprecated(since = "5.0.0", forRemoval = true)
-    public OMSDeliveryDate deliveryDateType(OMSDeliveryDateTypeEnum deliveryDateType)
-    {
-        return setDeliveryDateType(deliveryDateType);
-    }
-
-    @Deprecated(since = "5.0.0", forRemoval = true)
-    public OMSDeliveryDate name(String name)
-    {
-        return setName(name);
-    }
-
-    @Deprecated(since = "5.0.0", forRemoval = true)
-    public OMSDeliveryDate desiredDeliveryDate(OffsetDateTime desiredDeliveryDate)
-    {
-        return setDesiredDeliveryDate(desiredDeliveryDate);
-    }
 }

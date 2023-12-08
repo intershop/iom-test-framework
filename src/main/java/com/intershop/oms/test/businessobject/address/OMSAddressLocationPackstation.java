@@ -21,16 +21,4 @@ public class OMSAddressLocationPackstation extends OMSAddressLocation
     {
         type = "AddressLocationPackstation";
     }
-
-    @Deprecated(since = "5.0.0", forRemoval = true)
-    public OMSAddressLocationPackstation userId(String userId)
-    {
-        return setUserId(userId);
-    }
-
-    @Deprecated(since = "5.0.0", forRemoval = true)
-    public OMSAddressLocationPackstation stationNumber(String stationNumber)
-    {
-        return setStationNumber(stationNumber);
-    }
 }

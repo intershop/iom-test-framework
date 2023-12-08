@@ -16,12 +16,12 @@ import com.intershop.oms.rest.order.v2_2.api.OrderApi;
 import com.intershop.oms.rest.order.v2_2.model.ChangeRequestCreate;
 import com.intershop.oms.rest.order.v2_2.model.ChangeRequestView;
 import com.intershop.oms.rest.order.v2_2.model.Order;
-import com.intershop.oms.rest.order.v2_4.model.LatestOrderStateCollectionContainer;
 import com.intershop.oms.rest.shared.ApiException;
 import com.intershop.oms.rest.shared.ApiResponse;
 import com.intershop.oms.test.businessobject.OMSShop;
 import com.intershop.oms.test.businessobject.order.OMSChangeRequest;
 import com.intershop.oms.test.businessobject.order.OMSOrder;
+import com.intershop.oms.test.businessobject.orderstate.OMSLatestOrderStateCollectionContainer;
 import com.intershop.oms.test.businessobject.orderstate.OMSOrderFilter;
 import com.intershop.oms.test.businessobject.orderstate.OMSOrderStateCollectionContainer;
 import com.intershop.oms.test.configuration.ServiceConfiguration;
@@ -44,48 +44,6 @@ class OMSOrderServiceHandlerV2_2 extends RESTServiceHandler implements OMSOrderS
         super(serviceConfig, "/rest/order-service", log);
         this.dbHandler = dbHandler;
         this.orderApi = new OrderApi(apiClient);
-    }
-
-    /**
-     * sends an order
-     *
-     * @param expectedEndState
-     *            wait for the order to be in the given state before returning
-     * @return the orderId
-     * @throws ApiException
-     */
-    @Override
-    public Long sendOrder(OMSOrder omsOrder, int expectedEndState) throws ApiException
-    {
-        Long omsOrderCreatedId = sendOrder(omsOrder);
-
-        assert dbHandler.waitForOrderState(omsOrderCreatedId, expectedEndState);
-
-        return omsOrderCreatedId;
-    }
-
-    /**
-     * sends an order
-     *
-     * @return the orderId
-     * @throws ApiException
-     */
-    public Long sendOrder(OMSOrder omsOrder) throws ApiException
-    {
-        Long shopId = omsOrder.getShopId();
-        if (shopId == null)
-        {
-            throw new RuntimeException("shopId not set!");
-        }
-
-        Order order = OrderMapper.INSTANCE.toApiOrder(omsOrder);
-
-        orderApi.getApiClient().setReadTimeout(300000);
-        orderApi.createOrder(shopId, order);
-
-        long orderId = dbHandler.getOrderId(shopId, omsOrder.getShopOrderNumber());
-        omsOrder.setId(orderId);
-        return orderId;
     }
 
     @Override
@@ -233,26 +191,6 @@ class OMSOrderServiceHandlerV2_2 extends RESTServiceHandler implements OMSOrderS
     }
 
     @Override
-    public OMSOrder createOrder(String user, String password, OMSOrder orderData)
-    {
-        throw new UnsupportedOperationException("Method is deprecated and not implemented in more recent service handlers.");
-    }
-
-    @Override
-    public Long sendOrder(String host, String port, OMSOrder order, int expectedEndState) throws ApiException
-    {
-        sendOrder(order, expectedEndState);
-        return order.getId();
-    }
-
-    @Override
-    public Long sendOrder(String host, String port, OMSOrder order) throws ApiException
-    {
-        sendOrder(order);
-        return order.getId();
-    }
-
-    @Override
     protected Collection<Object> unwrapApiClient()
     {
         return Set.of(orderApi);
@@ -266,7 +204,7 @@ class OMSOrderServiceHandlerV2_2 extends RESTServiceHandler implements OMSOrderS
     }
     
     @Override
-    public LatestOrderStateCollectionContainer getModifiedOrderStates(Long shopId, OffsetDateTime modifiedSince,
+    public OMSLatestOrderStateCollectionContainer getModifiedOrderStates(Long shopId, OffsetDateTime modifiedSince,
                     Long minCursor, Integer limit) throws ApiException
     {
         throw new RuntimeException("Method not supported for version < 2.4!");

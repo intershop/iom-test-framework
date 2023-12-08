@@ -19,7 +19,6 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class OMSOrderFilter
 {
-
     private List<String> shopOrderNumbers = new ArrayList<>();
     private List<String> shopCustomerNumbers = new ArrayList<>();
     private List<String> productNumbers = new ArrayList<>();    // shop
@@ -29,5 +28,4 @@ public class OMSOrderFilter
     private LocalDate shopOrderCreationDateFrom;
     private LocalDate shopOrderCreationDateTo;
     private OffsetDateTime lastModificationTimeFrom;
-
 }

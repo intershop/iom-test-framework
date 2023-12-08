@@ -30,42 +30,6 @@ public class OMSCharge extends OMSBusinessObject
 
     private List<OMSPromotion> promotions = null;
 
-    @Deprecated(since = "5.0.0", forRemoval = true)
-    public OMSCharge number(Long number)
-    {
-        return setNumber(number);
-    }
-
-    @Deprecated(since = "5.0.0", forRemoval = true)
-    public OMSCharge type(String type)
-    {
-        return setType(type);
-    }
-
-    @Deprecated(since = "5.0.0", forRemoval = true)
-    public OMSCharge net(OMSPrice net)
-    {
-        return setNet(net);
-    }
-
-    @Deprecated(since = "5.0.0", forRemoval = true)
-    public OMSCharge gross(OMSPrice gross)
-    {
-        return setGross(gross);
-    }
-
-    @Deprecated(since = "5.0.0", forRemoval = true)
-    public OMSCharge taxes(List<OMSTax> taxes)
-    {
-        return setTaxes(taxes);
-    }
-
-    @Deprecated(since = "5.0.0", forRemoval = true)
-    public OMSCharge promotions(List<OMSPromotion> promotions)
-    {
-        return setPromotions(promotions);
-    }
-
     public OMSCharge addTaxesItem(OMSTax taxesItem)
     {
         taxes.add(taxesItem);
@@ -74,11 +38,11 @@ public class OMSCharge extends OMSBusinessObject
 
     public OMSCharge addPromotionsItem(OMSPromotion promotionsItem)
     {
-        if (this.promotions == null)
+        if (promotions == null)
         {
-            this.promotions = new ArrayList<>();
+            promotions = new ArrayList<>();
         }
-        this.promotions.add(promotionsItem);
+        promotions.add(promotionsItem);
         return this;
     }
 }

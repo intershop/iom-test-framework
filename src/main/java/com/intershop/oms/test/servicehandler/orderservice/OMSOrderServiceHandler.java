@@ -6,11 +6,11 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import com.intershop.oms.rest.order.v2_4.model.LatestOrderStateCollectionContainer;
 import com.intershop.oms.rest.shared.ApiException;
 import com.intershop.oms.rest.shared.ApiResponse;
 import com.intershop.oms.test.businessobject.order.OMSChangeRequest;
 import com.intershop.oms.test.businessobject.order.OMSOrder;
+import com.intershop.oms.test.businessobject.orderstate.OMSLatestOrderStateCollectionContainer;
 import com.intershop.oms.test.businessobject.orderstate.OMSOrderFilter;
 import com.intershop.oms.test.businessobject.orderstate.OMSOrderStateCollectionContainer;
 import com.intershop.oms.test.servicehandler.OMSServiceHandler;
@@ -19,17 +19,6 @@ import com.intershop.oms.test.util.OMSSearchParams;
 
 public interface OMSOrderServiceHandler extends OMSServiceHandler
 {
-    /**
-     * creates an order and waits until at least the expectedEndState is reached
-     *
-     * for the current timeout handling  have a look into DBHandler
-     *
-     * @return the ID of the created order
-     * @throws ApiException
-     */
-    @Deprecated(forRemoval = true, since = "4.0.0")
-    Long sendOrder(OMSOrder order, int expectedEndState) throws ApiException;
-
     /**
      * Creates an order.
      *
@@ -52,7 +41,7 @@ public interface OMSOrderServiceHandler extends OMSServiceHandler
 
     /**
      * Create multiple orders, optionally waiting for them to reach a target status.<br/>
-     * This method will create all order first, then wait for the target status, to optimize throughput in certain
+     * This method will create all orders first, then wait for the target status, to optimize throughput in certain
      * configuration scenarios.<br/>
      * <b>Impl Note:</b> currently the default integration will not return the up-to-date order status,
      * only the OMSOrder from the initial request, extended by the orderId. Will be fixed in a future iteration.
@@ -137,38 +126,6 @@ public interface OMSOrderServiceHandler extends OMSServiceHandler
         return getOrderChangeRequests(shopId, shopOrderNumber, new ArrayList<>());
     }
 
-    /**
-     * creates an order
-     *
-     * @deprecated only for compatibility with the old SOAP-Service --- will be removed after removing the SOAP-Service
-     */
-    @Deprecated
-    OMSOrder createOrder(String user, String password, OMSOrder orderData);
-
-    /**
-     * sends an order
-     *
-     * @param expectedEndState wait for the order to be in the given state before returning
-     *
-     * @return the orderId
-     * @throws ApiException
-     *
-     * @deprecated only for compatibility with the old SOAP-Service --- will be removed after removing the SOAP-Service
-     */
-    @Deprecated
-    Long sendOrder(String host, String port, OMSOrder order, int expectedEndState) throws ApiException;
-
-    /**
-     * sends an order
-     *
-     * @return  the orderId
-     * @throws ApiException
-     *
-     * @deprecated only for compatibility with the old SOAP-Service --- will be removed after removing the SOAP-Service
-     */
-    @Deprecated
-    Long sendOrder(String host, String port, OMSOrder order) throws ApiException;
-
     @Experimental("Proposed to be replaced by a method returning Collection<OMSOrder / OMSOrderState>")
     // FIXME: Proposal = return Collection<OMSOrder> instead..?
     // Note: Currently this doesn't make sense because those classes are too
@@ -196,6 +153,6 @@ public interface OMSOrderServiceHandler extends OMSServiceHandler
          <tr><td> 500 </td><td> An unexpected error occured </td><td>  -  </td></tr>
        </table>
      */
-    public LatestOrderStateCollectionContainer getModifiedOrderStates(Long shopId, OffsetDateTime modifiedSince,
+    public OMSLatestOrderStateCollectionContainer getModifiedOrderStates(Long shopId, OffsetDateTime modifiedSince,
                     Long minCursor, Integer limit) throws ApiException;
 }

@@ -21,16 +21,4 @@ public class OMSAddressLocationStreet extends OMSAddressLocation
     {
         type = "AddressLocationStreet";
     }
-
-    @Deprecated(since = "5.0.0", forRemoval = true)
-    public OMSAddressLocationStreet street(String street)
-    {
-        return setStreet(street);
-    }
-
-    @Deprecated(since = "5.0.0", forRemoval = true)
-    public OMSAddressLocationStreet streetNumber(String streetNumber)
-    {
-        return setStreetNumber(streetNumber);
-    }
 }

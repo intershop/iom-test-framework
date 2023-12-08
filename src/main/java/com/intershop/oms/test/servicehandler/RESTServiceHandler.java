@@ -115,7 +115,7 @@ public abstract class RESTServiceHandler implements OMSServiceHandler
     public <T> T unwrapApiClient(Class<T> clazz)
     {
         Collection<Object> specificApiClients = unwrapApiClient();
-        if (specificApiClients == null || specificApiClients.size() == 0)
+        if (specificApiClients == null || specificApiClients.isEmpty())
         {
             throw new IllegalArgumentException("ServiceHandler doesn't expose an API Client");
         }

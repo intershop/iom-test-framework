@@ -26,13 +26,13 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @ToString
 @Accessors(chain = true)
-public class OMSOrderStateCollectionContainer extends OMSBusinessObject
+public class OMSLatestOrderStateCollectionContainer extends OMSBusinessObject
 {
     private List<OMSOrderState> data = null;
-    private OMSCollectionMetaData meta;
+    private OMSLatestOrderStateMetaData meta;
     private Map<String, URI> links = null;
 
-    public OMSOrderStateCollectionContainer addDataItem(OMSOrderState dataItem)
+    public OMSLatestOrderStateCollectionContainer addDataItem(OMSOrderState dataItem)
     {
         if (data == null)
         {
@@ -41,8 +41,7 @@ public class OMSOrderStateCollectionContainer extends OMSBusinessObject
         data.add(dataItem);
         return this;
     }
-
-    public OMSOrderStateCollectionContainer putLinksItem(String key, URI linksItem)
+    public OMSLatestOrderStateCollectionContainer putLinksItem(String key, URI linksItem)
     {
         if (links == null)
         {

@@ -47,17 +47,4 @@ public class OMSPrice extends OMSBusinessObject
             return setAmountDiscounted((BigDecimal)null);
         }
     }
-   
-    @Deprecated(since = "4.5.0", forRemoval = true)
-    public OMSPrice amount(BigDecimal amount)
-    {
-        return setAmount(amount);
-    }
-    
-    @Deprecated(since = "4.5.0", forRemoval = true)
-    public OMSPrice amountDiscounted(BigDecimal amount)
-    {
-        return setAmountDiscounted(amount);
-    }
-   
 }

@@ -56,21 +56,4 @@ public class OMSAddressReceiver extends OMSBusinessObject
     private OMSPerson person;
 
     private String companyName;
-
-    @Deprecated(since = "5.0.0", forRemoval = true)
-    public OMSAddressReceiver addressReceiverType(OMSAddressReceiverTypeEnum addressReceiverType)
-    {
-        return setAddressReceiverType(addressReceiverType);    }
-
-    @Deprecated(since = "5.0.0", forRemoval = true)
-    public OMSAddressReceiver person(OMSPerson person)
-    {
-        return setPerson(person);
-    }
-
-    @Deprecated(since = "5.0.0", forRemoval = true)
-    public OMSAddressReceiver companyName(String companyName)
-    {
-        return setCompanyName(companyName);
-    }
 }
