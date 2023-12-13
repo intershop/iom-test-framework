@@ -64,22 +64,6 @@ public class OMSSupplierServiceHandlerV2_11 extends RESTServiceHandler
     }
 
     @Override
-    public String sendCrossDockingDispatch(OMSSupplier collectingSupplier, OMSOrder order, boolean useSupplierData)
-                    throws ApiException
-    {
-        log.info("Sending cross docking dispatch for: {}", order);
-
-        Collection<OMSDispatchPosition> collectedDispatchPositions = dbHandler
-                        .getDispatchPositionsForOrder(order, useSupplierData).values().stream()
-                        .flatMap(Collection::stream).toList();
-        OMSShop shop = order.getShop();
-        OMSDispatch dispatch = SupplierServiceUtil.prepareDispatch(shop, collectingSupplier, order.getShopOrderNumber(),
-                        collectedDispatchPositions, null);
-
-        return sendDispatch(dispatch);
-    }
-
-    @Override
     public Collection<String> sendFullDispatch(OMSOrder order, boolean useSupplierData) throws ApiException
     {
         log.info("Sending full dispatch for: {}", order);
@@ -109,20 +93,6 @@ public class OMSSupplierServiceHandlerV2_11 extends RESTServiceHandler
     }
 
     @Override
-    public String sendCrossDockingOrderResponse(OMSSupplier collectingSupplier, OMSOrder order, boolean useSupplierData)
-                    throws ApiException
-    {
-        log.info("Sending cross docking dispatch for: {}", order);
-
-        Collection<OMSOrderResponsePosition> collectedOrderResponsePositions = SupplierServiceUtil
-                        .prepareFullResponse(order, useSupplierData).stream().flatMap(r -> r.getPositions().stream()).toList();
-        OMSOrderResponse prepareResponse = SupplierServiceUtil.prepareResponse(order.getShop(), collectingSupplier,
-                        order.getShopOrderNumber(), collectedOrderResponsePositions, null);
-
-        return "sendCrossDockingOrderResponse-is-deprecated/" + createResponse(prepareResponse, null).getId();
-    }
-
-    @Override
     public Collection<String> sendFullOrderResponse(OMSOrder order, boolean useSupplierData) throws ApiException
     {
         log.info("Sending full order response for: {}", order);
@@ -149,23 +119,6 @@ public class OMSSupplierServiceHandlerV2_11 extends RESTServiceHandler
         }
 
         return orderResponseLocations;
-    }
-
-    @Override
-    public String sendCrossDockingReturn(OMSSupplier collectingSupplier, OMSOrder order, String returnReason,
-                    boolean useSupplierData) throws ApiException
-    {
-        log.info("Sending cross docking return request for: {}", order);
-
-        Collection<OMSReturnPosition> collectedReturnPositions = dbHandler
-                        .getReturnPositionsForOrder(order, useSupplierData).values().stream().flatMap(Collection::stream).toList();
-        OMSReturn returnMessage = SupplierServiceUtil.prepareReturn(order.getShop(), collectingSupplier,
-                        order.getShopOrderNumber(), collectedReturnPositions, null);
-        returnMessage.setReason(Objects.requireNonNullElse(returnReason, "RET010"));
-
-        returnMessage = createReturn(returnMessage, null);
-
-        return "sendCrossDockingReturn-is-deprecated/" + returnMessage.getId();
     }
 
     @Override

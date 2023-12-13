@@ -75,32 +75,6 @@ public interface OMSSupplierServiceHandler extends OMSServiceHandler
     Collection<String> sendReturnPositions(OMSOrder order, String messageId, String reason,
                     Map<OMSSupplier, Collection<OMSReturnPosition>> supplierReturnPositions) throws ApiException;
 
-    /**
-     * starting with 2.11 we support cross docking: a supplier X can send messages for supplier X and supplier Z in one message
-     *
-     * @deprecated supplier data should be overwritten in test cases
-     */
-    @Deprecated
-    String sendCrossDockingOrderResponse(OMSSupplier collectingSupplier, OMSOrder order, boolean useSupplierData)
-                    throws ApiException;
-
-    /**
-     * starting with 2.11 we support cross docking: a supplier X can send messages for supplier X and supplier Z in one message
-     * @deprecated supplier data should be overwritten in test cases
-     */
-    @Deprecated
-    String sendCrossDockingDispatch(OMSSupplier collectingSupplier, OMSOrder order, boolean useSupplierData)
-                    throws ApiException;
-
-    /**
-     * starting with 2.11 we support cross docking: a supplier X can send messages for supplier X and supplier Z in one message
-     *
-     * @deprecated supplier data should be overwritten in test cases
-     */
-    @Deprecated
-    String sendCrossDockingReturn(OMSSupplier collectingSupplier, OMSOrder order, String returnReason,
-                    boolean useSupplierData) throws ApiException;
-
     default OMSDispatch createDispatch(OMSDispatch omsDispatch, Integer targetState) throws ApiException
     {
         return createDispatches(List.of(omsDispatch), targetState).get(0);

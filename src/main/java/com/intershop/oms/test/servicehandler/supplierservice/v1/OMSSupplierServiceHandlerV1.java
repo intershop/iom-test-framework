@@ -157,25 +157,6 @@ class OMSSupplierServiceHandlerV1 extends RESTServiceHandler
     }
 
     @Override
-    public String sendCrossDockingOrderResponse(OMSSupplier collectingSupplier, OMSOrder order, boolean useSupplierData)
-    {
-        throw new RuntimeException("Cross Docking is only supported from version 2.11 (here called within 1.0)!");
-    }
-
-    @Override
-    public String sendCrossDockingDispatch(OMSSupplier collectingSupplier, OMSOrder order, boolean useSupplierData)
-    {
-        throw new RuntimeException("Cross Docking is only supported from version 2.11 (here called within 1.0)!");
-    }
-
-    @Override
-    public String sendCrossDockingReturn(OMSSupplier collectingSupplier, OMSOrder order, String returnReason,
-                    boolean useSupplierData)
-    {
-        throw new RuntimeException("Cross Docking is only supported from version 2.11 (here called within 1.0)!");
-    }
-
-    @Override
     protected Collection<Object> unwrapApiClient()
     {
         return Set.of(dispatchApi, responseApi, returnApi);
