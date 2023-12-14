@@ -127,13 +127,4 @@ public class OMSOrder extends OMSBusinessObject implements OMSPropertyGroupOwner
     {
         return shop.getName();
     }
-
-    /**
-     * @deprecated use threadSafeCounter directly to thread-locally have the next order number
-     */
-    @Deprecated(forRemoval=true, since="4.1.0")
-    public int getNextOrderNumber()
-    {
-        return threadSafeCounter;
-    }
 }

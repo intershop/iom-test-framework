@@ -16,26 +16,5 @@ import lombok.experimental.Accessors;
 public class OMSWriteCustomAttribute extends OMSBusinessObject
 {
     private String key = "Example Test Key";
-
     private String value = "Example Test Value";
-
-    /**
-     * @deprecated use setKey()
-     */
-    @Deprecated(forRemoval = true, since= "6.0.0")
-    public OMSWriteCustomAttribute key(String key)
-    {
-      this.key = key;
-      return this;
-    }
-
-    /**
-     * @deprecated use setKey()
-     */
-    @Deprecated(forRemoval = true, since= "6.0.0")
-    public OMSWriteCustomAttribute value(String value)
-    {
-      this.value = value;
-      return this;
-    }
 }

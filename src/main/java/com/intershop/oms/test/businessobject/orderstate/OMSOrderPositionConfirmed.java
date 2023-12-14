@@ -3,104 +3,68 @@ package com.intershop.oms.test.businessobject.orderstate;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
 @Getter
 @Setter
+@Accessors(chain = true)
+@ToString
+@EqualsAndHashCode(callSuper = false)
 public class OMSOrderPositionConfirmed extends OMSBusinessObject
 {
     private String type;
-
     private OffsetDateTime confirmationDate;
-
     private List<OMSOrderPositionConfirmedQuantity> quantities = null;
-
     private List<OMSOrderPositionConfirmedCancelled> cancelled = null;
-
-    public OMSOrderPositionConfirmed type(String type)
-    {
-        this.type = type;
-        return this;
-    }
-
-    public OMSOrderPositionConfirmed confirmationDate(OffsetDateTime confirmationDate)
-    {
-        this.confirmationDate = confirmationDate;
-        return this;
-    }
-
-    public OMSOrderPositionConfirmed quantities(List<OMSOrderPositionConfirmedQuantity> quantities)
-    {
-        this.quantities = quantities;
-        return this;
-    }
 
     public OMSOrderPositionConfirmed addQuantitiesItem(OMSOrderPositionConfirmedQuantity quantitiesItem)
     {
-        if (this.quantities == null)
+        if (quantities == null)
         {
-            this.quantities = new ArrayList<>();
+            quantities = new ArrayList<>();
         }
-        this.quantities.add(quantitiesItem);
-        return this;
-    }
-
-    public OMSOrderPositionConfirmed cancelled(List<OMSOrderPositionConfirmedCancelled> cancelled)
-    {
-        this.cancelled = cancelled;
+        quantities.add(quantitiesItem);
         return this;
     }
 
     public OMSOrderPositionConfirmed addCancelledItem(OMSOrderPositionConfirmedCancelled cancelledItem)
     {
-        if (this.cancelled == null)
+        if (cancelled == null)
         {
-            this.cancelled = new ArrayList<>();
+            cancelled = new ArrayList<>();
         }
-        this.cancelled.add(cancelledItem);
+        cancelled.add(cancelledItem);
         return this;
     }
 
-    @Override
-    public boolean equals(java.lang.Object o)
+    @Deprecated(since = "7.0.0", forRemoval = true)
+    public OMSOrderPositionConfirmed type(String type)
     {
-        if (this == o)
-        {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass())
-        {
-            return false;
-        }
-        OMSOrderPositionConfirmed orderPositionConfirmed = (OMSOrderPositionConfirmed) o;
-        return Objects.equals(this.type, orderPositionConfirmed.type) &&
-                        Objects.equals(this.confirmationDate, orderPositionConfirmed.confirmationDate) &&
-                        Objects.equals(this.quantities, orderPositionConfirmed.quantities) &&
-                        Objects.equals(this.cancelled, orderPositionConfirmed.cancelled);
+        return setType(type);
     }
 
-    @Override
-    public int hashCode()
+    @Deprecated(since = "7.0.0", forRemoval = true)
+    public OMSOrderPositionConfirmed confirmationDate(OffsetDateTime confirmationDate)
     {
-        return Objects.hash(type, confirmationDate, quantities, cancelled);
+        return setConfirmationDate(confirmationDate);
     }
 
-
-    @Override
-    public String toString()
+    @Deprecated(since = "7.0.0", forRemoval = true)
+    public OMSOrderPositionConfirmed quantities(List<OMSOrderPositionConfirmedQuantity> quantities)
     {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class OrderPositionConfirmed {\n");
-        sb.append("    type: ").append(toIndentedString(type)).append("\n");
-        sb.append("    confirmationDate: ").append(toIndentedString(confirmationDate)).append("\n");
-        sb.append("    quantities: ").append(toIndentedString(quantities)).append("\n");
-        sb.append("    cancelled: ").append(toIndentedString(cancelled)).append("\n");
-        sb.append("}");
-        return sb.toString();
+        return setQuantities(quantities);
+    }
+
+    @Deprecated(since = "7.0.0", forRemoval = true)
+    public OMSOrderPositionConfirmed cancelled(List<OMSOrderPositionConfirmedCancelled> cancelled)
+    {
+        return setCancelled(cancelled);
     }
 }

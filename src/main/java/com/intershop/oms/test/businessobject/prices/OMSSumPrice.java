@@ -2,7 +2,6 @@ package com.intershop.oms.test.businessobject.prices;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 

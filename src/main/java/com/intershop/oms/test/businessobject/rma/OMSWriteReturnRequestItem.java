@@ -16,14 +16,4 @@ import lombok.experimental.Accessors;
 public class OMSWriteReturnRequestItem extends OMSBusinessObject
 {
     private String productSerialNumber;
-
-    /**
-     * @deprecated use setProductSerialNumber as produced by LOMBOK
-     */
-    @Deprecated(forRemoval = true, since = "6.0.0")
-    public OMSWriteReturnRequestItem productSerialNumber(String productSerialNumber)
-    {
-        this.productSerialNumber = productSerialNumber;
-        return this;
-    }
 }

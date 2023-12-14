@@ -6,11 +6,17 @@ import java.math.RoundingMode;
 import com.intershop.oms.test.businessobject.prices.OMSPromotion;
 import com.intershop.oms.test.businessobject.prices.OMSPromotion.OMSPromotionValueTypeEnum;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
 @Getter
 @Setter
+@EqualsAndHashCode
+@ToString
+@Accessors(chain = true)
 public class OMSOrderPromotion
 {
     String id                   = null;
@@ -49,26 +55,6 @@ public class OMSOrderPromotion
         {
             return null;
         }
-    }
-
-    /**
-     * @deprecated Used only for old SOAP-requests
-     */
-    @Deprecated
-    public String getRequestString()
-    {
-        StringBuffer reqS = new StringBuffer();
-        reqS.append("<v1:Promotion descriptorId=\""+descriptorId+"\" grossValue=\""+grossValue+"\" id=\""+id+"\" name=\""+name+"\" netValue=\""+netValue+"\" ");
-        if (percentageValue != null)
-        {
-            reqS.append("percentageValue=\""+percentageValue+"\" ");
-        }
-        if (fixedValue != null)
-        {
-            reqS.append("fixedValue=\""+fixedValue+"\" ");
-        }
-        reqS.append("/>\n");
-        return reqS.toString();
     }
 
     public OMSPromotion getOMSPromotion()

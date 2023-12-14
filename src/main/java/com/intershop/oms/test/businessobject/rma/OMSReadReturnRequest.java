@@ -3,16 +3,21 @@ package com.intershop.oms.test.businessobject.rma;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 import com.intershop.oms.test.businessobject.OMSLink;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
 @Getter
 @Setter
+@Accessors(chain = true)
+@ToString
+@EqualsAndHashCode(callSuper = false)
 public class OMSReadReturnRequest extends OMSBusinessObject
 {
     private List<OMSLink> links = null;
@@ -170,138 +175,85 @@ public class OMSReadReturnRequest extends OMSBusinessObject
 
     private BusinessStatusEnum businessStatus;
 
-    public OMSReadReturnRequest links(List<OMSLink> links)
-    {
-        this.links = links;
-        return this;
-    }
-
     public OMSReadReturnRequest addLinksItem(OMSLink linksItem)
     {
-        if (this.links == null)
+        if (links == null)
         {
-            this.links = new ArrayList<>();
+            links = new ArrayList<>();
         }
-        this.links.add(linksItem);
+        links.add(linksItem);
         return this;
     }
 
+    @Deprecated(since = "7.0.0", forRemoval = true)
+    public OMSReadReturnRequest links(List<OMSLink> links)
+    {
+        return setLinks(links);
+    }
+
+    @Deprecated(since = "7.0.0", forRemoval = true)
     public OMSReadReturnRequest type(TypeEnum type)
     {
-        this.type = type;
-        return this;
+        return setType(type);
     }
 
+    @Deprecated(since = "7.0.0", forRemoval = true)
     public OMSReadReturnRequest rmaNumber(String rmaNumber)
     {
-        this.rmaNumber = rmaNumber;
-        return this;
+        return setRmaNumber(rmaNumber);
     }
 
+    @Deprecated(since = "7.0.0", forRemoval = true)
     public OMSReadReturnRequest comment(String comment)
     {
-        this.comment = comment;
-        return this;
+        return setComment(comment);
     }
 
+    @Deprecated(since = "7.0.0", forRemoval = true)
     public OMSReadReturnRequest id(Long id)
     {
-        this.id = id;
-        return this;
+        return setId(id);
     }
 
+    @Deprecated(since = "7.0.0", forRemoval = true)
     public OMSReadReturnRequest creationDate(Date creationDate)
     {
-        this.creationDate = creationDate;
-        return this;
+        return setCreationDate(creationDate);
     }
 
+    @Deprecated(since = "7.0.0", forRemoval = true)
     public OMSReadReturnRequest shopOrderNumber(String shopOrderNumber)
     {
-        this.shopOrderNumber = shopOrderNumber;
-        return this;
+        return setShopOrderNumber(shopOrderNumber);
     }
 
+    @Deprecated(since = "7.0.0", forRemoval = true)
     public OMSReadReturnRequest shopName(String shopName)
     {
-        this.shopName = shopName;
-        return this;
+        return setShopName(shopName);
     }
 
+    @Deprecated(since = "7.0.0", forRemoval = true)
     public OMSReadReturnRequest supplierOrderNumber(String supplierOrderNumber)
     {
-        this.supplierOrderNumber = supplierOrderNumber;
-        return this;
+        return setSupplierOrderNumber(supplierOrderNumber);
     }
 
+    @Deprecated(since = "7.0.0", forRemoval = true)
     public OMSReadReturnRequest supplierName(String supplierName)
     {
-        this.supplierName = supplierName;
-        return this;
+        return setSupplierName(supplierName);
     }
 
+    @Deprecated(since = "7.0.0", forRemoval = true)
     public OMSReadReturnRequest status(StatusEnum status)
     {
-        this.status = status;
-        return this;
+        return setStatus(status);
     }
 
+    @Deprecated(since = "7.0.0", forRemoval = true)
     public OMSReadReturnRequest businessStatus(BusinessStatusEnum businessStatus)
     {
-        this.businessStatus = businessStatus;
-        return this;
-    }
-
-    @Override
-    public boolean equals(java.lang.Object o)
-    {
-        if (this == o)
-        {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass())
-        {
-            return false;
-        }
-        OMSReadReturnRequest readReturnRequest = (OMSReadReturnRequest) o;
-        return Objects.equals(this.links, readReturnRequest.links) &&
-                        Objects.equals(this.type, readReturnRequest.type) &&
-                        Objects.equals(this.rmaNumber, readReturnRequest.rmaNumber) &&
-                        Objects.equals(this.comment, readReturnRequest.comment) &&
-                        Objects.equals(this.id, readReturnRequest.id) &&
-                        Objects.equals(this.creationDate, readReturnRequest.creationDate) &&
-                        Objects.equals(this.shopOrderNumber, readReturnRequest.shopOrderNumber) &&
-                        Objects.equals(this.shopName, readReturnRequest.shopName) &&
-                        Objects.equals(this.supplierOrderNumber, readReturnRequest.supplierOrderNumber) &&
-                        Objects.equals(this.supplierName, readReturnRequest.supplierName) &&
-                        Objects.equals(this.status, readReturnRequest.status) &&
-                        Objects.equals(this.businessStatus, readReturnRequest.businessStatus);
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(links, type, rmaNumber, comment, id, creationDate, shopOrderNumber, shopName, supplierOrderNumber, supplierName, status, businessStatus);
-    }
-
-    @Override
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class OMSReadReturnRequest {\n");
-        sb.append("    links: ").append(toIndentedString(links)).append("\n");
-        sb.append("    type: ").append(toIndentedString(type)).append("\n");
-        sb.append("    rmaNumber: ").append(toIndentedString(rmaNumber)).append("\n");
-        sb.append("    comment: ").append(toIndentedString(comment)).append("\n");
-        sb.append("    id: ").append(toIndentedString(id)).append("\n");
-        sb.append("    creationDate: ").append(toIndentedString(creationDate)).append("\n");
-        sb.append("    shopOrderNumber: ").append(toIndentedString(shopOrderNumber)).append("\n");
-        sb.append("    shopName: ").append(toIndentedString(shopName)).append("\n");
-        sb.append("    supplierOrderNumber: ").append(toIndentedString(supplierOrderNumber)).append("\n");
-        sb.append("    supplierName: ").append(toIndentedString(supplierName)).append("\n");
-        sb.append("    status: ").append(toIndentedString(status)).append("\n");
-        sb.append("    businessStatus: ").append(toIndentedString(businessStatus)).append("\n");
-        sb.append("}");
-        return sb.toString();
+        return setBusinessStatus(businessStatus);
     }
 }
