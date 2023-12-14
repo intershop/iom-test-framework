@@ -10,7 +10,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * <br/><br/>
  * <b>NOTE:</b> Please try to use this class as little as possible. Test cases / specs should generally not impact
  * each other - this could lead to flaky tests and will probably slow down overall test execution due to the need to
- * wait for write locks.
+ * wait for write locks. Additionally the collected run times are misleading, since they count the waiting for the locks as well... 
  *
  * @deprecated <b>DO NOT USE!</b> There are resource locking mechanisms for both JUnit Jupiter and Spock that provide
  * the same functionality out of the box. Use those instead - this class only exists for legacy tests.

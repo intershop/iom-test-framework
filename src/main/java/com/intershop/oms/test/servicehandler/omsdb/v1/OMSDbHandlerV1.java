@@ -3918,22 +3918,12 @@ DELETE  FROM "StockReservationDO" r2
 
     /**
      * @return true if the lock has been acquired, false on timeout
+     * @deprecated <b>DO NOT USE!</b> There are resource locking mechanisms for both JUnit Jupiter and Spock that provide
+     * the same functionality out of the box. Use those instead - this class only exists for legacy tests.
      */
     @Deprecated
     private boolean releaseDBLock(int lockId, DBLockType rw)
     {
-//        switch(rw)
-//        {
-//            case W:
-//                LockHolder.releaseWriteLock(lockId);
-//                return true;
-//            case R:
-//                LockHolder.releaseReadLock(lockId);
-//                return true;
-//            default:
-//                throw new RuntimeException("Unknown lock type '" + rw + "' found! Supported are 'W' and 'R'.");
-//        }
-
         String statement = null;
         if (rw.equals(DBLockType.R))
         {
@@ -3964,6 +3954,8 @@ DELETE  FROM "StockReservationDO" r2
     /**
      * @param timeout in seconds
      * @return true if the lock has been acquired, false on timeout
+     * @deprecated <b>DO NOT USE!</b> There are resource locking mechanisms for both JUnit Jupiter and Spock that provide
+     * the same functionality out of the box. Use those instead - this class only exists for legacy tests.
      */
     @Deprecated
     private boolean getDBLock(int lockId, int timeout, DBLockType rw)
