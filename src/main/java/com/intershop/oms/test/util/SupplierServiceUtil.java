@@ -97,7 +97,7 @@ public class SupplierServiceUtil
         omsResponse.getPositions().forEach(pos -> pos.addProperty("DEMO-GROUP", "Test Key", "Test Value"));
         return omsResponse;
     }
-
+    
     /**
      * creates a full RMA request of type RETURN for the given dispatches /
      * dispatch positions.

@@ -122,6 +122,32 @@ class OMSOrderServiceHandlerV2_3 extends RESTServiceHandler implements OMSOrderS
     }
 
     @Override
+    public OMSChangeRequest getOrderChangeRequest(Long shopId, String shopOrderNumber, String changeRequestId,
+                    List<String> excludes) throws ApiException
+    {
+        ApiResponse<ChangeRequestView> response;
+
+        response = orderApi.getChangeRequestWithHttpInfo(shopId, shopOrderNumber, changeRequestId, excludes);
+        ChangeRequestView changeRequestView = response.getData();
+        return ChangeRequestViewMapper.INSTANCE.fromApiChangeRequestView(changeRequestView);
+    }
+    
+    @Override
+    public List<OMSChangeRequest> getOrderChangeRequests(Long shopId, String shopOrderNumber, List<String> excludes)
+                    throws ApiException
+    {
+        List<OMSChangeRequest> omsChangeRequests = new ArrayList<>();
+        ApiResponse<List<ChangeRequestView>> response;
+
+        response = orderApi.getChangeRequestViewListWithHttpInfo(shopId, shopOrderNumber, excludes);
+
+        List<ChangeRequestView> changeRequestViews = response.getData();
+        ChangeRequestViewMapper.INSTANCE.fromApiChangeRequestViewList(changeRequestViews, omsChangeRequests);
+
+        return omsChangeRequests;
+    }
+
+    @Override
     protected Collection<Object> unwrapApiClient()
     {
         return Set.of(orderApi, orderStateApi);

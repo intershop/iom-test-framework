@@ -1,6 +1,7 @@
 package com.intershop.oms.test.servicehandler.orderservice;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -61,6 +62,32 @@ public interface OMSOrderServiceHandler extends OMSServiceHandler
     List<OMSChangeRequest> createOrderChangeRequests(
                     List<OMSChangeRequest> orderChangeRequests, Integer targetState) throws ApiException;
 
+    /**
+     * retrieve an order change request 
+     * 
+     * used i.e. for getting the current state of an possible asynchronously applied change request
+     *
+     * @param excludes Excludes attributes from the returned data
+     */
+    OMSChangeRequest getOrderChangeRequest(Long shopId, String shopOrderNumber, String changeRequestId, List<String> excludes) throws ApiException;
+    default OMSChangeRequest getOrderChangeRequest(Long shopId, String shopOrderNumber, String changeRequestId) throws ApiException
+    {
+        return getOrderChangeRequest(shopId, shopOrderNumber, changeRequestId, new ArrayList<>());
+    }
+
+    /**
+     * retrieve all order change requests for a shopId/shopOrderNumber-combination
+     *
+     * used i.e. for getting the current state of an possible asynchronously applied change request
+     * 
+     * @param excludes Excludes attributes from the returned data
+     * @return a list of order change requests for the given shopId/shopOrderNumber-combination
+     */
+    List<OMSChangeRequest> getOrderChangeRequests(Long shopId, String shopOrderNumber, List<String> excludes) throws ApiException;
+    default List<OMSChangeRequest> getOrderChangeRequests(Long shopId, String shopOrderNumber) throws ApiException
+    {
+        return getOrderChangeRequests(shopId, shopOrderNumber, new ArrayList<>());
+    }
 
     @Experimental("Proposed to be replaced by a method returning Collection<OMSOrder / OMSOrderState>")
     // FIXME: Proposal = return Collection<OMSOrder> instead..?
