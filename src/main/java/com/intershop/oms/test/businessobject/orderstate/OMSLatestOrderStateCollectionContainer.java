@@ -9,11 +9,6 @@ import java.util.Map;
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 
 import lombok.EqualsAndHashCode;
-
-/**
- * OrderStateCollectionContainer
- */
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -39,6 +34,7 @@ public class OMSLatestOrderStateCollectionContainer extends OMSBusinessObject
         data.add(dataItem);
         return this;
     }
+
     public OMSLatestOrderStateCollectionContainer putLinksItem(String key, URI linksItem)
     {
         if (links == null)
