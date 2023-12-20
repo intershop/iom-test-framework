@@ -7,15 +7,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
 @Getter
 @Setter
+@Accessors(chain = true)
+@ToString
+@EqualsAndHashCode(callSuper = false)
 public class OMSWriteReturnRequest extends OMSBusinessObject
 {
     /**
@@ -78,102 +83,62 @@ public class OMSWriteReturnRequest extends OMSBusinessObject
         }
     }
 
-    public OMSWriteReturnRequest()
-    {
-    }
+    public OMSWriteReturnRequest() {}
 
-    public OMSWriteReturnRequest type(TypeEnum type)
+    public OMSWriteReturnRequest addCustomAttributesItem(OMSWriteCustomAttribute customAttributesItem)
     {
-        this.type = type;
-        return this;
-    }
-
-    public OMSWriteReturnRequest rmaNumber(String rmaNumber)
-    {
-        this.rmaNumber = rmaNumber;
-        return this;
-    }
-
-    public OMSWriteReturnRequest comment(String comment)
-    {
-        this.comment = comment;
-        return this;
-    }
-
-    public OMSWriteReturnRequest positions(List<OMSWriteReturnRequestPosition> positions)
-    {
-        this.positions = positions;
+        if (customAttributes == null)
+        {
+            customAttributes = new ArrayList<>();
+        }
+        customAttributes.add(customAttributesItem);
         return this;
     }
 
     public OMSWriteReturnRequest addPositionsItem(OMSWriteReturnRequestPosition positionsItem)
     {
-        this.positions.add(positionsItem);
+        if (positions == null)
+        {
+            positions = new ArrayList<>();
+        }
+        positions.add(positionsItem);
         return this;
     }
 
+    @Deprecated(since = "7.0.0", forRemoval = true)
+    public OMSWriteReturnRequest type(TypeEnum type)
+    {
+        return setType(type);
+    }
+
+    @Deprecated(since = "7.0.0", forRemoval = true)
+    public OMSWriteReturnRequest rmaNumber(String rmaNumber)
+    {
+        return setRmaNumber(rmaNumber);
+    }
+
+    @Deprecated(since = "7.0.0", forRemoval = true)
+    public OMSWriteReturnRequest comment(String comment)
+    {
+        return setComment(comment);
+    }
+
+    @Deprecated(since = "7.0.0", forRemoval = true)
+    public OMSWriteReturnRequest positions(List<OMSWriteReturnRequestPosition> positions)
+    {
+        return setPositions(positions);
+    }
+
+    @Deprecated(since = "7.0.0", forRemoval = true)
     public OMSWriteReturnRequest pickupAddress(OMSWritePickupAddress pickupAddress)
     {
-        this.pickupAddress = pickupAddress;
-        return this;
+        return setPickupAddress(pickupAddress);
     }
 
+    @Deprecated(since = "7.0.0", forRemoval = true)
     public OMSWriteReturnRequest customAttributes(List<OMSWriteCustomAttribute> customAttributes)
     {
-        this.customAttributes = customAttributes;
-        return this;
-    }
-
-    public OMSWriteReturnRequest addCustomAttributesItem(OMSWriteCustomAttribute customAttributesItem)
-    {
-        if (this.customAttributes == null)
-        {
-            this.customAttributes = new ArrayList<>();
-        }
-        this.customAttributes.add(customAttributesItem);
-        return this;
-    }
-
-    @Override
-    public boolean equals(java.lang.Object o)
-    {
-        if (this == o)
-        {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass())
-        {
-            return false;
-        }
-        OMSWriteReturnRequest writeReturnRequest = (OMSWriteReturnRequest) o;
-        return Objects.equals(this.type, writeReturnRequest.type) &&
-                        Objects.equals(this.rmaNumber, writeReturnRequest.rmaNumber) &&
-                        Objects.equals(this.comment, writeReturnRequest.comment) &&
-                        Objects.equals(this.positions, writeReturnRequest.positions) &&
-                        Objects.equals(this.pickupAddress, writeReturnRequest.pickupAddress) &&
-                        Objects.equals(this.customAttributes, writeReturnRequest.customAttributes);
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(type, rmaNumber, comment, positions, pickupAddress, customAttributes);
-    }
-
-
-    @Override
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class OMSWriteReturnRequest {\n");
-        sb.append("    type: ").append(toIndentedString(type)).append("\n");
-        sb.append("    rmaNumber: ").append(toIndentedString(rmaNumber)).append("\n");
-        sb.append("    comment: ").append(toIndentedString(comment)).append("\n");
-        sb.append("    positions: ").append(toIndentedString(positions)).append("\n");
-        sb.append("    pickupAddress: ").append(toIndentedString(pickupAddress)).append("\n");
-        sb.append("    customAttributes: ").append(toIndentedString(customAttributes)).append("\n");
-        sb.append("}");
-        return sb.toString();
+        return setCustomAttributes(customAttributes);
     }
 
     public static String buildRMANumber(String shopOrderNo)

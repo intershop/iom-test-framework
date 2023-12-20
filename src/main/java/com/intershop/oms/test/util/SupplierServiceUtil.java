@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import com.intershop.oms.test.businessobject.OMSShop;
 import com.intershop.oms.test.businessobject.OMSSupplier;
@@ -28,6 +27,8 @@ import com.intershop.oms.test.servicehandler.omsdb.OMSDbHandler;
 
 public class SupplierServiceUtil
 {
+    private SupplierServiceUtil() {}
+    
     public static List<OMSDispatch> prepareFullDispatch(OMSOrder order, boolean useSupplierData)
     {
         OMSDbHandler dbHandler = ServiceHandlerFactory.getDbHandler();
@@ -37,7 +38,7 @@ public class SupplierServiceUtil
         return supplierDispatchPositions
                         .entrySet().stream().map(entry -> prepareDispatch(order.getShop(), entry.getKey(),
                                         order.getShopOrderNumber(), entry.getValue(), null))
-                        .collect(Collectors.toList());
+                        .toList();
     }
 
     public static List<OMSReturn> prepareFullReturn(OMSOrder order, boolean useSupplierData)
@@ -49,8 +50,7 @@ public class SupplierServiceUtil
         return supplierReturnPositions
                         .entrySet().stream().map(entry -> prepareReturn(order.getShop(), entry.getKey(),
                                         order.getShopOrderNumber(), entry.getValue(), null))
-                        .collect(Collectors.toList());
-
+                        .toList();
     }
 
     public static List<OMSOrderResponse> prepareFullResponse(OMSOrder order, boolean useSupplierData)
@@ -62,8 +62,7 @@ public class SupplierServiceUtil
         return orderResponsePositionsForOrder
                         .entrySet().stream().map(entry -> prepareResponse(order.getShop(), entry.getKey(),
                                         order.getShopOrderNumber(), entry.getValue(), null))
-                        .collect(Collectors.toList());
-
+                        .toList();
     }
 
     public static OMSDispatch prepareDispatch(OMSShop shop, OMSSupplier supplier, String shopOrderNo,
@@ -98,16 +97,17 @@ public class SupplierServiceUtil
         omsResponse.getPositions().forEach(pos -> pos.addProperty("DEMO-GROUP", "Test Key", "Test Value"));
         return omsResponse;
     }
-
+    
     /**
      * creates a full RMA request of type RETURN for the given dispatches /
      * dispatch positions.
      */
-    public static OMSReturnRequest prepareFullReturnRequest(OMSOrder order, List<OMSDispatch> dispatches)
+    public static OMSReturnRequest prepareFullReturnRequest(OMSOrder order, Collection<OMSDispatch> dispatches)
     {
         // map dispatch positions
         List<OMSReturnRequestPosition> rReqPos = dispatches.stream().flatMap(disp -> disp.getPositions().stream())
-                        .map(OMSReturnRequestPosition::fromDispatchPosition).collect(Collectors.toList());
+                        .map(OMSReturnRequestPosition::fromDispatchPosition)
+                        .toList();
 
         return new OMSReturnRequest().setShopName(order.getShopName()).setShopOrderNumber(order.getShopOrderNumber())
                         .setCreationDate(new Date(System.currentTimeMillis())).setPositions(rReqPos)
@@ -119,5 +119,4 @@ public class SupplierServiceUtil
         return "TestMsgID_" + new SimpleDateFormat("yy-MM-dd-HH:mm:ss.SSS").format(Calendar.getInstance().getTime())
                         + "_" + UUID.randomUUID();
     }
-
 }

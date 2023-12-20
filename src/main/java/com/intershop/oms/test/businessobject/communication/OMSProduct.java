@@ -23,7 +23,7 @@ public class OMSProduct extends OMSBusinessObject
 
     private String supplierProductNumber;
 
-    @Deprecated(since = "6.0.0", forRemoval = true)
+    @Deprecated(since = "7.0.0", forRemoval = true)
     public OMSProduct name(String name)
     {
         return setName(name);

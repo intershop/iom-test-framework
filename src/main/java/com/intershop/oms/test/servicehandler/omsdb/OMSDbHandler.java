@@ -1095,15 +1095,24 @@ public interface OMSDbHandler
      * @return true if the thread running write lock has been obtained within 1800s
      * @deprecated <b>DO NOT USE!</b> There are resource locking mechanisms for both JUnit Jupiter and Spock that provide
      * the same functionality out of the box. Use those instead - this class only exists for legacy tests.
-     * <p><b>this is not thread safe anymore!</b>
      *
      * <p>Note: You have to release your own read lock before getting a write lock.
      *       Otherwise we would get dead locks when two thread try the write lock at the same time
      */
     @Deprecated
     boolean lockThreadRunningWrite();
+    
+    /**
+     * @deprecated <b>DO NOT USE!</b> There are resource locking mechanisms for both JUnit Jupiter and Spock that provide
+     * the same functionality out of the box. Use those instead - this class only exists for legacy tests.
+     */
     @Deprecated
     boolean unlockThreadRunningRead();
+    
+    /**
+     * @deprecated <b>DO NOT USE!</b> There are resource locking mechanisms for both JUnit Jupiter and Spock that provide
+     * the same functionality out of the box. Use those instead - this class only exists for legacy tests.
+     */
     @Deprecated
     boolean unlockThreadRunningWrite();
 
@@ -1114,10 +1123,11 @@ public interface OMSDbHandler
      */
     @Deprecated
     boolean lockLoadConfiguration();
+    
     /**
      * @deprecated <b>DO NOT USE!</b> There are resource locking mechanisms for both JUnit Jupiter and Spock that provide
      * the same functionality out of the box. Use those instead - this class only exists for legacy tests.
-                */
+     */
     @Deprecated
     boolean unlockLoadConfiguration();
 
@@ -1128,6 +1138,7 @@ public interface OMSDbHandler
      */
     @Deprecated
     boolean lockAggregatedInvoices();
+
     /**
      * @deprecated <b>DO NOT USE!</b> There are resource locking mechanisms for both JUnit Jupiter and Spock that provide
      * the same functionality out of the box. Use those instead - this class only exists for legacy tests.
@@ -1139,9 +1150,13 @@ public interface OMSDbHandler
      * this is used for the concurrent usage of article1, article2, article3
      *
      * @return true if the shop has been locked within 1800s
+     * 
+     * @deprecated <b>DO NOT USE!</b> There are resource locking mechanisms for both JUnit Jupiter and Spock that provide
+     * the same functionality out of the box. Use those instead - this class only exists for legacy tests.
      */
     @Deprecated
     boolean lock_TEST_SHOP(String testShop);
+
     /**
      * @deprecated <b>DO NOT USE!</b> There are resource locking mechanisms for both JUnit Jupiter and Spock that provide
      * the same functionality out of the box. Use those instead - this class only exists for legacy tests.

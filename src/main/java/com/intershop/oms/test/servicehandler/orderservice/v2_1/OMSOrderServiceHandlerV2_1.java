@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import com.intershop.oms.rest.order.v2_1.api.OrderApi;
 import com.intershop.oms.rest.order.v2_1.model.Order;
 import com.intershop.oms.rest.shared.ApiException;
-import com.intershop.oms.rest.shared.ApiResponse;
 import com.intershop.oms.test.businessobject.order.OMSChangeRequest;
 import com.intershop.oms.test.businessobject.order.OMSOrder;
 import com.intershop.oms.test.businessobject.orderstate.OMSLatestOrderStateCollectionContainer;
@@ -64,39 +63,10 @@ class OMSOrderServiceHandlerV2_1 extends RESTServiceHandler
         return omsOrdersCreated;
     }
 
-
     @Override
-    public ApiResponse<OMSOrder> createOrder(Long shopId, OMSOrder omsOrder) throws ApiException
+    protected Collection<Object> unwrapApiClient()
     {
-        throw new RuntimeException("Method not yet implemented for 2.1!");
-    }
-
-    @Override
-    public Long sendOrderChangeRequest(Long shopId, String shopOrderNumber, OMSChangeRequest orderChangeRequest,
-                    int expectedEndState)
-    {
-        throw new RuntimeException("Method not supported for version < 2.2!");
-    }
-
-    @Override
-    public OMSChangeRequest getOrderChangeRequest(Long shopId, String shopOrderNumber, String changeRequestId,
-                    List<String> excludes) throws ApiException
-    {
-        throw new RuntimeException("Method not supported for version < 2.2!");
-    }
-
-    @Override
-    public List<OMSChangeRequest> getOrderChangeRequests(Long shopId, String shopOrderNumber, List<String> excludes)
-                    throws ApiException
-    {
-        throw new RuntimeException("Method not supported for version < 2.2!");
-    }
-
-    @Override
-    public ApiResponse<OMSChangeRequest> createOrderChangeRequest(Long shopId, String shopOrderNumber,
-                    OMSChangeRequest omsChangeRequestCreate) throws ApiException
-    {
-        throw new RuntimeException("Method not supported for version < 2.2!");
+        return Set.of(orderApi);
     }
 
     @Override
@@ -113,9 +83,17 @@ class OMSOrderServiceHandlerV2_1 extends RESTServiceHandler
     }
 
     @Override
-    protected Collection<Object> unwrapApiClient()
+    public OMSChangeRequest getOrderChangeRequest(Long shopId, String shopOrderNumber, String changeRequestId,
+                    List<String> excludes) throws ApiException
     {
-        return Set.of(orderApi);
+        throw new RuntimeException("Method not supported for version < 2.2!");
+    }
+
+    @Override
+    public List<OMSChangeRequest> getOrderChangeRequests(Long shopId, String shopOrderNumber, List<String> excludes)
+                    throws ApiException
+    {
+        throw new RuntimeException("Method not supported for version < 2.2!");
     }
 
     @Override

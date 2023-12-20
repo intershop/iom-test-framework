@@ -9,10 +9,7 @@ import com.intershop.oms.test.servicehandler.OMSServiceHandler;
 import com.intershop.oms.test.servicehandler.orderservice.OMSOrderServiceHandler;
 
 /**
- * @deprecated functionality has been merged into
- *             {@link OMSOrderServiceHandler}, starting with IOM Order Service
- *             v2.3
- *
+ * @deprecated functionality has been merged into {@link OMSOrderServiceHandler}, starting with IOM Order Service v2.3
  */
 @Deprecated
 public interface OMSOrderStateServiceHandler extends OMSServiceHandler

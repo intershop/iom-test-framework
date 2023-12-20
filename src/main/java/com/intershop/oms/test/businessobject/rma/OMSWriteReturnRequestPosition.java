@@ -4,30 +4,34 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 import com.intershop.oms.test.businessobject.communication.OMSDispatchPosition;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
 @Getter
 @Setter
+@Accessors(chain = true)
+@ToString
+@EqualsAndHashCode(callSuper = false)
 public class OMSWriteReturnRequestPosition extends OMSBusinessObject
 {
     private Integer positionNumber;
-
     private String productNumber;
-
     private String reason;
-
     private Integer quantity;
 
     private List<OMSWriteReturnRequestItem> items = null;
 
     private Map<String, String> customAttributes = new HashMap<>();
     
+    public OMSWriteReturnRequestPosition() {}
+
     public OMSWriteReturnRequestPosition(OMSDispatchPosition dispatchPosition)
     {
         setPositionNumber(dispatchPosition.getOrderPositionNumber());
@@ -36,86 +40,43 @@ public class OMSWriteReturnRequestPosition extends OMSBusinessObject
         setReason("RET010");
     }
 
-    public OMSWriteReturnRequestPosition()
-    {
-    }
-
-    public OMSWriteReturnRequestPosition positionNumber(Integer positionNumber) {
-
-        this.positionNumber = positionNumber;
-        return this;
-    }
-
-    public OMSWriteReturnRequestPosition productNumber(String productNumber)
-    {
-        this.productNumber = productNumber;
-        return this;
-    }
-
-    public OMSWriteReturnRequestPosition reason(String reason)
-    {
-        this.reason = reason;
-        return this;
-    }
-
-    public OMSWriteReturnRequestPosition quantity(Integer quantity)
-    {
-       this.quantity = quantity;
-        return this;
-    }
-
-    public OMSWriteReturnRequestPosition items(List<OMSWriteReturnRequestItem> items)
-    {
-        this.items = items;
-        return this;
-    }
-
     public OMSWriteReturnRequestPosition addItemsItem(OMSWriteReturnRequestItem itemsItem)
     {
-        if (this.items == null)
+        if (items == null)
         {
-            this.items = new ArrayList<>();
+            items = new ArrayList<>();
         }
-        this.items.add(itemsItem);
+        items.add(itemsItem);
         return this;
     }
 
-    @Override
-    public boolean equals(java.lang.Object o)
-    {
-        if (this == o)
-        {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass())
-        {
-            return false;
-        }
-        OMSWriteReturnRequestPosition writeReturnRequestPosition = (OMSWriteReturnRequestPosition) o;
-        return Objects.equals(this.positionNumber, writeReturnRequestPosition.positionNumber) &&
-                        Objects.equals(this.productNumber, writeReturnRequestPosition.productNumber) &&
-                        Objects.equals(this.reason, writeReturnRequestPosition.reason) &&
-                        Objects.equals(this.quantity, writeReturnRequestPosition.quantity) &&
-                        Objects.equals(this.items, writeReturnRequestPosition.items);
+    @Deprecated(since = "7.0.0", forRemoval = true)
+    public OMSWriteReturnRequestPosition positionNumber(Integer positionNumber) {
+
+        return setPositionNumber(positionNumber);
     }
 
-    @Override
-    public int hashCode()
+    @Deprecated(since = "7.0.0", forRemoval = true)
+    public OMSWriteReturnRequestPosition productNumber(String productNumber)
     {
-        return Objects.hash(positionNumber, productNumber, reason, quantity, items);
+        return setProductNumber(productNumber);
     }
 
-    @Override
-    public String toString()
+    @Deprecated(since = "7.0.0", forRemoval = true)
+    public OMSWriteReturnRequestPosition reason(String reason)
     {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class OMSWriteReturnRequestPosition {\n");
-        sb.append("    positionNumber: ").append(toIndentedString(positionNumber)).append("\n");
-        sb.append("    productNumber: ").append(toIndentedString(productNumber)).append("\n");
-        sb.append("    reason: ").append(toIndentedString(reason)).append("\n");
-        sb.append("    quantity: ").append(toIndentedString(quantity)).append("\n");
-        sb.append("    items: ").append(toIndentedString(items)).append("\n");
-        sb.append("}");
-        return sb.toString();
+        return setReason(reason);
+    }
+
+    @Deprecated(since = "7.0.0", forRemoval = true)
+    public OMSWriteReturnRequestPosition quantity(Integer quantity)
+    {
+        return setQuantity(quantity);
+    }
+
+    @Deprecated(since = "7.0.0", forRemoval = true)
+    public OMSWriteReturnRequestPosition items(List<OMSWriteReturnRequestItem> items)
+    {
+        return setItems(items);
     }
 }

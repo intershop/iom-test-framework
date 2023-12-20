@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.intershop.oms.rest.order.v2_2.api.OrderApi;
-import com.intershop.oms.rest.order.v2_2.model.ChangeRequestCreate;
 import com.intershop.oms.rest.order.v2_2.model.ChangeRequestView;
 import com.intershop.oms.rest.order.v2_2.model.Order;
 import com.intershop.oms.rest.shared.ApiException;
@@ -47,50 +46,6 @@ class OMSOrderServiceHandlerV2_2 extends RESTServiceHandler implements OMSOrderS
     }
 
     @Override
-    public Long sendOrderChangeRequest(Long shopId, String shopOrderNumber, OMSChangeRequest orderChangeRequest,
-                    int expectedEndState) throws ApiException
-    {
-        createOrderChangeRequest(shopId, shopOrderNumber, orderChangeRequest);
-        long orderId = dbHandler.getOrderId(shopId, shopOrderNumber);
-        long orderChangeRequestId = dbHandler.getOrderChangeRequestId(orderId, orderChangeRequest.getChangeRequestId());
-
-        if (!dbHandler.waitForOrderChangeRequestState(orderChangeRequestId, expectedEndState))
-        {
-            throw new RuntimeException("Order change request " + orderChangeRequest.getChangeRequestId() + " for order "
-                            + orderId + " didn't reach status " + expectedEndState + "!");
-        }
-
-        return orderChangeRequestId;
-    }
-
-    @Override
-    public OMSChangeRequest getOrderChangeRequest(Long shopId, String shopOrderNumber, String changeRequestId,
-                    List<String> excludes) throws ApiException
-    {
-        ApiResponse<ChangeRequestView> response;
-
-        response = orderApi.getChangeRequestWithHttpInfo(shopId, shopOrderNumber, changeRequestId, excludes);
-        ChangeRequestView changeRequestView = response.getData();
-        return ChangeRequestViewMapper.INSTANCE.fromApiChangeRequestView(changeRequestView);
-    }
-
-    @Override
-    public ApiResponse<OMSOrder> createOrder(Long shopId, OMSOrder omsOrder) throws ApiException
-    {
-        ApiResponse<Void> response;
-
-        Order order = OrderMapper.INSTANCE.toApiOrder(omsOrder);
-
-        response = orderApi.createOrderWithHttpInfo(shopId, order);
-
-        // map into response
-        // currently data not returned on order creation, so the value will be
-        // null
-        return new ApiResponse<>(response.getStatusCode(), response.getHeaders(), null);
-
-    }
-
-    @Override
     public List<OMSOrder> createOrders(List<OMSOrder> omsOrders, Integer targetState) throws ApiException
     {
         List<OMSOrder> createdOrders = new ArrayList<>();
@@ -110,38 +65,6 @@ class OMSOrderServiceHandlerV2_2 extends RESTServiceHandler implements OMSOrderS
         }
 
         return createdOrders;
-    }
-
-    @Override
-    public List<OMSChangeRequest> getOrderChangeRequests(Long shopId, String shopOrderNumber, List<String> excludes)
-                    throws ApiException
-    {
-        List<OMSChangeRequest> OMSChangeRequests = new ArrayList<>();
-        ApiResponse<List<ChangeRequestView>> response;
-
-        response = orderApi.getChangeRequestViewListWithHttpInfo(shopId, shopOrderNumber, excludes);
-
-        // map
-        List<ChangeRequestView> changeRequestViews = response.getData();
-        ChangeRequestViewMapper.INSTANCE.fromApiChangeRequestViewList(changeRequestViews, OMSChangeRequests);
-
-        return OMSChangeRequests;
-    }
-
-    @Override
-    public ApiResponse<OMSChangeRequest> createOrderChangeRequest(Long shopId, String shopOrderNumber,
-                    OMSChangeRequest omsChangeRequestCreate) throws ApiException
-    {
-        ApiResponse<Void> response;
-
-        ChangeRequestCreate changeRequestCreate = ChangeRequestCreateMapper.INSTANCE
-                        .toApiChangeRequestCreate(omsChangeRequestCreate);
-
-        response = orderApi.createChangeRequestWithHttpInfo(shopId, shopOrderNumber, changeRequestCreate);
-        // currently data not returned on order creation, so the value will be
-        // null
-        return new ApiResponse<>(response.getStatusCode(), response.getHeaders(), null);
-
     }
 
     @Override
@@ -188,6 +111,32 @@ class OMSOrderServiceHandlerV2_2 extends RESTServiceHandler implements OMSOrderS
         omsOrder.setShop(new OMSShop(shopId));
         omsOrder.setId(dbHandler.getOrderId(shopId, omsOrder.getShopOrderNumber()));
         return omsOrder;
+    }
+
+    @Override
+    public OMSChangeRequest getOrderChangeRequest(Long shopId, String shopOrderNumber, String changeRequestId,
+                    List<String> excludes) throws ApiException
+    {
+        ApiResponse<ChangeRequestView> response;
+
+        response = orderApi.getChangeRequestWithHttpInfo(shopId, shopOrderNumber, changeRequestId, excludes);
+        ChangeRequestView changeRequestView = response.getData();
+        return ChangeRequestViewMapper.INSTANCE.fromApiChangeRequestView(changeRequestView);
+    }
+
+    @Override
+    public List<OMSChangeRequest> getOrderChangeRequests(Long shopId, String shopOrderNumber, List<String> excludes)
+                    throws ApiException
+    {
+        List<OMSChangeRequest> omsChangeRequests = new ArrayList<>();
+        ApiResponse<List<ChangeRequestView>> response;
+
+        response = orderApi.getChangeRequestViewListWithHttpInfo(shopId, shopOrderNumber, excludes);
+
+        List<ChangeRequestView> changeRequestViews = response.getData();
+        ChangeRequestViewMapper.INSTANCE.fromApiChangeRequestViewList(changeRequestViews, omsChangeRequests);
+
+        return omsChangeRequests;
     }
 
     @Override

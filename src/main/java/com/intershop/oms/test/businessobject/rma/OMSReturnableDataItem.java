@@ -1,52 +1,25 @@
 package com.intershop.oms.test.businessobject.rma;
 
-import java.util.Objects;
-
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
 @Getter
 @Setter
+@Accessors(chain = true)
+@ToString
+@EqualsAndHashCode(callSuper = false)
 public class OMSReturnableDataItem extends OMSBusinessObject
 {
     private String productSerialNumber;
 
+    @Deprecated(since = "7.0.0", forRemoval = true)
     public OMSReturnableDataItem productSerialNumber(String productSerialNumber)
     {
-        this.productSerialNumber = productSerialNumber;
-        return this;
-    }
-
-    @Override
-    public boolean equals(java.lang.Object o)
-    {
-        if (this == o)
-        {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass())
-        {
-            return false;
-        }
-        OMSReturnableDataItem returnableDataItem = (OMSReturnableDataItem) o;
-        return Objects.equals(this.productSerialNumber, returnableDataItem.productSerialNumber);
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(productSerialNumber);
-    }
-
-    @Override
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class OMSReturnableDataItem {\n");
-        sb.append("    productSerialNumber: ").append(toIndentedString(productSerialNumber)).append("\n");
-        sb.append("}");
-        return sb.toString();
+        return setProductSerialNumber(productSerialNumber);
     }
 }

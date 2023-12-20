@@ -26,11 +26,11 @@ public interface ChangeRequestViewMapper {
     OMSChangeRequest fromApiChangeRequestView(ChangeRequestView changeRequestView);
 
     @InheritInverseConfiguration
-    public abstract ChangeRequestView toApiChangeRequestView(OMSChangeRequest OMSChangeRequest);
+    public abstract ChangeRequestView toApiChangeRequestView(OMSChangeRequest omsChangeRequest);
 
     @AfterMapping
-    public default void fromApiChangeRequestViewList(final List<ChangeRequestView> changeRequestsViews, @MappingTarget final List<OMSChangeRequest> OMSChangeRequests)
+    public default void fromApiChangeRequestViewList(final List<ChangeRequestView> changeRequestsViews, @MappingTarget final List<OMSChangeRequest> omsChangeRequests)
     {
-        changeRequestsViews.stream().forEach(changeRequestView -> OMSChangeRequests.add(fromApiChangeRequestView(changeRequestView)));
+        changeRequestsViews.stream().forEach(changeRequestView -> omsChangeRequests.add(fromApiChangeRequestView(changeRequestView)));
     }
 }

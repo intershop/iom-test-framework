@@ -5,17 +5,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import com.intershop.oms.test.businessobject.OMSBusinessObject;
-import com.intershop.oms.test.businessobject.OMSCollectionMetaData;
 
 import lombok.EqualsAndHashCode;
-
-/**
- * OrderStateCollectionContainer
- */
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -41,6 +34,7 @@ public class OMSLatestOrderStateCollectionContainer extends OMSBusinessObject
         data.add(dataItem);
         return this;
     }
+
     public OMSLatestOrderStateCollectionContainer putLinksItem(String key, URI linksItem)
     {
         if (links == null)
