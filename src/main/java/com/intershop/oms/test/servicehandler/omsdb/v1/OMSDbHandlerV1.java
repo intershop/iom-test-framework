@@ -88,9 +88,10 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
                 ds.setJdbcUrl(url);
                 ds.setUsername(aDbUser);
                 ds.setPassword(aDbPass);
-                ds.setMaximumPoolSize(30);
-                ds.setKeepaliveTime(120000); //shoud help maintain locking connections alive
-                ds.setIdleTimeout(900000 ); //15 minutes. The default of 10 minutes might be too small in some tests
+                ds.setMaximumPoolSize(12); //one pool per thread, hence keep it small
+                ds.setKeepaliveTime(30000); //should help maintain locking connections alive
+                ds.setIdleTimeout(1200000 ); //20 minutes. The default of 10 minutes might be too small in some tests
+                ds.setLeakDetectionThreshold(20000); //20 sec.
                 //ds.setConnectionTimeout(30000); //30 seconds. This is the default and should be sufficient
 
                 if (aForceSsl)
@@ -3231,9 +3232,16 @@ DELETE  FROM "StockReservationDO" r2
                     countRetry = countRetry + 1;
                     if (!connection.isValid(0) )
                     {
-                        log.error("An Hikari pool connetion isn't valid anymore while waiting for an object state, after " + countRetry + " attempts");
-                        throw new RuntimeException(
-                                        "An Hikari pool connetion isn't valid anymore while waiting for an object state, after " + countRetry + " attempts");
+                        log.error("An Hikari pool connection isn't valid anymore while waiting for an object state, after " + countRetry + " attempts. About to reconnect (at doDBWaitForStateCheck)");
+                        try
+                        {
+                            connection.close();
+                            connection = getConnection();
+                        }
+                        catch (SQLException e)
+                        {
+                            log.error("Did not manage to reconnect an invalid Hikari pool connection.");
+                        }
                     }
                 }
                 resultSet = sqlStatement.executeQuery();
@@ -3970,8 +3978,21 @@ DELETE  FROM "StockReservationDO" r2
     {
         try 
         {
-            if (null==lockingConnection || !lockingConnection.isValid(timeout))
+            if (null==lockingConnection )
             {
+                lockingConnection = getConnection();
+            }
+            else if (!lockingConnection.isValid(0))
+            {
+                //avoid possible leak
+                try 
+                {
+                    lockingConnection.close();
+                }
+                catch (Exception e)
+                {
+                    //ignore. This is expected as the connection is not valid
+                }
                 lockingConnection = getConnection();
             }
         }
