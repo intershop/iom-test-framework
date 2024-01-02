@@ -3230,18 +3230,11 @@ DELETE  FROM "StockReservationDO" r2
                 {
                     Thread.sleep(retryDelay);
                     countRetry = countRetry + 1;
-                    if (!connection.isValid(0) )
+                    if (!connection.isValid(20) )
                     {
-                        log.error("An Hikari pool connection isn't valid anymore while waiting for an object state, after " + countRetry + " attempts. About to reconnect (at doDBWaitForStateCheck)");
-                        try
-                        {
-                            connection.close();
-                            connection = getConnection();
-                        }
-                        catch (SQLException e)
-                        {
-                            log.error("Did not manage to reconnect an invalid Hikari pool connection.");
-                        }
+                        log.error("An Hikari pool connection isn't valid anymore while waiting for an object state, after " + countRetry + " attempts.");
+                        throw new RuntimeException(
+                                        "An Hikari pool connection isn't valid anymore while waiting for an object state, after " + countRetry + " attempts");
                     }
                 }
                 resultSet = sqlStatement.executeQuery();
