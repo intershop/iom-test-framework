@@ -3944,19 +3944,28 @@ DELETE  FROM "StockReservationDO" r2
 //            default:
 //                throw new RuntimeException("Unknown lock type '" + rw + "' found! Supported are 'W' and 'R'.");
 //        }
-        if (!lockingConnection.isValid(0))
+        try 
         {
-            //avoid possible leak
-            try 
+            if (!lockingConnection.isValid(0))
             {
-                lockingConnection.close();
+                //avoid possible leak
+                try 
+                {
+                    lockingConnection.close();
+                }
+                catch (Exception e)
+                {
+                    //ignore. This is expected as the connection is not valid
+                }
+                lockingConnection = getConnection();
             }
-            catch (Exception e)
-            {
-                //ignore. This is expected as the connection is not valid
-            }
-            lockingConnection = getConnection();
         }
+        catch (SQLException e)
+        {
+            log.error("Could not verify connection while releasing lock ", rw, lockId);
+            return false;
+        }
+
         
         String statement = null;
         if (rw.equals(DBLockType.R))
