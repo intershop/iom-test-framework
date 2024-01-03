@@ -3933,6 +3933,31 @@ DELETE  FROM "StockReservationDO" r2
     @Deprecated
     private boolean releaseDBLock(int lockId, DBLockType rw)
     {
+//        switch(rw)
+//        {
+//            case W:
+//                LockHolder.releaseWriteLock(lockId);
+//                return true;
+//            case R:
+//                LockHolder.releaseReadLock(lockId);
+//                return true;
+//            default:
+//                throw new RuntimeException("Unknown lock type '" + rw + "' found! Supported are 'W' and 'R'.");
+//        }
+        if (!lockingConnection.isValid(0))
+        {
+            //avoid possible leak
+            try 
+            {
+                lockingConnection.close();
+            }
+            catch (Exception e)
+            {
+                //ignore. This is expected as the connection is not valid
+            }
+            lockingConnection = getConnection();
+        }
+        
         String statement = null;
         if (rw.equals(DBLockType.R))
         {
@@ -4024,7 +4049,7 @@ DELETE  FROM "StockReservationDO" r2
         }
         finally
         {
-            try (Connection connection = getConnection(); PreparedStatement sqlStatement3= connection.prepareStatement("RESET statement_timeout"))
+            try (PreparedStatement sqlStatement3 = lockingConnection.prepareStatement("RESET statement_timeout"))
             {
                 sqlStatement3.executeUpdate();
             }
