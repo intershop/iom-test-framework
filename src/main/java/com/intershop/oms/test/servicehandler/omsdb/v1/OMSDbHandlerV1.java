@@ -3934,17 +3934,6 @@ DELETE  FROM "StockReservationDO" r2
     @Deprecated
     private boolean releaseDBLock(int lockId, DBLockType rw)
     {
-//        switch(rw)
-//        {
-//            case W:
-//                LockHolder.releaseWriteLock(lockId);
-//                return true;
-//            case R:
-//                LockHolder.releaseReadLock(lockId);
-//                return true;
-//            default:
-//                throw new RuntimeException("Unknown lock type '" + rw + "' found! Supported are 'W' and 'R'.");
-//        }
         try 
         {
             if (!lockingConnection.isValid(0))
