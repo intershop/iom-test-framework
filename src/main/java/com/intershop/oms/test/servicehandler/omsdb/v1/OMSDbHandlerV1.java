@@ -3934,26 +3934,29 @@ DELETE  FROM "StockReservationDO" r2
     @Deprecated
     private boolean releaseDBLock(int lockId, DBLockType rw)
     {
+        boolean connectionIsValid = false;
         try 
         {
-            if (!lockingConnection.isValid(0))
-            {
-                //avoid possible leak
-                try 
-                {
-                    lockingConnection.close();
-                }
-                catch (Exception e)
-                {
-                    //ignore. This is expected as the connection is not valid
-                }
-                lockingConnection = getConnection();
-            }
+            connectionIsValid = lockingConnection.isValid(0);
         }
         catch (SQLException e)
         {
             log.error("Could not verify connection while releasing lock ", rw, lockId);
             return false;
+        }
+
+        if (!connectionIsValid)
+        {
+            //avoid possible leak
+            try 
+            {
+                lockingConnection.close();
+            }
+            catch (Exception e)
+            {
+                //ignore. This is expected as the connection is not valid
+            }
+            lockingConnection = getConnection();
         }
 
         
@@ -3993,32 +3996,31 @@ DELETE  FROM "StockReservationDO" r2
     @Deprecated
     private boolean getDBLock(int lockId, int timeout, DBLockType rw)
     {
+        boolean connectionIsValid = false;
         try 
         {
-            if (null==lockingConnection )
-            {
-                lockingConnection = getConnection();
-            }
-            else if (!lockingConnection.isValid(0))
-            {
-                //avoid possible leak
-                try 
-                {
-                    lockingConnection.close();
-                }
-                catch (Exception e)
-                {
-                    //ignore. This is expected as the connection is not valid
-                }
-                lockingConnection = getConnection();
-            }
+            connectionIsValid = lockingConnection.isValid(0);
         }
-        catch (SQLException sqlEx)
+        catch (SQLException e)
         {
-            log.error("Could not get lock: {}\n{}", sqlEx.getMessage(), sqlEx);
+            log.error("Could not verify connection while releasing lock ", rw, lockId);
             return false;
         }
-        
+
+        if (!connectionIsValid)
+        {
+            //avoid possible leak
+            try 
+            {
+                lockingConnection.close();
+            }
+            catch (Exception e)
+            {
+                //ignore. This is expected as the connection is not valid
+            }
+            lockingConnection = getConnection();
+        }
+         
         String statement = null;
         if (rw.equals(DBLockType.R))
         {
