@@ -3934,6 +3934,13 @@ DELETE  FROM "StockReservationDO" r2
     private boolean releaseDBLock(int lockId, DBLockType rw)
     {
         boolean connectionIsValid = false;
+        
+        if (lockingConnection == null)
+        {
+            log.error("call to releaseDBLock while the locking connection is null. The lock was probaly not acquired. ", rw, lockId);
+            return false;
+        }
+
         try 
         {
             connectionIsValid = lockingConnection.isValid(0);
@@ -3995,6 +4002,11 @@ DELETE  FROM "StockReservationDO" r2
     @Deprecated
     private boolean getDBLock(int lockId, int timeout, DBLockType rw)
     {
+        if (lockingConnection == null)
+        {
+            lockingConnection = getConnection();
+        }
+        
         boolean connectionIsValid = false;
         try 
         {
