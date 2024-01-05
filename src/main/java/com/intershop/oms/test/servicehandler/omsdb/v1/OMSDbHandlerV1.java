@@ -3230,7 +3230,6 @@ DELETE  FROM "StockReservationDO" r2
                 if (countRetry > 0)
                 {
                     Thread.sleep(retryDelay);
-                    countRetry = countRetry + 1;
                     if (!connection.isValid(20) )
                     {
                         log.error("An Hikari pool connection isn't valid anymore while waiting for an object state, after " + countRetry + " attempts.");
