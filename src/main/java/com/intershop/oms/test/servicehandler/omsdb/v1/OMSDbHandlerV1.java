@@ -88,9 +88,10 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
                 ds.setJdbcUrl(url);
                 ds.setUsername(aDbUser);
                 ds.setPassword(aDbPass);
-                ds.setMaximumPoolSize(30);
-                ds.setKeepaliveTime(120000); //shoud help maintain locking connections alive
-                ds.setIdleTimeout(900000 ); //15 minutes. The default of 10 minutes might be too small in some tests
+                ds.setMaximumPoolSize(12); //one pool per thread, hence keep it small
+                ds.setKeepaliveTime(30000); //should help maintain locking connections alive
+                ds.setIdleTimeout(1200000 ); //20 minutes. The default of 10 minutes might be too small in some tests
+                ds.setLeakDetectionThreshold(20000); //20 sec.
                 //ds.setConnectionTimeout(30000); //30 seconds. This is the default and should be sufficient
 
                 if (aForceSsl)
@@ -105,6 +106,8 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
                 flyway.migrate();
 
                 dsInitialized = true;
+                // debug helper: log the complete postgres configuration as seen by the client to the postgres log.
+                //runDBStmt ("select testcases.log_pg_config('postgres configuration seen by the IOM Test Framework on pool initialization')",true);
             }
         }
 
@@ -3227,6 +3230,12 @@ DELETE  FROM "StockReservationDO" r2
                 if (countRetry > 0)
                 {
                     Thread.sleep(retryDelay);
+                    if (!connection.isValid(20) )
+                    {
+                        log.error("An Hikari pool connection isn't valid anymore while waiting for an object state, after " + countRetry + " attempts.");
+                        throw new RuntimeException(
+                                        "An Hikari pool connection isn't valid anymore while waiting for an object state, after " + countRetry + " attempts");
+                    }
                 }
                 resultSet = sqlStatement.executeQuery();
                 if (resultSet.next())
@@ -3924,6 +3933,32 @@ DELETE  FROM "StockReservationDO" r2
     @Deprecated
     private boolean releaseDBLock(int lockId, DBLockType rw)
     {
+        boolean connectionIsValid = false;
+        try 
+        {
+            connectionIsValid = lockingConnection.isValid(0);
+        }
+        catch (SQLException e)
+        {
+            log.error("Could not verify connection while releasing lock ", rw, lockId);
+            return false;
+        }
+
+        if (!connectionIsValid)
+        {
+            //avoid possible leak
+            try 
+            {
+                lockingConnection.close();
+            }
+            catch (Exception e)
+            {
+                //ignore. This is expected as the connection is not valid
+            }
+            lockingConnection = getConnection();
+        }
+
+        
         String statement = null;
         if (rw.equals(DBLockType.R))
         {
@@ -3960,19 +3995,31 @@ DELETE  FROM "StockReservationDO" r2
     @Deprecated
     private boolean getDBLock(int lockId, int timeout, DBLockType rw)
     {
+        boolean connectionIsValid = false;
         try 
         {
-            if (null==lockingConnection || !lockingConnection.isValid(timeout))
-            {
-                lockingConnection = getConnection();
-            }
+            connectionIsValid = lockingConnection.isValid(0);
         }
-        catch (SQLException sqlEx)
+        catch (SQLException e)
         {
-            log.error("Could not get lock: {}\n{}", sqlEx.getMessage(), sqlEx);
+            log.error("Could not verify connection while releasing lock ", rw, lockId);
             return false;
         }
-        
+
+        if (!connectionIsValid)
+        {
+            //avoid possible leak
+            try 
+            {
+                lockingConnection.close();
+            }
+            catch (Exception e)
+            {
+                //ignore. This is expected as the connection is not valid
+            }
+            lockingConnection = getConnection();
+        }
+         
         String statement = null;
         if (rw.equals(DBLockType.R))
         {
@@ -4002,7 +4049,7 @@ DELETE  FROM "StockReservationDO" r2
         }
         finally
         {
-            try (Connection connection = getConnection(); PreparedStatement sqlStatement3= connection.prepareStatement("RESET statement_timeout"))
+            try (PreparedStatement sqlStatement3 = lockingConnection.prepareStatement("RESET statement_timeout"))
             {
                 sqlStatement3.executeUpdate();
             }
