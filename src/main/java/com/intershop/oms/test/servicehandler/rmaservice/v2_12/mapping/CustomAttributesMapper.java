@@ -24,6 +24,11 @@ public interface CustomAttributesMapper
 
     default List<ReadCustomAttribute> toApiReadCustomAttributes(Map<String,String> customAttributes)
     {
+        if (customAttributes == null)
+        {
+            return null;
+        }
+
         return customAttributes.entrySet().stream().map( in ->
             {
                 ReadCustomAttribute wca = new ReadCustomAttribute();
@@ -38,9 +43,14 @@ public interface CustomAttributesMapper
         return customAttributes.stream()
             .collect(Collectors.toMap(WriteCustomAttribute::getKey, WriteCustomAttribute::getValue, (t, u) -> t, HashMap::new));
     }
-    
+
     default List<WriteCustomAttribute> toApiWriteCustomAttributes(Map<String, String> customAttributes)
     {
+        if (customAttributes == null)
+        {
+            return null;
+        }
+
         return customAttributes.entrySet().stream().map( in ->
             {
                 WriteCustomAttribute wca = new WriteCustomAttribute();

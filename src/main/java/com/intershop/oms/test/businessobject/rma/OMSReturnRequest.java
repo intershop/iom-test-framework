@@ -29,7 +29,7 @@ public class OMSReturnRequest extends OMSBusinessObject
     private List<OMSReturnRequestPosition> positions = new ArrayList<>();
     private OMSPickupAddress pickupAddress;
     private List<OMSContactPerson> contactPersons = new ArrayList<>();
-    private List<OMSCustomAttribute> customAttributes = new ArrayList<>();
+    private List<OMSCustomAttribute> customAttributes = null;
     private Long id;
     private Date creationDate;
     private String shopOrderNumber;
@@ -69,7 +69,7 @@ public class OMSReturnRequest extends OMSBusinessObject
             return String.valueOf(value);
         }
     }
-    
+
     public enum BusinessStatusEnum
     {
         ACCEPTED("ACCEPTED"),
