@@ -19,7 +19,8 @@ import java.util.List;
 @Accessors(chain = true)
 @ToString
 @EqualsAndHashCode(callSuper = false)
-public class OMSCustomerInvoiceAndCreditNote extends OMSBusinessObject {
+public class OMSCustomerInvoiceAndCreditNote extends OMSBusinessObject
+{
     private String type;
     private List<String> relatedShopOrderNos = null;
     private List<String> relatedShopOrderNumbers = null;

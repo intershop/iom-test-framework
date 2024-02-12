@@ -18,7 +18,8 @@ import java.time.OffsetDateTime;
 @Accessors(chain = true)
 @ToString
 @EqualsAndHashCode(callSuper = false)
-public class OMSCustomerOrderPosition extends OMSBusinessObject {
+public class OMSCustomerOrderPosition extends OMSBusinessObject
+{
     private String shopArticleNo;
     private String shopArticleNumber;
     private String shopArticleName;

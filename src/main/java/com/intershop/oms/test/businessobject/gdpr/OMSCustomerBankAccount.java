@@ -16,7 +16,8 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @ToString
 @EqualsAndHashCode(callSuper = false)
-public class OMSCustomerBankAccount extends OMSBusinessObject {
+public class OMSCustomerBankAccount extends OMSBusinessObject
+{
     private String accountHolder;
     private String accountNumber;
     private String bankCode;

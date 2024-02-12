@@ -7,7 +7,8 @@ import org.mapstruct.factory.Mappers;
 import com.intershop.oms.rest.gdpr.v2_10.model.Address;
 
 @Mapper
-public interface AddressMapper {
+public interface AddressMapper
+{
     AddressMapper INSTANCE = Mappers.getMapper(AddressMapper.class);
 
     OMSAddress fromApiAddress(Address address);

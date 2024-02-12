@@ -41,8 +41,8 @@ public class OMSScheduleServiceHandlerV1 extends RESTServiceHandler
     OMSScheduleServiceHandlerV1(ServiceConfiguration serviceConfiguration)
     {
         super(serviceConfiguration, "/rest/schedules", log);
-        this.scheduleConfigsApi = new ScheduleConfigsApi(apiClient);
-        this.scheduleStatesApi = new ScheduleStatesApi(apiClient);
+        scheduleConfigsApi = new ScheduleConfigsApi(apiClient);
+        scheduleStatesApi = new ScheduleStatesApi(apiClient);
     }
 
     @Override

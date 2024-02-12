@@ -22,25 +22,29 @@ public class OMSGDPRServiceHandlerV2_10 extends RESTServiceHandler implements OM
     private final OMSDbHandler dbHandler;
     private final ShopApi shopApi;
 
-    public OMSGDPRServiceHandlerV2_10(OMSDbHandler dbHandler, ServiceConfiguration serviceConfig) {
+    public OMSGDPRServiceHandlerV2_10(OMSDbHandler dbHandler, ServiceConfiguration serviceConfig)
+    {
         super(serviceConfig, "/rest/gdpr", log);
         this.dbHandler = dbHandler;
-        this.shopApi = new ShopApi(apiClient);
+        shopApi = new ShopApi(apiClient);
     }
 
     @Override
-    protected Collection<Object> unwrapApiClient() {
+    protected Collection<Object> unwrapApiClient()
+    {
         return Set.of(shopApi);
     }
 
     @Override
-    public OMSCustomer getCustomer(String customerShopNo, String shopName) throws ApiException {
+    public OMSCustomer getCustomer(String customerShopNo, String shopName) throws ApiException
+    {
         Customer customer = shopApi.getCustomer(customerShopNo, shopName);
         return CustomerMapper.INSTANCE.fromApiCustomer(customer);
     }
 
     @Override
-    public void deleteCustomer(String customerShopNo, String shopName) throws ApiException {
+    public void deleteCustomer(String customerShopNo, String shopName) throws ApiException
+    {
         shopApi.deleteCustomer(customerShopNo, shopName);
     }
 }

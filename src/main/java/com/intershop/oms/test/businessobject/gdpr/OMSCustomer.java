@@ -20,7 +20,8 @@ import java.util.List;
 @Accessors(chain = true)
 @ToString
 @EqualsAndHashCode(callSuper = false)
-public class OMSCustomer extends OMSBusinessObject {
+public class OMSCustomer extends OMSBusinessObject
+{
     private OffsetDateTime creationDate;
     private String customerType;
     private LocalDate dayOfBirth;

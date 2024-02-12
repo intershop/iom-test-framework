@@ -49,8 +49,8 @@ class OMSOrderServiceHandlerV2_3 extends RESTServiceHandler implements OMSOrderS
         super(serviceConfig, "/rest/order-service", log);
         apiClient.getJSON().getMapper().addMixIn(OrderPositionReturned.class, OrderPositionReturnedMixIn.class);
         this.dbHandler = dbHandler;
-        this.orderApi = new OrderApi(apiClient);
-        this.orderStateApi = new OrderStateApi(apiClient);
+        orderApi = new OrderApi(apiClient);
+        orderStateApi = new OrderStateApi(apiClient);
     }
 
     @Override

@@ -16,7 +16,8 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @ToString
 @EqualsAndHashCode(callSuper = false)
-public class OMSAddress extends OMSBusinessObject {
+public class OMSAddress extends OMSBusinessObject
+{
     private String firstName;
     private String lastName;
     private String title;

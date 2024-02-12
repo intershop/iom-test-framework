@@ -16,7 +16,8 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @ToString
 @EqualsAndHashCode(callSuper = false)
-public class OMSCustomerInvoicePosition extends OMSBusinessObject {
+public class OMSCustomerInvoicePosition extends OMSBusinessObject
+{
     private String shopOrderNo;
     private String shopOrderNumber;
     private String shopArticleNo;

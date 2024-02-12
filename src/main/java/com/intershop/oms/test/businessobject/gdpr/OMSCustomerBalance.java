@@ -18,7 +18,8 @@ import java.time.OffsetDateTime;
 @Accessors(chain = true)
 @ToString
 @EqualsAndHashCode(callSuper = false)
-public class OMSCustomerBalance extends OMSBusinessObject {
+public class OMSCustomerBalance extends OMSBusinessObject
+{
     private String currency;
     private Double openInvoiceAmount;
     private OffsetDateTime openInvoiceAmountCalculationDate;
