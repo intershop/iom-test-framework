@@ -10,6 +10,8 @@ import org.apache.commons.lang3.StringUtils;
 import com.intershop.oms.test.configuration.ConfigBuilder;
 import com.intershop.oms.test.configuration.Configuration;
 import com.intershop.oms.test.configuration.ServiceConfiguration;
+import com.intershop.oms.test.servicehandler.gdprservice.OMSGDPRServiceHandler;
+import com.intershop.oms.test.servicehandler.gdprservice.v2_10.OMSGDPRServiceHandlerProviderV2_10;
 import com.intershop.oms.test.servicehandler.inventoryservice.OMSInventoryServiceHandler;
 import com.intershop.oms.test.servicehandler.inventoryservice.v2_0.OMSInventoryServiceHandlerProviderV2_0;
 import com.intershop.oms.test.servicehandler.omsdb.OMSDbHandler;
@@ -80,6 +82,9 @@ public class ServiceHandlerFactory
 
         // inventory service
         registerServiceHandler(OMSInventoryServiceHandler.class, new OMSInventoryServiceHandlerProviderV2_0());
+
+        // gdpr service
+        registerServiceHandler(OMSGDPRServiceHandler.class, new OMSGDPRServiceHandlerProviderV2_10());
     }
 
     @SuppressWarnings("unchecked")
@@ -134,6 +139,11 @@ public class ServiceHandlerFactory
     public static OMSOrderStateServiceHandler getOrderStateServiceHandler(String id)
     {
         return getServiceHandler(OMSOrderStateServiceHandler.class, id, defaultConfig::getOrderStateServiceById);
+    }
+
+    public static OMSGDPRServiceHandler getGDPRServiceHandler(String id)
+    {
+        return getServiceHandler(OMSGDPRServiceHandler.class, id, defaultConfig::getGDPRServiceById);
     }
 
     private static <T> T getServiceHandler(Class<T> clazz, String serviceConfigurationId,
