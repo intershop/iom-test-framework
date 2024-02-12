@@ -36,7 +36,7 @@ class OMSOrderServiceHandlerV2_1 extends RESTServiceHandler
     {
         super(serviceConfig, "/rest/order-service", log);
         this.dbHandler = dbHandler;
-        this.orderApi = new OrderApi(apiClient);
+        orderApi = new OrderApi(apiClient);
     }
 
     @Override

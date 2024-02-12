@@ -1,0 +1,13 @@
+{    
+    "groupId":"com.intershop.oms.rest",
+    "artifactId":"GDPRServiceClient",
+    "artifactVersion":"2.10",
+
+    "apiPackage":"com.intershop.oms.rest.gdpr.v2_10.api",
+    "modelPackage":"com.intershop.oms.rest.gdpr.v2_10.model",
+    "invokerPackage":"com.intershop.oms.rest.shared",
+
+    "dateLibrary": "java8",
+    "java8": true,
+    "hideGenerationTimestamp": true
+}

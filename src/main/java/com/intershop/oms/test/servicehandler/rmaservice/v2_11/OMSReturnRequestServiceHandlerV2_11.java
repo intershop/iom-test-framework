@@ -56,7 +56,7 @@ public class OMSReturnRequestServiceHandlerV2_11 extends RESTServiceHandler
     OMSReturnRequestServiceHandlerV2_11(ServiceConfiguration serviceConfiguration, OMSDbHandler dbHandler)
     {
         super(serviceConfiguration, "/rest/rma", log);
-        this.shopApi = new ShopApi(apiClient);
+        shopApi = new ShopApi(apiClient);
         this.dbHandler = dbHandler;
     }
 

@@ -37,6 +37,9 @@ public interface Configuration {
     @WithName("transmission-service")
     Map<String, ServiceConfiguration> transmissionServiceConfigs();
 
+    @WithName("gdpr-service")
+    Map<String, ServiceConfiguration> gdprServiceConfigs();
+
     @WithName("client-logging")
     @WithDefault("true")
     boolean clientLogging();
@@ -76,4 +79,7 @@ public interface Configuration {
         return Optional.ofNullable(transmissionServiceConfigs().get(id)).orElseThrow(() -> new IllegalArgumentException("transmission service config with name " + id + " not found!"));
     }
 
+    default ServiceConfiguration getGDPRServiceById(String id) {
+        return Optional.ofNullable(gdprServiceConfigs().get(id)).orElseThrow(() -> new IllegalArgumentException("gdpr service config with name " + id + " not found!"));
+    }
 }
