@@ -20,7 +20,7 @@ schedules:
       
 jobs:
 - job: testframework
-  pool: 'ubuntu-20.4-DS1_v2-adopt-adoptium-jdk'
+  pool: 'ubuntu-24.04-D2ads_v5-adopt-adoptium-jdk'
   continueOnError: false
   timeoutInMinutes: 20
   variables:
