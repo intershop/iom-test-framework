@@ -76,6 +76,26 @@ Two new dependencies were added:
 - **Jackson 3.x coexists with Jackson 2.x** — they use different package
   namespaces (`tools.jackson.*` vs `com.fasterxml.jackson.*`), so there are
   no classpath conflicts.
+- **Jackson annotations version requirement:** Jackson 3.x depends on
+  `com.fasterxml.jackson.core:jackson-annotations:2.21` (Jackson 2.x group ID).
+  If your project uses a BOM (e.g. Wildfly) that manages `jackson-annotations`
+  to an older version, you must override it to `2.21` in your
+  `dependencyManagement`. Otherwise, `ObjectMapper$PrivateBuilder` static
+  initialization fails at runtime. Example override:
+
+  ```xml
+  <dependencyManagement>
+      <dependencies>
+          <!-- your existing BOM import -->
+          <dependency>
+              <groupId>com.fasterxml.jackson.core</groupId>
+              <artifactId>jackson-annotations</artifactId>
+              <version>2.21</version>
+          </dependency>
+      </dependencies>
+  </dependencyManagement>
+  ```
+
 - If you use Flyway's Java-based migrations or callbacks, review the
   [Flyway 10 release notes](https://documentation.red-gate.com/flyway/release-notes-and-older-versions)
   for any API changes.
@@ -104,4 +124,5 @@ Two new dependencies were added:
 | Uses Logback as logging backend                  | Upgrade to Logback `1.4.x+`                  |
 | Uses Log4j2 as logging backend                   | Switch to `log4j-slf4j2-impl`                |
 | Uses Flyway API directly                         | Review Flyway 10+ migration notes            |
+| Has a BOM managing `jackson-annotations` < 2.21  | Override to `2.21` in `dependencyManagement` |
 | Uses `simplelogger.properties`                   | No changes needed (format unchanged)         |
