@@ -53,7 +53,7 @@ Two new dependencies were added:
 <dependency>
     <groupId>tools.jackson.core</groupId>
     <artifactId>jackson-databind</artifactId>
-    <version>3.0.0</version>
+    <version>3.1.1</version>
 </dependency>
 ```
 
@@ -63,7 +63,10 @@ Two new dependencies were added:
   PostgreSQL support requires `flyway-database-postgresql`.
 - Flyway 12.x internally uses Jackson 3.x (`tools.jackson` package namespace).
   Without this dependency, `NoClassDefFoundError: tools.jackson.databind.ObjectMapper`
-  occurs at runtime.
+  occurs at runtime. Version `3.1.1` is required to match Flyway 12.6.0's
+  transitive dependency — earlier versions (e.g. `3.0.0`) cause
+  `NoClassDefFoundError: Could not initialize class tools.jackson.databind.ObjectMapper$PrivateBuilder`
+  due to initialization bugs.
 
 **Impact on consumer projects:**
 
