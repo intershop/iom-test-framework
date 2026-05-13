@@ -81,13 +81,13 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.7.1</version>
+            <version>42.7.11</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
-            <version>9.5.0</version>
+            <version>12.6.0</version>
         </dependency>
         <dependency>
             <groupId>io.smallrye.config</groupId>
@@ -102,7 +102,7 @@
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
-            <version>5.1.0</version>
+            <version>7.0.2</version>
         </dependency>
         <dependency>
             <groupId>io.swagger</groupId>
