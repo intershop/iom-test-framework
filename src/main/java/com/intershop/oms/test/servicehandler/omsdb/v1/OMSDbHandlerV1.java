@@ -65,7 +65,10 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
 
     // tl;dr that locking mechanism is NOT THREAD SAFE and can only be used in
     // single threaded test environments
-    private Connection lockingConnection =null;
+    //
+    // volatile: the keepalive thread reads this field while the test thread writes it;
+    // volatile ensures the keepalive always sees the current reference.
+    private volatile Connection lockingConnection = null;
 
     public OMSDbHandlerV1(ServiceConfiguration configuration)
     {
@@ -89,7 +92,7 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
                 ds.setUsername(aDbUser);
                 ds.setPassword(aDbPass);
                 ds.setMaximumPoolSize(12); //one pool per thread, hence keep it small
-                ds.setKeepaliveTime(30000); //should help maintain locking connections alive
+                ds.setKeepaliveTime(30000); // keeps idle pool connections alive; does NOT apply to lockingConnection (checked out)
                 ds.setIdleTimeout(1200000 ); //20 minutes. The default of 10 minutes might be too small in some tests
                 ds.setLeakDetectionThreshold(20000); //20 sec.
                 //ds.setConnectionTimeout(30000); //30 seconds. This is the default and should be sufficient
@@ -111,7 +114,46 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
             }
         }
 
-
+        // lockingConnection is held outside the pool, so HikariCP keepalive does not apply to it.
+        // HikariCP's keepaliveTime only pings connections that are idle *inside* the pool waiting
+        // to be borrowed. Once a connection is checked out via getConnection(), HikariCP considers
+        // it "in use" and never touches it — regardless of how long it sits idle in the borrower's
+        // hands. lockingConnection is permanently checked out and never returned, so it is invisible
+        // to HikariCP's keepalive mechanism for its entire lifetime.
+        // Without periodic activity PostgreSQL can terminate the connection via idle_session_timeout,
+        // which would silently release any advisory lock held on that session.
+        // This daemon thread sends a no-op query every 20 seconds to keep the server-side session alive.
+        Thread lockingConnectionKeepalive = new Thread(() -> {
+            while (!Thread.currentThread().isInterrupted())
+            {
+                try
+                {
+                    Thread.sleep(20_000);
+                }
+                catch (InterruptedException e)
+                {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+                // Snapshot the reference to avoid a race between the null-check and prepareStatement.
+                Connection conn = lockingConnection;
+                if (conn != null)
+                {
+                    try (PreparedStatement ps = conn.prepareStatement("SELECT 1"))
+                    {
+                        ps.execute();
+                    }
+                    catch (SQLException e)
+                    {
+                        log.warn("Locking connection keepalive query failed: {}", e.getMessage());
+                        // getDBLock / releaseDBLock already detect a dead connection and reconnect;
+                        // losing the keepalive race just means the reconnect path will trigger there.
+                    }
+                }
+            }
+        }, "locking-connection-keepalive");
+        lockingConnectionKeepalive.setDaemon(true);
+        lockingConnectionKeepalive.start();
     }
 
     @Override
@@ -552,67 +594,65 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
     public boolean runDBStmtBooleanWait(String query, boolean expectedStatus, List<Object> parameters)
     {
         boolean matched = false;
-        ResultSet resultSet = null;
         int countRetry = 0;
-        int param = 1;
 
-        try (Connection connection = getConnection();
-                        PreparedStatement sqlStatement = connection.prepareStatement(query))
+        // Connection is acquired per iteration: holding it across Thread.sleep() calls risks
+        // PostgreSQL terminating it (HikariCP keepalive does not apply to checked-out connections).
+        do
         {
-            for (Object o : parameters)
+            try (Connection connection = getConnection();
+                            PreparedStatement sqlStatement = connection.prepareStatement(query))
             {
-                sqlStatement.setObject(param++, o);
+                // Parameters must be re-bound each iteration because the PreparedStatement
+                // is recreated together with the connection.
+                int param = 1;
+                for (Object o : parameters)
+                {
+                    sqlStatement.setObject(param++, o);
+                }
+
+                // ResultSet is try-with-resources to ensure it is closed after every
+                // iteration, preventing server-side cursor leaks under long retry loops.
+                try (ResultSet resultSet = sqlStatement.executeQuery())
+                {
+                    log.info("called " + query);
+
+                    if (!resultSet.next())
+                    {
+                        throw new RuntimeException("Found no result getting boolean result from '" + query);
+                    }
+                    if (expectedStatus == resultSet.getBoolean(1))
+                    {
+                        matched = true;
+                    }
+                    if (resultSet.next())
+                    {
+                        throw new RuntimeException("The query did return more than one row: '" + query);
+                    }
+                }
+            }
+            catch(SQLException sqlEx)
+            {
+                log.error("SQLException getting boolean result ' from '" + query + "':" + sqlEx.getMessage());
+                throw new RuntimeException(sqlEx);
             }
 
-            do
-            {
-                resultSet = sqlStatement.executeQuery();
-                log.info("called " + query);
-
-                if (!resultSet.next())
-                {
-                    throw new RuntimeException("Found no result getting boolean result from '" + query);
-                }
-                if (expectedStatus == resultSet.getBoolean(1))
-                {
-                    matched = true;
-                }
-                if (resultSet.next())
-                {
-                    throw new RuntimeException("The query did return more than one row: '" + query);
-                }
-                if (!matched)
-                {
-                    Thread.sleep(retryDelay);
-                }
-            }
-            while(!matched && countRetry++ < maxRetry);
-        }
-        catch(SQLException sqlEx)
-        {
-            log.error("SQLException getting boolean result ' from '" + query + "':" + sqlEx.getMessage());
-            throw new RuntimeException(sqlEx);
-        }
-        catch(InterruptedException intEx)
-        {
-            log.error("InterruptedException (runDBStmtBooleanWait (String query,  boolean expectedStatus, List<Object> parameters) )': "
-                            + intEx.getMessage());
-            throw new RuntimeException(intEx);
-        }
-
-        finally
-        {
-            if (null != resultSet)
+            if (!matched)
             {
                 try
                 {
-                    resultSet.close();
+                    Thread.sleep(retryDelay);
                 }
-                catch(SQLException e)
+                catch(InterruptedException intEx)
                 {
+                    log.error("InterruptedException (runDBStmtBooleanWait (String query,  boolean expectedStatus, List<Object> parameters) )': "
+                                    + intEx.getMessage());
+                    Thread.currentThread().interrupt();
+                    throw new RuntimeException(intEx);
                 }
             }
         }
+        while(!matched && countRetry++ < maxRetry);
 
         return matched;
     }
@@ -3216,66 +3256,61 @@ DELETE  FROM "StockReservationDO" r2
     {
         // expected worst case: delay of 1.5s to wait for cleanup job should be covered by maxRetry*retryDelay = 60s is not enough :-(
         // the last job cleanup should be done after app. >30min --- so after 31min everything must be ok! (But for the case where two waiting objects collided, again. We won't wait for these to resolve, though.)
+        //
+        // Connection is acquired per iteration rather than held for the entire loop.
+        // Holding a single connection across many retries (up to maxRetry * retryDelay ms total) risks
+        // PostgreSQL terminating the idle-but-checked-out connection, since HikariCP keepalive only
+        // applies to connections sitting in the pool, not to checked-out ones.
         int countRetry = 0;
         Integer currentStatus = null;
 
-        ResultSet resultSet = null;
-        try (Connection connection = getConnection();
-                        PreparedStatement sqlStatement = connection.prepareStatement(sqlStatementQuery))
+        do
         {
-            sqlStatement.setLong(1, objectId);
-
-            do
-            {
-                if (countRetry > 0)
-                {
-                    Thread.sleep(retryDelay);
-                    if (!connection.isValid(20) )
-                    {
-                        log.error("An Hikari pool connection isn't valid anymore while waiting for an object state, after " + countRetry + " attempts.");
-                        throw new RuntimeException(
-                                        "An Hikari pool connection isn't valid anymore while waiting for an object state, after " + countRetry + " attempts");
-                    }
-                }
-                resultSet = sqlStatement.executeQuery();
-                if (resultSet.next())
-                {
-                    currentStatus = resultSet.getInt(1);
-                }
-                if (!acceptMultipleResults && resultSet.next())
-                {
-                    log.error("More than one status found for " + debugType + " with id '" + objectId + "'!");
-                    throw new RuntimeException(
-                                    "More than one status found for " + debugType + " with id '" + objectId + "'!");
-                }
-            }
-            while((currentStatus == null || currentStatus != expectedState) && countRetry++ < maxRetry);
-        }
-        catch(SQLException sqlEx)
-        {
-            log.error("SQLException getting currentStatus of " + debugType + " '" + objectId + "': "
-                            + sqlEx.getMessage());
-            throw new RuntimeException(sqlEx);
-        }
-        catch(InterruptedException intEx)
-        {
-            log.error("InterruptedException (retry " + countRetry + " of " + maxRetry
-                            + ") getting currentStatus of \"+debugType+\" '\"+objectId+\"': " + intEx.getMessage());
-            throw new RuntimeException(intEx);
-        }
-        finally
-        {
-            if (null != resultSet)
+            // Sleep before re-querying, but without holding any connection.
+            // This avoids the connection being dropped by PostgreSQL's idle timeout
+            // or an administrator command during the wait period.
+            if (countRetry > 0)
             {
                 try
                 {
-                    resultSet.close();
+                    Thread.sleep(retryDelay);
                 }
-                catch(SQLException e)
+                catch(InterruptedException intEx)
                 {
+                    log.error("InterruptedException (retry " + countRetry + " of " + maxRetry
+                                    + ") getting currentStatus of " + debugType + " '" + objectId + "': " + intEx.getMessage());
+                    Thread.currentThread().interrupt();
+                    throw new RuntimeException(intEx);
                 }
             }
+            try (Connection connection = getConnection();
+                            PreparedStatement sqlStatement = connection.prepareStatement(sqlStatementQuery))
+            {
+                sqlStatement.setLong(1, objectId);
+                // ResultSet is try-with-resources to ensure it is closed after every
+                // iteration, preventing server-side cursor leaks under long retry loops.
+                try (ResultSet resultSet = sqlStatement.executeQuery())
+                {
+                    if (resultSet.next())
+                    {
+                        currentStatus = resultSet.getInt(1);
+                    }
+                    if (!acceptMultipleResults && resultSet.next())
+                    {
+                        log.error("More than one status found for " + debugType + " with id '" + objectId + "'!");
+                        throw new RuntimeException(
+                                        "More than one status found for " + debugType + " with id '" + objectId + "'!");
+                    }
+                }
+            }
+            catch(SQLException sqlEx)
+            {
+                log.error("SQLException getting currentStatus of " + debugType + " '" + objectId + "': "
+                                + sqlEx.getMessage());
+                throw new RuntimeException(sqlEx);
+            }
         }
+        while((currentStatus == null || currentStatus != expectedState) && countRetry++ < maxRetry);
 
         debugWaitingMsg(debugType, countRetry, maxRetry, retryDelay, Optional.of(objectId), expectedState,
                         currentStatus);
@@ -3288,64 +3323,63 @@ DELETE  FROM "StockReservationDO" r2
     {
         // expected worst case: delay of 1.5s to wait for cleanup job should be covered by maxRetry*retryDelay = 60s is not enough :-(
         // the last job cleanup should be done after app. 15min --- so after 16min everything must be ok!
+        //
+        // Same connection-per-iteration strategy as doDBWaitForStateCheck: sleep without holding
+        // a connection so PostgreSQL cannot terminate it while we are idle between retries.
         int countRetry = 0;
         Integer currentStatus = null;
 
-        ResultSet resultSet = null;
-        try (Connection connection = getConnection();
-                        PreparedStatement sqlStatement = connection.prepareStatement(sqlStatementQuery))
+        do
         {
-            sqlStatement.setLong(1, objectId);
-
-            do
-            {
-                int objectCount = 0;
-                if (countRetry > 0)
-                {
-                    Thread.sleep(retryDelay);
-                }
-                resultSet = sqlStatement.executeQuery();
-                while(resultSet.next())
-                {
-                    objectCount++;
-                    currentStatus = resultSet.getInt(1);
-                    if (currentStatus < expectedState)
-                    {
-                        break;
-                    }
-                    if (objectCount < expectedObjectCount)
-                    {
-                        currentStatus = null;
-                    }
-                }
-            }
-            while((currentStatus == null || currentStatus < expectedState) && countRetry++ < maxRetry);
-        }
-        catch(SQLException sqlEx)
-        {
-            log.error("SQLException getting currentStatus of " + debugType + " '" + objectId + "': "
-                            + sqlEx.getMessage());
-            throw new RuntimeException(sqlEx);
-        }
-        catch(InterruptedException intEx)
-        {
-            log.error("InterruptedException (retry " + countRetry + " of " + maxRetry
-                            + ") getting currentStatus of \"+debugType+\" '\"+objectId+\"': " + intEx.getMessage());
-            throw new RuntimeException(intEx);
-        }
-        finally
-        {
-            if (null != resultSet)
+            // Sleep before re-querying, but without holding any connection.
+            // This avoids the connection being dropped by PostgreSQL's idle timeout
+            // or an administrator command during the wait period.
+            if (countRetry > 0)
             {
                 try
                 {
-                    resultSet.close();
+                    Thread.sleep(retryDelay);
                 }
-                catch(SQLException e)
+                catch(InterruptedException intEx)
                 {
+                    log.error("InterruptedException (retry " + countRetry + " of " + maxRetry
+                                    + ") getting currentStatus of " + debugType + " '" + objectId + "': " + intEx.getMessage());
+                    Thread.currentThread().interrupt();
+                    throw new RuntimeException(intEx);
                 }
             }
+            try (Connection connection = getConnection();
+                            PreparedStatement sqlStatement = connection.prepareStatement(sqlStatementQuery))
+            {
+                sqlStatement.setLong(1, objectId);
+                int objectCount = 0;
+                // ResultSet is try-with-resources to ensure it is closed after every
+                // iteration, preventing server-side cursor leaks under long retry loops.
+                try (ResultSet resultSet = sqlStatement.executeQuery())
+                {
+                    while(resultSet.next())
+                    {
+                        objectCount++;
+                        currentStatus = resultSet.getInt(1);
+                        if (currentStatus < expectedState)
+                        {
+                            break;
+                        }
+                        if (objectCount < expectedObjectCount)
+                        {
+                            currentStatus = null;
+                        }
+                    }
+                }
+            }
+            catch(SQLException sqlEx)
+            {
+                log.error("SQLException getting currentStatus of " + debugType + " '" + objectId + "': "
+                                + sqlEx.getMessage());
+                throw new RuntimeException(sqlEx);
+            }
         }
+        while((currentStatus == null || currentStatus < expectedState) && countRetry++ < maxRetry);
 
         debugWaitingMsg(debugType, countRetry, maxRetry, retryDelay, Optional.of(objectId), expectedState,
                         currentStatus);
