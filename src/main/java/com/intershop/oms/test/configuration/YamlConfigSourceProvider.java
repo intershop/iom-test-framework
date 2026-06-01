@@ -6,7 +6,7 @@ import java.util.List;
 import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.eclipse.microprofile.config.spi.ConfigSourceProvider;
 
-public class YamlConfigSourceProvider extends io.smallrye.config.source.yaml.YamlConfigSourceProvider
+public class YamlConfigSourceProvider extends io.smallrye.config.source.yaml.YamlConfigSourceLoader
                 implements ConfigSourceProvider
 {
     private int ordinal;

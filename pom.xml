@@ -54,6 +54,7 @@
         <jackson-databind-nullable-version>0.2.10</jackson-databind-nullable-version>
         <jakarta-annotation-version>2.1.0</jakarta-annotation-version>
         <jakarta-validation-version>3.0.2</jakarta-validation-version>
+        <smallrye-config-version>3.17.2</smallrye-config-version>
     </properties>
 
     <dependencies>
@@ -103,12 +104,12 @@
         <dependency>
             <groupId>io.smallrye.config</groupId>
             <artifactId>smallrye-config</artifactId>
-            <version>3.3.2</version>
+            <version>${smallrye-config-version}</version>
         </dependency>
         <dependency>
             <groupId>io.smallrye.config</groupId>
             <artifactId>smallrye-config-source-yaml</artifactId>
-            <version>3.3.2</version>
+            <version>${smallrye-config-version}</version>
         </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>
