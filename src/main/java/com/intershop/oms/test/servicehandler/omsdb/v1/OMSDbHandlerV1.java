@@ -69,6 +69,7 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
     // volatile: the keepalive thread reads this field while the test thread writes it;
     // volatile ensures the keepalive always sees the current reference.
     private volatile Connection lockingConnection = null;
+    private int lockingConnectionResetCount = 0;
 
     public OMSDbHandlerV1(ServiceConfiguration configuration)
     {
@@ -3981,7 +3982,7 @@ DELETE  FROM "StockReservationDO" r2
         }
         catch (SQLException e)
         {
-            log.error("Could not verify connection while releasing lock ", rw, lockId);
+            log.error("Could not verify the lockingConnection while releasing lock ", rw, lockId);
             return false;
         }
 
@@ -3997,6 +3998,8 @@ DELETE  FROM "StockReservationDO" r2
                 //ignore. This is expected as the connection is not valid
             }
             lockingConnection = getConnection();
+            lockingConnectionResetCount++;
+            log.warn("lockingConnection was reset (total resets: {}). Previous connection was invalid during releaseDBLock.", lockingConnectionResetCount);
         }
 
         
@@ -4039,6 +4042,11 @@ DELETE  FROM "StockReservationDO" r2
         if (lockingConnection == null)
         {
             lockingConnection = getConnection();
+            lockingConnectionResetCount++;
+            if (lockingConnectionResetCount > 1)
+            {
+                log.warn("lockingConnection was reset (total resets: {}). Connection was null during getDBLock.", lockingConnectionResetCount);
+            }
         }
         
         boolean connectionIsValid = false;
@@ -4048,7 +4056,7 @@ DELETE  FROM "StockReservationDO" r2
         }
         catch (SQLException e)
         {
-            log.error("Could not verify connection while releasing lock ", rw, lockId);
+            log.error("Could not verify the lockingConnection while releasing lock ", rw, lockId);
             return false;
         }
 
@@ -4064,6 +4072,8 @@ DELETE  FROM "StockReservationDO" r2
                 //ignore. This is expected as the connection is not valid
             }
             lockingConnection = getConnection();
+            lockingConnectionResetCount++;
+            log.warn("lockingConnection was reset (total resets: {}). Previous connection was invalid during getDBLock.", lockingConnectionResetCount);
         }
          
         String statement = null;
