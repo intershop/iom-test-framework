@@ -3982,7 +3982,7 @@ DELETE  FROM "StockReservationDO" r2
         }
         catch (SQLException e)
         {
-            log.error("Could not verify connection while releasing lock ", rw, lockId);
+            log.error("Could not verify the lockingConnection while releasing lock ", rw, lockId);
             return false;
         }
 
@@ -4056,7 +4056,7 @@ DELETE  FROM "StockReservationDO" r2
         }
         catch (SQLException e)
         {
-            log.error("Could not verify connection while releasing lock ", rw, lockId);
+            log.error("Could not verify the lockingConnection while releasing lock ", rw, lockId);
             return false;
         }
 
