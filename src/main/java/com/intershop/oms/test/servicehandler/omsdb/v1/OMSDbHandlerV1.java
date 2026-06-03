@@ -95,7 +95,9 @@ class OMSDbHandlerV1 implements com.intershop.oms.test.servicehandler.omsdb.OMSD
                 ds.setMaximumPoolSize(12); //one pool per thread, hence keep it small
                 ds.setKeepaliveTime(30000); // keeps idle pool connections alive; does NOT apply to lockingConnection (checked out)
                 ds.setIdleTimeout(1200000 ); //20 minutes. The default of 10 minutes might be too small in some tests
-                ds.setLeakDetectionThreshold(20000); //20 sec.
+                //the leak detection apply to connection that were taken from the pool and not returned yet
+                //This may take several minutes in our tests.
+                ds.setLeakDetectionThreshold(300000); //5 minutes
                 //ds.setConnectionTimeout(30000); //30 seconds. This is the default and should be sufficient
 
                 if (aForceSsl)
@@ -3311,7 +3313,7 @@ DELETE  FROM "StockReservationDO" r2
                 throw new RuntimeException(sqlEx);
             }
         }
-        while((currentStatus == null || currentStatus != expectedState) && countRetry++ < maxRetry);
+        while((currentStatus == null || currentStatus < expectedState) && countRetry++ < maxRetry);
 
         debugWaitingMsg(debugType, countRetry, maxRetry, retryDelay, Optional.of(objectId), expectedState,
                         currentStatus);
@@ -4039,6 +4041,7 @@ DELETE  FROM "StockReservationDO" r2
     @Deprecated
     private boolean getDBLock(int lockId, int timeout, DBLockType rw)
     {
+        log.info("ask for got gebTest {} lock {}\n", rw.toString(), lockId);
         if (lockingConnection == null)
         {
             lockingConnection = getConnection();
