@@ -17,6 +17,9 @@ public class ExtendedApiClient extends ApiClient
     // the client-side idle timeout well below the server's value ensures the
     // client evicts stale connections before WildFly closes them.
     private static final int POOLED_CONNECTION_IDLE_TIMEOUT_MS = 40_000;
+    private static final int REQUEST_TIMEOUT_MS = 120_000;
+    private static final int CONNECT_TIMEOUT_MS = 15_000;
+    private static final int READ_TIMEOUT_MS = 120_000;
 
     @Override
     public ClientConfig getDefaultClientConfig()
@@ -28,7 +31,11 @@ public class ExtendedApiClient extends ApiClient
             defaultClientConfig.register(SLF4JWriterInterceptor.class);
         }
         defaultClientConfig.connectorProvider(new GrizzlyConnectorProvider(
-                (client, config, builder) -> builder.setPooledConnectionIdleTimeout(POOLED_CONNECTION_IDLE_TIMEOUT_MS)));
+            (client, config, builder) -> builder
+                .setPooledConnectionIdleTimeout(POOLED_CONNECTION_IDLE_TIMEOUT_MS)
+                .setRequestTimeout(REQUEST_TIMEOUT_MS)
+                .setConnectTimeout(CONNECT_TIMEOUT_MS)
+                .setReadTimeout(READ_TIMEOUT_MS)));
         return defaultClientConfig;
     }
 
