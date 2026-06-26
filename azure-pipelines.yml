@@ -91,7 +91,7 @@ jobs:
       ./mvnw clean verify
     timeoutInMinutes: 10
     displayName: "Build test-framework"
-    condition: and(succeeded(), eq(variables.SKIP_PUBLICATION, true))
+    condition: and(succeeded(), eq(variables.SKIP_PUBLICATION, 'true'))
     env:
       PGP_PASSPHRASE: "literal:$(pgpPassphrase)"
       PGP_SECRETKEY: "keyfile:$(pgpPrivateKey.secureFilePath)"
@@ -101,7 +101,7 @@ jobs:
     timeoutInMinutes: 10
     displayName: "Publish test-framework"
     #enabled: false
-    condition: and(succeeded(), eq(variables.SKIP_PUBLICATION, false))
+    condition: and(succeeded(), eq(variables.SKIP_PUBLICATION, 'false'))
     env:
       PGP_PASSPHRASE: "literal:$(pgpPassphrase)"
       PGP_SECRETKEY: "keyfile:$(pgpPrivateKey.secureFilePath)"
