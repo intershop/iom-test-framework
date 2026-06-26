@@ -39,12 +39,6 @@ jobs:
       path: $(M2_LOCAL_REPO)
     displayName: Configure maven caching
 
-  - task: DownloadSecureFile@1
-    name: pgpPrivateKey
-    displayName: 'Secrets - download pgp key'
-    inputs:
-      secureFile: 'order-iom-project-archetype-gpg_private_key_iom.pgp'
-    
   - task: MavenAuthenticate@0
     inputs:
       artifactsFeeds: order-iom-snapshots,order-iom-releases
@@ -90,9 +84,6 @@ jobs:
     timeoutInMinutes: 10
     displayName: "Build test-framework"
     condition: and(succeeded(), eq(variables.SKIP_PUBLICATION, 'true'))
-    env:
-      PGP_PASSPHRASE: "literal:$(pgpPassphrase)"
-      PGP_SECRETKEY: "keyfile:$(pgpPrivateKey.secureFilePath)"
 
   - script: |
       ./mvnw clean deploy
@@ -100,8 +91,5 @@ jobs:
     displayName: "Publish test-framework"
     #enabled: false
     condition: and(succeeded(), eq(variables.SKIP_PUBLICATION, 'false'))
-    env:
-      PGP_PASSPHRASE: "literal:$(pgpPassphrase)"
-      PGP_SECRETKEY: "keyfile:$(pgpPrivateKey.secureFilePath)"
        
   - task: PublishTestResults@2
