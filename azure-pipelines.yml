@@ -3,8 +3,6 @@
 variables:
   M2_LOCAL_REPO: $(Pipeline.Workspace)/local-maven-repo
   MAVEN_OPTS: '-Dmaven.repo.local=$(M2_LOCAL_REPO)'
-  # mitigation for https://issues.sonatype.org/browse/NEXUS-27902
-  JDK_JAVA_OPTIONS: '--add-opens java.base/java.util=ALL-UNNAMED' 
 
 trigger:
   batch: true
@@ -24,7 +22,7 @@ jobs:
   continueOnError: false
   timeoutInMinutes: 20
   variables:
-    SKIP_PUBLICATION: false
+    SKIP_PUBLICATION: 'false'
     VERSION_OVERRIDE:
   
   workspace:
@@ -41,16 +39,9 @@ jobs:
       path: $(M2_LOCAL_REPO)
     displayName: Configure maven caching
 
-  - task: DownloadSecureFile@1
-    name: pgpPrivateKey
-    displayName: 'Secrets - download pgp key'
-    inputs:
-      secureFile: 'order-iom-project-archetype-gpg_private_key_iom.pgp'
-    
   - task: MavenAuthenticate@0
     inputs:
-      artifactsFeeds: order-iom-snapshots
-      mavenServiceConnections: order-iom-sonatype-ossrh
+      artifactsFeeds: order-iom-snapshots,order-iom-releases
     timeoutInMinutes: 1
     displayName: "Maven authenticate"
 
@@ -92,19 +83,13 @@ jobs:
       ./mvnw clean verify
     timeoutInMinutes: 10
     displayName: "Build test-framework"
-    condition: and(succeeded(), eq(variables.SKIP_PUBLICATION, true))
-    env:
-      PGP_PASSPHRASE: "literal:$(pgpPassphrase)"
-      PGP_SECRETKEY: "keyfile:$(pgpPrivateKey.secureFilePath)"
+    condition: and(succeeded(), eq(variables.SKIP_PUBLICATION, 'true'))
 
   - script: |
       ./mvnw clean deploy
     timeoutInMinutes: 10
     displayName: "Publish test-framework"
     #enabled: false
-    condition: and(succeeded(), eq(variables.SKIP_PUBLICATION, false))
-    env:
-      PGP_PASSPHRASE: "literal:$(pgpPassphrase)"
-      PGP_SECRETKEY: "keyfile:$(pgpPrivateKey.secureFilePath)"
+    condition: and(succeeded(), eq(variables.SKIP_PUBLICATION, 'false'))
        
   - task: PublishTestResults@2

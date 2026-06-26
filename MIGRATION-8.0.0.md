@@ -1,5 +1,28 @@
 # IOM Test Framework 8.0.0 Migration Guide
 
+## Artifact Repository Change
+
+**What changed:** Starting with 8.0.0, `iom-test-framework` is no longer published to Maven Central. Artifacts are now published to the internal Intershop Azure Artifacts feed.
+
+**Action required for consumers:**
+
+Add the repository to your `pom.xml`:
+
+```xml
+<repositories>
+    <repository>
+        <id>order-iom-releases</id>
+        <url>https://pkgs.dev.azure.com/intershop-com/Products/_packaging/order-iom-releases/maven/v1</url>
+        <releases><enabled>true</enabled></releases>
+        <snapshots><enabled>false</enabled></snapshots>
+    </repository>
+</repositories>
+```
+
+Authenticate via `MavenAuthenticate@0` in your Azure DevOps pipeline (feed name: `order-iom-releases`), or generate a Personal Access Token with **Packaging (read)** scope for local development and add it to your `~/.m2/settings.xml`.
+
+---
+
 ## Breaking Changes
 
 ### Java 17 → Java 21
