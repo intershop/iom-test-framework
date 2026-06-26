@@ -23,7 +23,7 @@ jobs:
   continueOnError: false
   timeoutInMinutes: 20
   variables:
-    SKIP_PUBLICATION: false
+    SKIP_PUBLICATION: 'false'
     VERSION_OVERRIDE:
   
   workspace:
