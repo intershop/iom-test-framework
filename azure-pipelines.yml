@@ -49,9 +49,36 @@ jobs:
   - task: MavenAuthenticate@0
     inputs:
       artifactsFeeds: order-iom-snapshots
-      mavenServiceConnections: order-iom-sonatype-ossrh
     timeoutInMinutes: 1
     displayName: "Maven authenticate"
+
+  - script: |
+      python3 - <<'EOF'
+      import xml.etree.ElementTree as ET
+      import os
+
+      settings_path = os.path.expanduser('~/.m2/settings.xml')
+      ET.register_namespace('', 'http://maven.apache.org/SETTINGS/1.0.0')
+      tree = ET.parse(settings_path)
+      root = tree.getroot()
+      ns = 'http://maven.apache.org/SETTINGS/1.0.0'
+
+      servers = root.find(f'{{{ns}}}servers')
+      if servers is None:
+          servers = ET.SubElement(root, f'{{{ns}}}servers')
+
+      server = ET.SubElement(servers, f'{{{ns}}}server')
+      ET.SubElement(server, f'{{{ns}}}id').text = 'central'
+      ET.SubElement(server, f'{{{ns}}}username').text = os.environ['CENTRAL_USERNAME']
+      ET.SubElement(server, f'{{{ns}}}password').text = os.environ['CENTRAL_PASSWORD']
+
+      tree.write(settings_path, xml_declaration=True, encoding='utf-8')
+      print('central server entry added to ~/.m2/settings.xml')
+      EOF
+    displayName: "Inject Central Portal credentials into Maven settings"
+    env:
+      CENTRAL_USERNAME: $(CENTRAL_USERNAME)
+      CENTRAL_PASSWORD: $(CENTRAL_PASSWORD)
 
   - task: JavaToolInstaller@0
     inputs:
