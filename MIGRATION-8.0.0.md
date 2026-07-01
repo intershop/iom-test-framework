@@ -2,24 +2,17 @@
 
 ## Artifact Repository Change
 
-**What changed:** Starting with 8.0.0, `iom-test-framework` is no longer published to Maven Central. Artifacts are now published to the internal Intershop Azure Artifacts feed.
+**What changed:** Starting with 8.0.0, `iom-test-framework` is no longer published to Maven Central. Artifacts are now published to the IOM Maven Repository of your Azure DevOps Environment — the same feed that already provides the IOM build artifacts.
 
 **Action required for consumers:**
 
-Add the repository to your `pom.xml`:
+No new repository needs to be added. The `iom-test-framework` artifacts are published to the same feed as the IOM build artifacts (`iom-maven-artifacts`), which is already configured in your `pom.xml` (see `//repositories/repository[id='iom-maven-artifacts']/url`). The URL is specific to your Azure DevOps Environment; the default from the IOM Project Archetype is:
 
-```xml
-<repositories>
-    <repository>
-        <id>order-iom-releases</id>
-        <url>https://pkgs.dev.azure.com/intershop-com/Products/_packaging/order-iom-releases/maven/v1</url>
-        <releases><enabled>true</enabled></releases>
-        <snapshots><enabled>false</enabled></snapshots>
-    </repository>
-</repositories>
+```
+https://pkgs.dev.azure.com/intershop-com/Products/_packaging/iom-maven-artifacts/maven/v1
 ```
 
-Authenticate via `MavenAuthenticate@0` in your Azure DevOps pipeline (feed name: `order-iom-releases`), or generate a Personal Access Token with **Packaging (read)** scope for local development and add it to your `~/.m2/settings.xml`.
+If you have not yet set up access to this feed, follow the instructions in the devenv-4-iom documentation: [Get Access to IOM Maven Repository](https://github.com/intershop/devenv-4-iom/blob/main/doc/03_devops_integration.md#get-access-to-iom-maven-repository).
 
 ---
 
