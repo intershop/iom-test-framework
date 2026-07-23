@@ -51,7 +51,7 @@
         <jersey-version>3.1.11</jersey-version>
         <jackson-version>2.21.3</jackson-version> <!-- as in wildfly 40 -->
         <jackson-annotations-version>2.21</jackson-annotations-version> <!-- as in wildfly 40 -->
-        <jackson-databind-version>2.21.3</jackson-databind-version>
+        <jackson-databind-version>2.21.5</jackson-databind-version>
         <jackson-databind-nullable-version>0.2.10</jackson-databind-nullable-version>
         <jakarta-annotation-version>2.1.0</jakarta-annotation-version>
         <jakarta-validation-version>3.0.2</jakarta-validation-version>
