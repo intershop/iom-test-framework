@@ -49,7 +49,7 @@
         <!-- activate m2e-apt in eclipse for better mapstruct integration -->
         <m2e.apt.activation>jdt_apt</m2e.apt.activation>
         <jersey-version>3.1.11</jersey-version>
-        <jackson-version>2.21.3</jackson-version> <!-- as in wildfly 40 -->
+        <jackson-version>2.21.4</jackson-version> <!-- as in wildfly 40 -->
         <jackson-annotations-version>2.21</jackson-annotations-version> <!-- as in wildfly 40 -->
         <jackson-databind-version>2.21.3</jackson-databind-version>
         <jackson-databind-nullable-version>0.2.10</jackson-databind-nullable-version>
